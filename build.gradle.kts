@@ -27,6 +27,9 @@ dependencies {
     implementation(kotlin("reflect"))
     compile("com.fasterxml.jackson.module:jackson-module-kotlin")
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile ("org.telegram:telegrambots-spring-boot-starter:4.1.2")
+    
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.withType<KotlinCompile> {

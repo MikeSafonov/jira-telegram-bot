@@ -1,5 +1,6 @@
-package com.github.mikesafonov.jira.telegram
+package com.github.mikesafonov.jira.telegram.service
 
+import com.github.mikesafonov.jira.telegram.Event
 import org.springframework.stereotype.Service
 
 @Service

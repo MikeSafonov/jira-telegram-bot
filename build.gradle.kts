@@ -1,3 +1,6 @@
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import io.spring.gradle.dependencymanagement.dsl.ImportsHandler
+import io.spring.gradle.dependencymanagement.internal.DependencyManagement
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
@@ -18,8 +21,10 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<BootJar>{
-    mainClassName = "com.github.mikesafonov.jira.telegram.Application"
+configure<DependencyManagementExtension> {
+    imports(delegateClosureOf<ImportsHandler> {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE")
+    })
 }
 
 dependencies {

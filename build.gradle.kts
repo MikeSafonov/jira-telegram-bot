@@ -33,7 +33,9 @@ dependencies {
     compile("com.fasterxml.jackson.module:jackson-module-kotlin")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile ("org.telegram:telegrambots-spring-boot-starter:4.1.2")
-    
+    compile("com.github.spullara.mustache.java:compiler:0.9.6")
+    compile("io.github.microutils:kotlin-logging:1.6.22")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }
 

@@ -9,7 +9,7 @@ data class Event(
     val webhookEvent: String,
     val timestamp: Long,
     val user: User?,
-    val issue_event_type_name: String,
+    val issue_event_type_name: String?,
     val issue: Issue?,
     val comment: Comment?,
     val changelog: Changelog?

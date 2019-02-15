@@ -1,36 +1,44 @@
 package com.github.mikesafonov.jira.telegram.service
 
-import com.github.mikesafonov.jira.telegram.BotProperties
+import com.github.mikesafonov.jira.telegram.config.BotProperties
+import mu.KotlinLogging
 import org.springframework.stereotype.Service
+import org.telegram.telegrambots.bots.DefaultBotOptions
+import org.telegram.telegrambots.bots.TelegramLongPollingBot
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
-import org.telegram.telegrambots.meta.generics.BotOptions
-import org.telegram.telegrambots.meta.generics.LongPollingBot
+
+private val logger = KotlinLogging.logger {}
 
 @Service
-class TelegramBotService (val botProperties: BotProperties) : LongPollingBot {
+class TelegramBotService(private val botProperties: BotProperties, options: DefaultBotOptions?) :
+    TelegramLongPollingBot(options) {
+
+
     override fun getBotToken(): String {
         return botProperties.token
     }
 
     override fun onUpdateReceived(update: Update?) {
-        if(update != null){
+        if (update != null) {
             onUpdate(update)
         }
     }
 
-    private fun onUpdate(update: Update){
+    fun sendMessageToUser(user: Long, messageText: String) {
+        val message = SendMessage()
+        message.chatId = user.toString()
+        message.text = messageText
+        message.enableMarkdown(true)
+        execute(message)
+    }
 
+    private fun onUpdate(update: Update) {
+        logger.info(update.toString())
     }
 
     override fun getBotUsername(): String {
         return botProperties.name
     }
 
-    override fun getOptions(): BotOptions {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun clearWebhook() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }

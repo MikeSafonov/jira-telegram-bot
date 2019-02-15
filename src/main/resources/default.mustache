@@ -1,3 +1,11 @@
-Event: {{webhookEvent}}
-Time: {{timestamp}}
-User: {{user.displayName}}
+*Project*: `{{issue.fields.project.name}}`
+*Issue*: [{{issue.key}}]({{issue.self}})` was updated on {{issue.fields.created}}`
+*Components*:
+*Status*: `{{issue.fields.status.name}}`
+*Author*: `{{issue.fields.creator.displayName}}`
+*Assignee*: `{{issue.fields.assignee.displayName}}`
+*Summary*: `{{issue.fields.summary}}`
+*Description*: `{{issue.fields.description}}`
+
+*New comments*:
+*{{comment.author.displayName}}* said: `{{comment.body}}`

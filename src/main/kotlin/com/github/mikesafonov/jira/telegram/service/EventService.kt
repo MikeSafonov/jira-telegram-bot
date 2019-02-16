@@ -27,8 +27,8 @@ class EventService(
 
     private fun handleIssue(event: Event) {
 
-        val findDestinationLogins = findDestinationLogins(event)
-        if (findDestinationLogins.isEmpty()) {
+        val destinationLogins = findDestinationLogins(event)
+        if (destinationLogins.isEmpty()) {
             // no users found, nothing to do
             return
         }
@@ -38,7 +38,7 @@ class EventService(
             mustache.execute(sw, event).flush()
             val telegramMessage = sw.toString()
 
-            findDestinationLogins.forEach {
+            destinationLogins.forEach {
                 sendMessage(it, telegramMessage)
             }
         } else {

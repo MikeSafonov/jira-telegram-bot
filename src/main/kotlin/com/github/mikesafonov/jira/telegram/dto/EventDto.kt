@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.github.mikesafonov.jira.telegram.config.JiraLocalDateTimeDeserializer
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 enum class WebHookEvent {
@@ -49,9 +52,24 @@ data class Event(
     val comment: Comment?,
     val changelog: Changelog?
 ) {
+    val eventTime : String
+
+    init{
+        eventTime = eventTimeFormatted()
+    }
+
+
     fun isIssueEvent(): Boolean {
         return webhookEvent == WebHookEvent.JIRA_ISSUE_UPDATED || webhookEvent == WebHookEvent.JIRA_ISSUE_CREATED
                 || webhookEvent == WebHookEvent.JIRA_ISSUE_DELETED
+    }
+
+    private fun timestampAsDate() : LocalDateTime{
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault())
+    }
+
+    fun eventTimeFormatted(pattern : String = "HH:mm:ss dd.MM.yyyy") : String{
+        return timestampAsDate().format(DateTimeFormatter.ofPattern(pattern))
     }
 }
 

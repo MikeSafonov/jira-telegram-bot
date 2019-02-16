@@ -1,5 +1,6 @@
 package com.github.mikesafonov.jira.telegram.endpoint
 
+import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.service.EventService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -10,16 +11,15 @@ class EventEndpoint(
     private val eventService: EventService
 ) {
 
-    @PostMapping("/")
-    fun handleEvent(@RequestBody event: String) {
-        println(event)
-//        eventService.handle(event)
-    }
-
 //    @PostMapping("/")
-//    fun handleEvent(@RequestBody event: Event) {
+//    fun handleEvent(@RequestBody event: String) {
 //        println(event)
 //        eventService.handle(event)
 //    }
+
+    @PostMapping("/")
+    fun handleEvent(@RequestBody event: Event) {
+        eventService.handle(event)
+    }
 
 }

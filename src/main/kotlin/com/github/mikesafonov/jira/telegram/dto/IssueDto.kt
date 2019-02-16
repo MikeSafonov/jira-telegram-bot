@@ -10,7 +10,15 @@ data class Issue(
     val self: String,
     val key: String,
     val fields: IssueFields
-)
+) {
+    fun issueCreatorName(): String {
+        return fields.creator.name
+    }
+
+    fun issueAssigneeName(): String? {
+        return fields.assignee?.name
+    }
+}
 
 data class IssueFields(
     val summary: String,

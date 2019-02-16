@@ -1,8 +1,6 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import io.spring.gradle.dependencymanagement.dsl.ImportsHandler
-import io.spring.gradle.dependencymanagement.internal.DependencyManagement
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     kotlin("jvm") version "1.3.21"
@@ -30,11 +28,20 @@ configure<DependencyManagementExtension> {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin")
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile ("org.telegram:telegrambots-spring-boot-starter:4.1.2")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    compile("org.telegram:telegrambots-spring-boot-starter:4.1.2")
+
     compile("com.github.spullara.mustache.java:compiler:0.9.6")
+
     compile("io.github.microutils:kotlin-logging:1.6.22")
+
+    compile("org.postgresql:postgresql:42.2.5")
+    compile("org.flywaydb:flyway-core:5.2.4")
+
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }

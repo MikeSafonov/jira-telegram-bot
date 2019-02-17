@@ -25,9 +25,14 @@ configure<DependencyManagementExtension> {
     })
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
+
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -35,15 +40,22 @@ dependencies {
 
     compile("org.telegram:telegrambots-spring-boot-starter:4.1.2")
 
-    compile("com.github.spullara.mustache.java:compiler:0.9.6")
+    compile("org.freemarker:freemarker:2.3.28")
 
     compile("io.github.microutils:kotlin-logging:1.6.22")
 
-    compile("org.postgresql:postgresql:42.2.5")
-    compile("org.flywaydb:flyway-core:5.2.4")
-
+    compile("org.postgresql:postgresql")
+    compile("org.flywaydb:flyway-core")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "junit")
+    }
+    testCompile("org.junit.jupiter:junit-jupiter-api")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine")
+
+
 }
 
 tasks.withType<KotlinCompile> {

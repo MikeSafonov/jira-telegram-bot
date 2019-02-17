@@ -1,0 +1,12 @@
+*Project*: `${event.issue.fields.project.name}`
+
+*Issue*: [${event.issue.key}](${event.issue.self}) *was updated* `on` ${event.eventTimeFormatted("HH:mm:ss")}
+*Components*:
+*Status*: `${event.issue.fields.status.name}`
+*Author*: `${event.issue.fields.creator.displayName}`
+*Assignee*: `${event.issue.fields.assignee.displayName}`
+*Summary*: `${event.issue.fields.summary}`
+*Description*: `${event.issue.fields.description}`
+
+*New comments*:
+*${event.comment.author.displayName}* said: `${event.comment.body}`

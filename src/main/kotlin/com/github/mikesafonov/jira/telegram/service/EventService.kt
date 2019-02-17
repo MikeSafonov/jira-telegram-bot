@@ -32,17 +32,16 @@ class EventService(
             // no users found, nothing to do
             return
         }
-        val mustache = templateRegistry.getByIssueType(event.issueEventTypeName)
-        if (mustache != null) {
-            val sw = StringWriter()
-            mustache.execute(sw, event).flush()
-            val telegramMessage = sw.toString()
 
+        val template = templateRegistry.getByIssueType(event.issueEventTypeName)
+        if(template != null){
+            val sw = StringWriter()
+            val params = mapOf("event" to event)
+            template.process(params, sw)
+            val telegramMessage = sw.toString()
             destinationLogins.forEach {
                 sendMessage(it, telegramMessage)
             }
-        } else {
-            logger.info { "Template for event $event not found" }
         }
     }
 

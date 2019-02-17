@@ -52,25 +52,25 @@ data class Event(
     val comment: Comment?,
     val changelog: Changelog?
 ) {
-    val eventTime : String
-
-    init{
-        eventTime = eventTimeFormatted()
-    }
-
 
     fun isIssueEvent(): Boolean {
         return webhookEvent == WebHookEvent.JIRA_ISSUE_UPDATED || webhookEvent == WebHookEvent.JIRA_ISSUE_CREATED
                 || webhookEvent == WebHookEvent.JIRA_ISSUE_DELETED
     }
 
-    private fun timestampAsDate() : LocalDateTime{
+    fun eventTimeFormatted(pattern: String = "HH:mm:ss dd.MM.yyyy"): String {
+        return timestampAsDate().format(DateTimeFormatter.ofPattern(pattern))
+    }
+
+    fun projectName() : String {
+        return issue?.fields?.project?.name ?: ""
+    }
+
+    fun timestampAsDate(): LocalDateTime {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault())
     }
 
-    fun eventTimeFormatted(pattern : String = "HH:mm:ss dd.MM.yyyy") : String{
-        return timestampAsDate().format(DateTimeFormatter.ofPattern(pattern))
-    }
+
 }
 
 

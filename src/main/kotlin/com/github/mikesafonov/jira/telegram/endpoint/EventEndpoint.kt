@@ -14,7 +14,6 @@ class EventEndpoint(
 //    @PostMapping("/")
 //    fun handleEvent(@RequestBody event: String) {
 //        println(event)
-//        eventService.handle(event)
 //    }
 
     @PostMapping("/")

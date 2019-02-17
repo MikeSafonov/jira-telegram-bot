@@ -70,7 +70,7 @@ class EventService(
             }
             IssueEventTypeName.ISSUE_CREATED -> {
                 event.issue?.let {
-                    return listOfNotNull(it.issueAssigneeName())
+                    return listOfNotNull(it.assigneeName())
                         .toTypedArray()
                 }
                 return emptyArray()
@@ -117,7 +117,7 @@ class EventService(
     }
 
     private fun creatorAndAssigneeNames(issue: Issue): List<String> {
-        return listOfNotNull(issue.issueCreatorName(), issue.issueAssigneeName())
+        return listOfNotNull(issue.creatorName(), issue.assigneeName())
             .distinct()
     }
 }

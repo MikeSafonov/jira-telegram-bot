@@ -11,12 +11,52 @@ data class Issue(
     val key: String,
     val fields: IssueFields
 ) {
-    fun issueCreatorName(): String {
+    fun creatorName(): String {
         return fields.creator.name
     }
 
-    fun issueAssigneeName(): String? {
+    fun assigneeName(): String? {
         return fields.assignee?.name
+    }
+
+    fun reporterName(): String? {
+        return fields.reporter?.name
+    }
+
+    fun creatorDisplayName(): String {
+        return fields.creator.displayName
+    }
+
+    fun assigneeDisplayName(): String? {
+        return fields.assignee?.displayName
+    }
+
+    fun reporterDisplayName(): String? {
+        return fields.reporter?.displayName
+    }
+
+    fun containsVersions(): Boolean {
+        return !fields.fixVersions.isEmpty()
+    }
+
+    fun containsLabels(): Boolean {
+        return !fields.labels.isEmpty()
+    }
+
+    fun containsAttachments(): Boolean {
+        return !fields.attachment.isEmpty()
+    }
+
+    fun versionsToString(): String {
+        return fields.fixVersions.map { it.name }.joinToString()
+    }
+
+    fun labelsToString(): String {
+        return fields.labels.joinToString()
+    }
+
+    fun componentsToString() : String {
+        return fields.components.map{it.name}.joinToString()
     }
 }
 
@@ -27,6 +67,7 @@ data class IssueFields(
     val creator: User,
     val issuetype: IssueType,
     val fixVersions: Array<Version> = emptyArray(),
+    val attachment: Array<Attachment> = emptyArray(),
     @field:JsonDeserialize(using = JiraLocalDateTimeDeserializer::class)
     val created: LocalDateTime,
     val reporter: User?,
@@ -36,7 +77,7 @@ data class IssueFields(
     val status: Status,
     val priority: Priority,
     val components: Array<JiraComponent> = emptyArray(),
-    val labels : Array<String> = emptyArray()
+    val labels: Array<String> = emptyArray()
 )
 
 data class IssueType(
@@ -47,6 +88,11 @@ data class IssueType(
 data class JiraComponent(
     val self: String,
     val name: String
+)
+
+data class Attachment (
+    val filename : String,
+    val content : String
 )
 
 data class Version(
@@ -64,7 +110,7 @@ data class Status(
     val name: String
 )
 
-data class Priority(val name: String)
+data class Priority(val name: String, val iconUrl : String)
 
 
 

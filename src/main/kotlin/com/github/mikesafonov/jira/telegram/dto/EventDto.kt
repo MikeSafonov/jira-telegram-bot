@@ -82,8 +82,22 @@ data class Changelog(
 data class ChangelogItem(
     val field: String,
     val fromString: String?,
-    val toString: String?
-)
+    @JsonAlias("toString")
+    val newString: String?
+) {
+
+    fun isChanged() : Boolean {
+        return fromString != null && newString != null
+    }
+
+    fun isAdded() : Boolean {
+        return fromString == null && newString != null
+    }
+
+    fun isRemoved() : Boolean {
+        return fromString != null && newString == null
+    }
+}
 
 
 data class User(

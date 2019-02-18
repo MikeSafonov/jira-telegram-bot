@@ -4,6 +4,7 @@ import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.Issue
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
+import freemarker.template.Template
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.io.StringWriter
@@ -18,6 +19,7 @@ class EventService(
 ) {
 
     fun handle(event: Event) {
+        logger.info { "$event" }
         if (event.isIssueEvent()) {
             handleIssue(event)
         } else {
@@ -29,20 +31,22 @@ class EventService(
 
         val destinationLogins = findDestinationLogins(event)
         if (destinationLogins.isEmpty()) {
-            // no users found, nothing to do
             return
         }
 
-        val template = templateRegistry.getByIssueType(event.issueEventTypeName)
-        if(template != null){
-            val sw = StringWriter()
-            val params = mapOf("event" to event)
-            template.process(params, sw)
-            val telegramMessage = sw.toString()
+        templateRegistry.getByIssueType(event.issueEventTypeName)?.let {
+            val telegramMessage = processTemplate(it, event)
             destinationLogins.forEach {
                 sendMessage(it, telegramMessage)
             }
         }
+    }
+
+    private fun processTemplate(template : Template, event: Event) : String {
+        val sw = StringWriter()
+        val params = mapOf("event" to event)
+        template.process(params, sw)
+        return sw.toString()
     }
 
     private fun sendMessage(jiraLogin: String, telegramMessage: String) {
@@ -117,7 +121,7 @@ class EventService(
     }
 
     private fun creatorAndAssigneeNames(issue: Issue): List<String> {
-        return listOfNotNull(issue.creatorName(), issue.assigneeName())
+        return listOfNotNull(issue.creatorName(), issue.reporterName(), issue.assigneeName())
             .distinct()
     }
 }

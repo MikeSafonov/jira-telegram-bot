@@ -1,0 +1,15 @@
+*Issue* [${event.projectName()}/${event.issue.key}](${event.issue.self}) *was updated* ` at ${event.eventTimeFormatted("HH:mm:ss dd.MM.yyyy")}`
+*Summary*: `${event.issue.fields.summary}`
+*Status*: `${event.issue.fields.status.name}`
+*Updated by*: `${event.user.displayName}`
+*Changelog*:
+<#list event.changelog.items as log>
+*${log.field}* :
+<#if log.isChanged()>
+`${log.fromString}` ➡️`${log.newString}`
+<#elseif log.isAdded()>
+value was added `${log.newString}`
+<#else>
+value `${log.fromString}` was removed
+</#if>
+</#list>

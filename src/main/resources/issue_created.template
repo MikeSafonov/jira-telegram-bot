@@ -1,7 +1,6 @@
-*Project*: `${event.projectName()}`
-
-*Issue*: [${event.issue.key}](${event.issue.self}) *was updated* `on` ${event.eventTimeFormatted("HH:mm:ss dd.MM.yyyy")}
-*Components*: ${event.issue.componentsToString()}
+*Issue* [${event.projectName()}/${event.issue.key}](${event.issue.self})  *was created* `at ${event.timestampAsDate()}`
+*Summary*: `${event.issue.fields.summary}`
+*Components*: `${event.issue.componentsToString()}`
 *Status*: `${event.issue.fields.status.name}`
 *Author*: `${event.issue.creatorDisplayName()}`
 *Reporter*: `${event.issue.reporterDisplayName()}`
@@ -12,7 +11,6 @@
 <#if event.issue.containsLabels()>
 *Labels*: `${event.issue.labelsToString()}`
 </#if>
-*Summary*: `${event.issue.fields.summary}`
 *Description*: `${event.issue.fields.description}`
 
 <#if event.issue.containsAttachments()>
@@ -21,4 +19,3 @@
  [${attach.filename}](${attach.content})
 </#list>
 </#if>
-

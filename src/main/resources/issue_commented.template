@@ -1,0 +1,6 @@
+*Issue* [${event.projectName()}/${event.issue.key}](${event.issue.self}) *was commented* ` at ${event.timestampAsDate()}`
+*Summary*: `${event.issue.fields.summary}`
+*Status*: `${event.issue.fields.status.name}`
+*Comment*:
+_${event.comment.author.displayName}_ said:
+`${event.comment.body}`

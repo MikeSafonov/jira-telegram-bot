@@ -20,8 +20,8 @@ class TelegramBotService(private val botProperties: BotProperties, options: Defa
     }
 
     override fun onUpdateReceived(update: Update?) {
-        if (update != null) {
-            onUpdate(update)
+        update?.let {
+            onUpdate(it)
         }
     }
 

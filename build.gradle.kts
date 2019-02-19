@@ -46,6 +46,8 @@ dependencies {
     compile("io.github.microutils:kotlin-logging:1.6.22")
 
     compile("org.postgresql:postgresql")
+    compile("com.h2database:h2")
+    compile("mysql:mysql-connector-java")
     compile("org.flywaydb:flyway-core")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

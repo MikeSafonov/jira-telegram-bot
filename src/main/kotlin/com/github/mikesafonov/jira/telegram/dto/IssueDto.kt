@@ -11,53 +11,67 @@ data class Issue(
     val key: String,
     val fields: IssueFields
 ) {
-    fun creatorName(): String {
-        return fields.creator.name
-    }
 
-    fun assigneeName(): String? {
-        return fields.assignee?.name
-    }
+    val versionsAsString: String
+        get() {
+            return fields.fixVersions.joinToString { it.name }
+        }
 
-    fun reporterName(): String? {
-        return fields.reporter?.name
-    }
+    val labelsAsString: String
+        get() {
+            return fields.labels.joinToString()
+        }
 
-    fun creatorDisplayName(): String {
-        return fields.creator.displayName
-    }
+    val componentsAsString: String
+        get() {
+            return fields.components.joinToString { it.name }
+        }
 
-    fun assigneeDisplayName(): String? {
-        return fields.assignee?.displayName
-    }
+    val creatorName: String
+        get() {
+            return fields.creator.name
+        }
 
-    fun reporterDisplayName(): String? {
-        return fields.reporter?.displayName
-    }
+    val assigneeName: String?
+        get() {
+            return fields.assignee?.name
+        }
 
-    fun containsVersions(): Boolean {
-        return !fields.fixVersions.isEmpty()
-    }
+    val reporterName: String?
+        get() {
+            return fields.reporter?.name
+        }
 
-    fun containsLabels(): Boolean {
-        return !fields.labels.isEmpty()
-    }
+    val creatorDisplayName: String
+        get() {
+            return fields.creator.displayName
+        }
 
-    fun containsAttachments(): Boolean {
-        return !fields.attachment.isEmpty()
-    }
+    val assigneeDisplayName: String?
+        get() {
+            return fields.assignee?.displayName
+        }
 
-    fun versionsToString(): String {
-        return fields.fixVersions.map { it.name }.joinToString()
-    }
+    val reporterDisplayName: String?
+        get() {
+            return fields.reporter?.displayName
+        }
 
-    fun labelsToString(): String {
-        return fields.labels.joinToString()
-    }
+    val containsVersions: Boolean
+        get() {
+            return !fields.fixVersions.isEmpty()
+        }
 
-    fun componentsToString() : String {
-        return fields.components.map{it.name}.joinToString()
-    }
+    val containsLabels: Boolean
+        get() {
+            return !fields.labels.isEmpty()
+        }
+
+    val containsAttachments: Boolean
+        get() {
+            return !fields.attachment.isEmpty()
+        }
+
 }
 
 data class IssueFields(
@@ -90,9 +104,9 @@ data class JiraComponent(
     val name: String
 )
 
-data class Attachment (
-    val filename : String,
-    val content : String
+data class Attachment(
+    val filename: String,
+    val content: String
 )
 
 data class Version(
@@ -110,7 +124,7 @@ data class Status(
     val name: String
 )
 
-data class Priority(val name: String, val iconUrl : String)
+data class Priority(val name: String, val iconUrl: String)
 
 
 

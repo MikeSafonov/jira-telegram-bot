@@ -1,19 +1,20 @@
-*Issue* [${event.projectName()}/${event.issue.key}](${event.issue.self})  *was created* `at ${event.timestampAsDate()}`
+*Issue* [${event.projectName}/${event.issue.key}](${event.issue.self})  *was created*
+*Date* : `${event.eventDate.format("HH:mm:ss dd.MM.yyyy")}`
 *Summary*: `${event.issue.fields.summary}`
-*Components*: `${event.issue.componentsToString()}`
+*Components*: `${event.issue.componentsAsString}`
 *Status*: `${event.issue.fields.status.name}`
-*Author*: `${event.issue.creatorDisplayName()}`
-*Reporter*: `${event.issue.reporterDisplayName()}`
-*Assignee*: `${event.issue.assigneeDisplayName()}`
-<#if event.issue.containsVersions()>
-*Versions*: `${event.issue.versionsToString()}`
+*Author*: `${event.issue.creatorDisplayName}`
+*Reporter*: `${event.issue.reporterDisplayName}`
+*Assignee*: `${event.issue.assigneeDisplayName}`
+<#if event.issue.containsVersions>
+*Versions*: `${event.issue.versionsAsString}`
 </#if>
-<#if event.issue.containsLabels()>
-*Labels*: `${event.issue.labelsToString()}`
+<#if event.issue.containsLabels>
+*Labels*: `${event.issue.labelsAsString}`
 </#if>
 *Description*: `${event.issue.fields.description}`
 
-<#if event.issue.containsAttachments()>
+<#if event.issue.containsAttachments>
 *Attachments*:
 <#list event.issue.fields.attachment as attach>
  [${attach.filename}](${attach.content})

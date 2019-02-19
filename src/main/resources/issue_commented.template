@@ -1,4 +1,5 @@
-*Issue* [${event.projectName()}/${event.issue.key}](${event.issue.self}) *was commented* ` at ${event.timestampAsDate()}`
+*Issue* [${event.projectName}/${event.issue.key}](${event.issue.self}) *was commented*
+*Date* : `${event.eventDate.format("HH:mm:ss dd.MM.yyyy")}`
 *Summary*: `${event.issue.fields.summary}`
 *Status*: `${event.issue.fields.status.name}`
 *Comment*:

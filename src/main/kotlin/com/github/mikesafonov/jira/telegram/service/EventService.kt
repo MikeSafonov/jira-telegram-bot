@@ -20,7 +20,7 @@ class EventService(
 
     fun handle(event: Event) {
         logger.info { "$event" }
-        if (event.isIssueEvent()) {
+        if (event.isIssueEvent) {
             handleIssue(event)
         } else {
             logger.info { "Unknown event: $event" }
@@ -29,20 +29,22 @@ class EventService(
 
     private fun handleIssue(event: Event) {
 
-        val destinationLogins = findDestinationLogins(event)
-        if (destinationLogins.isEmpty()) {
-            return
-        }
+        if(event.issueEventTypeName != null){
+            val destinationLogins = findDestinationLogins(event)
+            if (destinationLogins.isEmpty()) {
+                return
+            }
 
-        templateRegistry.getByIssueType(event.issueEventTypeName)?.let {
-            val telegramMessage = processTemplate(it, event)
-            destinationLogins.forEach {
-                sendMessage(it, telegramMessage)
+            templateRegistry.getByIssueType(event.issueEventTypeName)?.let {
+                val telegramMessage = processTemplate(it, event)
+                destinationLogins.forEach {
+                    sendMessage(it, telegramMessage)
+                }
             }
         }
     }
 
-    private fun processTemplate(template : Template, event: Event) : String {
+    private fun processTemplate(template: Template, event: Event): String {
         val sw = StringWriter()
         val params = mapOf("event" to event)
         template.process(params, sw)
@@ -74,7 +76,7 @@ class EventService(
             }
             IssueEventTypeName.ISSUE_CREATED -> {
                 event.issue?.let {
-                    return listOfNotNull(it.assigneeName())
+                    return listOfNotNull(it.assigneeName)
                         .toTypedArray()
                 }
                 return emptyArray()
@@ -121,7 +123,7 @@ class EventService(
     }
 
     private fun creatorAndAssigneeNames(issue: Issue): List<String> {
-        return listOfNotNull(issue.creatorName(), issue.reporterName(), issue.assigneeName())
+        return listOfNotNull(issue.creatorName, issue.reporterName, issue.assigneeName)
             .distinct()
     }
 }

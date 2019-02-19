@@ -41,6 +41,7 @@ dependencies {
     compile("org.telegram:telegrambots-spring-boot-starter:4.1.2")
 
     compile("org.freemarker:freemarker:2.3.28")
+    compile("no.api.freemarker:freemarker-java8:1.3.0")
 
     compile("io.github.microutils:kotlin-logging:1.6.22")
 

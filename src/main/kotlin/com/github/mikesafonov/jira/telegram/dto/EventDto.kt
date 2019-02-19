@@ -52,21 +52,30 @@ data class Event(
     val comment: Comment?,
     val changelog: Changelog?
 ) {
+    val eventDate : LocalDateTime
 
-    fun isIssueEvent(): Boolean {
-        return webhookEvent == WebHookEvent.JIRA_ISSUE_UPDATED || webhookEvent == WebHookEvent.JIRA_ISSUE_CREATED
-                || webhookEvent == WebHookEvent.JIRA_ISSUE_DELETED
+    init {
+        eventDate = timestampAsDate()
     }
 
-    fun eventTimeFormatted(pattern: String = "HH:mm:ss dd.MM.yyyy"): String {
-        return timestampAsDate().format(DateTimeFormatter.ofPattern(pattern))
+    val projectName: String
+        get() {
+            return issue?.fields?.project?.name ?: ""
+        }
+
+    val isIssueEvent: Boolean
+        get() {
+            return webhookEvent == WebHookEvent.JIRA_ISSUE_UPDATED || webhookEvent == WebHookEvent.JIRA_ISSUE_CREATED
+                    || webhookEvent == WebHookEvent.JIRA_ISSUE_DELETED
+        }
+
+    fun eventDateFormatted(pattern: String = "HH:mm:ss dd.MM.yyyy"): String {
+        return eventDate.format(DateTimeFormatter.ofPattern(pattern))
     }
 
-    fun projectName() : String {
-        return issue?.fields?.project?.name ?: ""
-    }
 
-    fun timestampAsDate(): LocalDateTime {
+
+    private fun timestampAsDate(): LocalDateTime {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault())
     }
 
@@ -86,17 +95,30 @@ data class ChangelogItem(
     val newString: String?
 ) {
 
-    fun isChanged() : Boolean {
-        return fromString != null && newString != null
-    }
+    val isChanged: Boolean
+        get() {
+            return fromString != null && newString != null
+        }
 
-    fun isAdded() : Boolean {
-        return fromString == null && newString != null
-    }
+    val isAdded: Boolean
+        get() {
+            return fromString == null && newString != null
+        }
 
-    fun isRemoved() : Boolean {
-        return fromString != null && newString == null
-    }
+    val isRemoved: Boolean
+        get() {
+            return fromString != null && newString == null
+        }
+
+    val isStatusChanged: Boolean
+        get() {
+            return "status" == this.field
+        }
+
+    val isAssigneeChanged: Boolean
+        get() {
+            return "assignee" == this.field
+        }
 }
 
 

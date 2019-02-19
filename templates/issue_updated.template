@@ -1,4 +1,4 @@
-*Issue* [${event.projectName}/${event.issue.key}](${event.issue.self}) *was updated*
+*Issue* [${event.projectName}/${event.issue.key}](${issueLink}) *was updated*
 *Date* : `${event.eventDate.format("HH:mm:ss dd.MM.yyyy")}`
 *Summary*: `${event.issue.fields.summary}`
 *Status*: `${event.issue.fields.status.name}`
@@ -6,9 +6,9 @@
 *Changelog*:
 <#list event.changelog.items as log>
 *${log.field}* :
-<#if log.isChanged>
+<#if log.changed>
 `${log.fromString}` → `${log.newString}`
-<#elseif log.isAdded>
+<#elseif log.added>
 value was added `${log.newString}`
 <#else>
 value `${log.fromString}` was removed

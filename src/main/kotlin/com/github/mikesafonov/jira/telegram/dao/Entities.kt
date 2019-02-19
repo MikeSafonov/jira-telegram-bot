@@ -2,6 +2,9 @@ package com.github.mikesafonov.jira.telegram.dao
 
 import javax.persistence.*
 
+/**
+ * @author Mike Safonov
+ */
 @Entity
 @Table(name = "chats")
 data class Chat(
@@ -16,6 +19,9 @@ data class Chat(
     val telegramId: Long
 )
 
+/**
+ * @author Mike Safonov
+ */
 @Entity
 @Table(name = "templates")
 data class Template(

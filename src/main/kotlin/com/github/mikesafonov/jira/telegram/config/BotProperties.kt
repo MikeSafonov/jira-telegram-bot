@@ -3,6 +3,9 @@ package com.github.mikesafonov.jira.telegram.config
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 
+/**
+ * @author Mike Safonov
+ */
 @Configuration
 @ConfigurationProperties("telegram.bot")
 class BotProperties{

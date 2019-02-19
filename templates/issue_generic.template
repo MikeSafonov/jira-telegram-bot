@@ -1,13 +1,12 @@
-*Issue* [${event.projectName}/${event.issue.key}](${event.issue.self}) *was updated*
+*Issue* [${event.projectName}/${event.issue.key}](${issueLink}) *was updated*
 *Date* : `${event.eventDate.format("HH:mm:ss dd.MM.yyyy")}`
 *Summary*: `${event.issue.fields.summary}`
 *Updated by*: `${event.user.displayName}`
-
 <#list event.changelog.items as log>
-<#if log.isStatusChanged>
+<#if log.statusChanged>
 *Status*: `${log.fromString}` → `${log.newString}`
 </#if>
-<#if log.isAssigneeChanged>
+<#if log.assigneeChanged>
 *Assignee*: `${log.fromString}` → `${log.newString}`
 </#if>
 </#list>

@@ -1,25 +1,31 @@
 package com.github.mikesafonov.jira.telegram.service
 
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.config.NotificationProperties
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.Issue
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
-import freemarker.template.Template
+import com.github.mikesafonov.jira.telegram.dto.User
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import java.io.StringWriter
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * Main class to process jira event [Event]
+ * @author Mike Safonov
+ */
 @Service
 class EventService(
     private val telegramBotService: TelegramBotService,
-    private val templateRegistry: TemplateRegistry,
-    private val chatRepository: ChatRepository
+    private val notificationProperties: NotificationProperties,
+    private val freemarkerTemplateService: FreemarkerTemplateService
 ) {
 
+    /**
+     *
+     */
     fun handle(event: Event) {
-        logger.info { "$event" }
+        logger.debug { "$event" }
         if (event.isIssueEvent) {
             handleIssue(event)
         } else {
@@ -27,103 +33,115 @@ class EventService(
         }
     }
 
+    /**
+     * Handle only issues events.
+     */
     private fun handleIssue(event: Event) {
-
-        if(event.issueEventTypeName != null){
+        if (event.issueEventTypeName != null) {
             val destinationLogins = findDestinationLogins(event)
-            if (destinationLogins.isEmpty()) {
-                return
-            }
-
-            templateRegistry.getByIssueType(event.issueEventTypeName)?.let {
-                val telegramMessage = processTemplate(it, event)
-                destinationLogins.forEach {
-                    sendMessage(it, telegramMessage)
-                }
-            }
-        }
-    }
-
-    private fun processTemplate(template: Template, event: Event): String {
-        val sw = StringWriter()
-        val params = mapOf("event" to event)
-        template.process(params, sw)
-        return sw.toString()
-    }
-
-    private fun sendMessage(jiraLogin: String, telegramMessage: String) {
-        chatRepository.findByJiraId(jiraLogin)?.let {
-            telegramBotService.sendMessageToUser(it.telegramId, telegramMessage)
-        }
-    }
-
-    private fun findDestinationLogins(event: Event): Array<String> {
-
-        when (event.issueEventTypeName) {
-            IssueEventTypeName.ISSUE_COMMENTED -> {
-                event.issue?.let {
-                    val commentAuthor = event.comment?.author
-                    return if (commentAuthor == null) {
-                        creatorAndAssigneeNames(it)
-                            .toTypedArray()
-                    } else {
-                        creatorAndAssigneeNames(it)
-                            .filter { it != commentAuthor.name }
-                            .toTypedArray()
+            if (destinationLogins.isNotEmpty()) {
+                freemarkerTemplateService.buildMessage(event.issueEventTypeName, buildTemplateParameters(event))?.let {
+                    val telegramMessage = it
+                    destinationLogins.forEach {
+                        telegramBotService.sendMessage(it, telegramMessage)
                     }
                 }
-                return emptyArray()
             }
-            IssueEventTypeName.ISSUE_CREATED -> {
-                event.issue?.let {
-                    return listOfNotNull(it.assigneeName)
-                        .toTypedArray()
-                }
-                return emptyArray()
-            }
-            IssueEventTypeName.ISSUE_GENERIC -> {
-                event.issue?.let {
-                    return creatorAndAssigneeNames(it)
-                        .toTypedArray()
-                }
-                return emptyArray()
-            }
-            IssueEventTypeName.ISSUE_UPDATED -> {
-                event.issue?.let {
-                    val updateAuthor = event.user
-                    return if (updateAuthor == null) {
-                        creatorAndAssigneeNames(it)
-                            .toTypedArray()
-                    } else {
-                        creatorAndAssigneeNames(it)
-                            .filter { it != updateAuthor.name }
-                            .toTypedArray()
-                    }
-                }
-                return emptyArray()
-            }
-            // TODO: check event dto
-            IssueEventTypeName.ISSUE_COMMENT_EDITED -> {
-                event.issue?.let {
-                    return creatorAndAssigneeNames(it)
-                        .toTypedArray()
-                }
-                return emptyArray()
-            }
-            // TODO: check event dto
-            IssueEventTypeName.ISSUE_COMMENT_DELETED -> {
-                event.issue?.let {
-                    return creatorAndAssigneeNames(it)
-                        .toTypedArray()
-                }
-                return emptyArray()
-            }
-            null -> return emptyArray()
         }
     }
 
-    private fun creatorAndAssigneeNames(issue: Issue): List<String> {
+    /**
+     * Create map of [event] and issue link
+     * @param event jira issues event
+     * @see buildIssueLink
+     * @return template input parameters
+     *
+     */
+    private fun buildTemplateParameters(event: Event): Map<String, Any> {
+        val issueLink = buildIssueLink(event)
+        return mapOf("event" to event, "issueLink" to issueLink)
+    }
+
+    /**
+     * Build issue link by concatenation of [NotificationProperties.jiraUrl] and [event.issue.key]. Returning
+     * [event.issue.self] if [NotificationProperties.jiraUrl] is `null`
+     * @param event jira issues event
+     * @return link to browse issue
+     */
+    private fun buildIssueLink(event: Event): String {
+        if (notificationProperties.jiraUrl.isNotBlank()) {
+            return if (notificationProperties.jiraUrl.endsWith("/")) {
+                "${notificationProperties.jiraUrl}browse/${event.issue?.key}"
+            } else {
+                "${notificationProperties.jiraUrl}/browse/${event.issue?.key}"
+            }
+        }
+        return event.issue?.self ?: ""
+    }
+
+    /**
+     * Find jira logins from [event] to send a telegram message
+     */
+    private fun findDestinationLogins(event: Event): List<String> {
+        if (event.issue != null) {
+            when (event.issueEventTypeName) {
+                IssueEventTypeName.ISSUE_COMMENTED -> {
+                    if (notificationProperties.sendToMe) {
+                        return allIssueUsers(event.issue)
+                    }
+                    return allIssueUsersWithoutInitiator(event.issue, event.comment?.author)
+                }
+                IssueEventTypeName.ISSUE_CREATED -> {
+                    if (notificationProperties.sendToMe) {
+                        return allIssueUsers(event.issue)
+                    }
+                    return allIssueUsersWithoutInitiator(event.issue, event.user)
+                }
+                IssueEventTypeName.ISSUE_GENERIC -> {
+                    return allIssueUsers(event.issue)
+                }
+                IssueEventTypeName.ISSUE_UPDATED -> {
+                    if (notificationProperties.sendToMe) {
+                        return allIssueUsers(event.issue)
+                    }
+                    return allIssueUsersWithoutInitiator(event.issue, event.user)
+                }
+                // TODO: check event dto
+                IssueEventTypeName.ISSUE_COMMENT_EDITED -> {
+                    return allIssueUsers(event.issue)
+                }
+                // TODO: check event dto
+                IssueEventTypeName.ISSUE_COMMENT_DELETED -> {
+                    return allIssueUsers(event.issue)
+                }
+            }
+        }
+        return emptyList()
+    }
+
+    /**
+     * Collect **creator**, **reporter** and **assignee** logins from [issue] to list, ignoring *null* values
+     * @param issue jira issue
+     * @return list of logins
+     */
+    private fun allIssueUsers(issue: Issue): List<String> {
         return listOfNotNull(issue.creatorName, issue.reporterName, issue.assigneeName)
             .distinct()
+    }
+
+    /**
+     * Collect **creator**, **reporter** and **assignee** logins from [issue] to list, ignoring *null* values and filtered
+     * by [initiator] login if present.
+     * @param issue jira issue
+     * @param initiator user who fired this issues event
+     * @return list of logins
+     */
+    private fun allIssueUsersWithoutInitiator(issue: Issue, initiator: User?): List<String> {
+        return if (initiator == null) {
+            allIssueUsers(issue)
+        } else {
+            allIssueUsers(issue)
+                .filter { it != initiator.name }
+        }
     }
 }

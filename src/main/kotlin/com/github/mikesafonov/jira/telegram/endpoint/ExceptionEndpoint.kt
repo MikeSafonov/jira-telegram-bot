@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * @author Mike Safonov
+ */
 @RestControllerAdvice
 class ExceptionEndpoint{
 

@@ -1,4 +1,4 @@
-*Issue* [${event.projectName}/${event.issue.key}](${event.issue.self})  *was created*
+*Issue* [${event.projectName}/${event.issue.key}](${issueLink})  *was created*
 *Date* : `${event.eventDate.format("HH:mm:ss dd.MM.yyyy")}`
 *Summary*: `${event.issue.fields.summary}`
 *Components*: `${event.issue.componentsAsString}`

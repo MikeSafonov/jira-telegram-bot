@@ -5,6 +5,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.telegram.telegrambots.ApiContextInitializer
 
+/**
+ * @author Mike Safonov
+ */
 @EnableConfigurationProperties
 @SpringBootApplication
 class Application

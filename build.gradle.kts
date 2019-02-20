@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.3.21"
     id ("org.jetbrains.kotlin.plugin.spring") version "1.3.21"
     id ("org.jetbrains.kotlin.plugin.jpa") version "1.3.21"
-    id("org.springframework.boot") version "2.1.2.RELEASE"
+    id("org.springframework.boot") version "2.1.3.RELEASE"
 
 }
 

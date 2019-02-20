@@ -1,10 +1,12 @@
 package com.github.mikesafonov.jira.telegram.service
 
+import com.github.mikesafonov.jira.telegram.config.JiraBotProperties
 import com.github.mikesafonov.jira.telegram.config.NotificationProperties
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.Issue
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
 import com.github.mikesafonov.jira.telegram.dto.User
+import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
@@ -17,8 +19,8 @@ private val logger = KotlinLogging.logger {}
 @Service
 class EventService(
     private val telegramBotService: TelegramBotService,
-    private val notificationProperties: NotificationProperties,
-    private val freemarkerTemplateService: FreemarkerTemplateService
+    private val jiraBotProperties: JiraBotProperties,
+    private val templateService: TemplateService
 ) {
 
     /**
@@ -40,10 +42,10 @@ class EventService(
         if (event.issueEventTypeName != null) {
             val destinationLogins = findDestinationLogins(event)
             if (destinationLogins.isNotEmpty()) {
-                freemarkerTemplateService.buildMessage(event.issueEventTypeName, buildTemplateParameters(event))?.let {
-                    val telegramMessage = it
+                templateService.buildMessage(event, buildTemplateParameters(event))?.let {
+                    val template = it
                     destinationLogins.forEach {
-                        telegramBotService.sendMessage(it, telegramMessage)
+                        telegramBotService.sendMessage(it, template)
                     }
                 }
             }
@@ -69,6 +71,7 @@ class EventService(
      * @return link to browse issue
      */
     private fun buildIssueLink(event: Event): String {
+        val notificationProperties = jiraBotProperties.notification
         if (notificationProperties.jiraUrl.isNotBlank()) {
             return if (notificationProperties.jiraUrl.endsWith("/")) {
                 "${notificationProperties.jiraUrl}browse/${event.issue?.key}"
@@ -84,6 +87,7 @@ class EventService(
      */
     private fun findDestinationLogins(event: Event): List<String> {
         if (event.issue != null) {
+            val notificationProperties = jiraBotProperties.notification
             when (event.issueEventTypeName) {
                 IssueEventTypeName.ISSUE_COMMENTED -> {
                     if (notificationProperties.sendToMe) {

@@ -1,13 +1,13 @@
 package com.github.mikesafonov.jira.telegram.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 
 /**
  * @author Mike Safonov
  */
-@Configuration
-@ConfigurationProperties("notification")
+@Component
+@ConfigurationProperties("jira.bot.notification")
 class NotificationProperties {
 
     /**

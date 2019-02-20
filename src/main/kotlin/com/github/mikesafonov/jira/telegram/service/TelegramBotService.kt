@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.bots.DefaultBotOptions
@@ -40,9 +41,9 @@ class TelegramBotService(
      * @param jiraLogin user jira login
      * @param telegram message markdown text
      */
-    fun sendMessage(jiraLogin: String, telegramMessage: String) {
+    fun sendMessage(jiraLogin: String, template: CompiledTemplate) {
         chatRepository.findByJiraId(jiraLogin)?.let {
-            sendMessageToUser(it.telegramId, telegramMessage)
+            sendMessageToUser(it.telegramId, template)
         }
     }
 
@@ -51,11 +52,11 @@ class TelegramBotService(
      * @param user telegram user id
      * @param messageText markdown text
      */
-    fun sendMessageToUser(user: Long, messageText: String) {
+    fun sendMessageToUser(user: Long, template: CompiledTemplate) {
         val message = SendMessage()
         message.chatId = user.toString()
-        message.text = messageText
-        message.enableMarkdown(true)
+        message.text = template.message
+        message.enableMarkdown(template.markdown)
         execute(message)
     }
 

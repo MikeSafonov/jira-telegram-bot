@@ -25,11 +25,11 @@ class EventService(
      *
      */
     fun handle(event: Event) {
-        logger.debug { "$event" }
         if (event.isIssueEvent) {
+            logger.debug { "$event" }
             handleIssue(event)
         } else {
-            logger.info { "Unknown event: $event" }
+            logger.debug { "Unknown event: $event" }
         }
     }
 
@@ -47,6 +47,8 @@ class EventService(
                     }
                 }
             }
+        } else {
+            logger.debug { "Event $event not contain issueEventTypeName" }
         }
     }
 }

@@ -9,6 +9,7 @@ import freemarker.template.Configuration
 import freemarker.template.Template
 import freemarker.template.TemplateExceptionHandler
 import freemarker.template.Version
+import mu.KotlinLogging
 import no.api.freemarker.java8.Java8ObjectWrapper
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Service
@@ -20,6 +21,8 @@ import java.io.StringWriter
  *
  * @author Mike Safonov
  */
+private val logger = KotlinLogging.logger {}
+
 @Service
 @ConditionalOnProperty(prefix = "jira.bot.template", name = arrayOf("type"), havingValue = "FREEMARKER")
 class FreemarkerTemplateService(private val templateRepository: TemplateRepository) : TemplateService {
@@ -39,14 +42,17 @@ class FreemarkerTemplateService(private val templateRepository: TemplateReposito
      * @param parameters input parameters for template
      * @return builded *markdown* message or null if template for event [event] not exist
      */
-    override fun buildMessage(event : Event, parameters: Map<String, Any>): CompiledTemplate? {
+    override fun buildMessage(event: Event, parameters: Map<String, Any>): CompiledTemplate? {
         val issueEventTypeName = event.issueEventTypeName
-        if(issueEventTypeName != null) {
-            return getByIssueType(issueEventTypeName)?.let {
+        if (issueEventTypeName != null) {
+            val eventTemplate = getByIssueType(issueEventTypeName)
+            if (eventTemplate != null) {
                 val sw = StringWriter()
-                it.process(parameters, sw)
+                eventTemplate.process(parameters, sw)
                 return CompiledTemplate(sw.toString(), true)
             }
+
+            logger.debug { "template for type $issueEventTypeName not found" }
         }
         return null
     }

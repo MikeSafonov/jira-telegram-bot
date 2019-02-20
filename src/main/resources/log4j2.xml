@@ -79,6 +79,28 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
+        <RollingFile name="DebugRequestFile" fileName="${log-path}/requests.log"
+                     filePattern="${log-path}/debug/$${date:yyyy-MM}/requests-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout charset="UTF-8">
+                <Pattern>%d{DEFAULT} [%-5p] %c - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="50 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${log-path}/requests" maxDepth="2">
+                    <IfFileName glob="*/debug-*.log.gz">
+                        <IfAny>
+                            <IfLastModified age="${period-for-delete-archives}"/>
+                            <IfLastModified age="${period-for-accumulate-archives-size}">
+                                <IfAccumulatedFileSize exceeds="${max-accumulated-archives-size}"/>
+                            </IfLastModified>
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="INFO" additivity="false">
@@ -92,5 +114,8 @@
             <AppenderRef ref="ErrorLogFile" level="ERROR"/>
             <AppenderRef ref="Console"/>
         </Logger>
+        <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="DEBUG" additivity="false">
+            <AppenderRef ref="DebugRequestFile" level="DEBUG"/>
+        </logger>
     </Loggers>
 </Configuration>

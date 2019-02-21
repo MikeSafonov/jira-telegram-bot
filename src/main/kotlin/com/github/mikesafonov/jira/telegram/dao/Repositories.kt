@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository
  */
 interface ChatRepository : JpaRepository<Chat, Int> {
     fun findByJiraId(jiraId: String): Chat?
+
+    fun findByTelegramId(telegramId : Long) : Chat?
 }
 
 /**

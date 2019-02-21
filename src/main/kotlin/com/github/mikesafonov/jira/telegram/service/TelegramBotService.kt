@@ -29,6 +29,10 @@ class TelegramBotService(
         return botProperties.token
     }
 
+    override fun getBotUsername(): String {
+        return botProperties.name
+    }
+
     override fun onUpdateReceived(update: Update?) {
         update?.let {
             onUpdate(it)
@@ -52,23 +56,61 @@ class TelegramBotService(
      * @param user telegram user id
      * @param messageText markdown text
      */
-    fun sendMessageToUser(user: Long, template: CompiledTemplate) {
-        val message = SendMessage()
-        message.chatId = user.toString()
-        message.text = template.message
-        message.enableMarkdown(template.markdown)
+    private fun sendMessageToUser(user: Long, template: CompiledTemplate) {
+        val message = SendMessage().apply {
+            chatId = user.toString()
+            text = template.message
+            // TODO: markdown only at the moment
+            enableMarkdown(true)
+        }
         execute(message)
     }
 
+    private fun sendTextMessage(user: String, message: String) {
+        SendMessage().apply {
+            chatId = user
+            text = message
+        }.also { execute(it) }
+    }
+
     /**
-     * this method simply log received [update]
+     * process [update]
      */
     private fun onUpdate(update: Update) {
-        logger.info(update.toString())
-    }
+        if (update.hasMessage() && update.message.hasText()) {
+            when (update.message.text) {
+                "/me" -> {
+                    val chatId = update.message.chatId.toString()
+                    sendTextMessage(chatId, "Your chat id: $chatId")
+                }
 
-    override fun getBotUsername(): String {
-        return botProperties.name
-    }
+                "/jira_login" -> {
+                    val chatId = update.message.chatId
+                    val jiraId = chatRepository.findByTelegramId(chatId)?.jiraId
+                    if (jiraId == null) {
+                        sendTextMessage(
+                            chatId.toString(),
+                            "You not registered at this bot yet. Please contact your system administrator for registration."
+                        )
+                    } else {
+                        sendTextMessage(chatId.toString(), "Your jira login: $jiraId")
+                    }
+                }
+                "/help" -> {
+                    val chatId = update.message.chatId.toString()
+                    val helpMessage = """This is jira-telegram-bot. Supported commands:
+/me - prints telegram chat id
+/jira_login - prints attached jira login to this telegram chat id
+/help - prints help message
+                    """.trimMargin()
+                    sendTextMessage(chatId, helpMessage)
+                }
+                else -> {
+                    sendTextMessage(update.message.chatId.toString(), "Unknown command. Try /help command")
+                }
 
+            }
+        }
+        logger.debug(update.toString())
+    }
 }

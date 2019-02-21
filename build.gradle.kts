@@ -1,6 +1,7 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import io.spring.gradle.dependencymanagement.dsl.ImportsHandler
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     kotlin("jvm") version "1.3.21"
@@ -23,6 +24,10 @@ repositories {
 tasks.withType<Wrapper> {
     gradleVersion = "5.2.1"
     distributionType = Wrapper.DistributionType.ALL
+}
+
+tasks.getByName<BootJar>("bootJar") {
+    launchScript()
 }
 
 tasks.withType<KotlinCompile> {

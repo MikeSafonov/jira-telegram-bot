@@ -49,7 +49,7 @@ locations:
 
 <dl>
   <dt>jira.bot.template.type</dt>
-  <dd>type of template processing engine (default FREEMARKER</dd>
+  <dd>type of template processing engine (default FREEMARKER)</dd>
   
   <dt>jira.bot.notification.sendToMe</dt>
   <dd>is need to notify user about self-created events</dd>
@@ -71,7 +71,7 @@ locations:
 </dl>
 
 
-#### Jira Webhooks
+### Jira Webhooks
 
 To receive jira webhooks you may to configure your jira instance. [See jira docs](https://developer.atlassian.com/server/jira/platform/webhooks/)
 
@@ -88,7 +88,7 @@ By default jira-telegram-bot process only following issue events:
 If you want to process any other issue event or change default template you can modify corresponding row in jira-telegram-bot
 database table called **templates**.
 
-#### Templating
+### Templating
 
 Jira-telegram-bot using [Apache FreeMarker](https://freemarker.apache.org) template engine by default. All templates by default
 stored in jira-telegram-bot database table called **templates**.
@@ -98,7 +98,7 @@ In [example/templates](examples/templates) folder you can find default jira even
 
 If you want to add another templating logic, you can implement **TemplateService** interface.
 
-#### Jira user registration
+### Jira user registration
 
 To register jira user to receive webhook events you should add corresponding row into jira-telegram-bot database table called **chats**.
 
@@ -106,7 +106,7 @@ You should specify **jira_id** (jira user login) and **telegram_id** (telegram c
 
 To find out your telegram chat id you should write simple command "/me" to telegram bot.
 
-#### Telegram bot commands
+### Telegram bot commands
 
 Telegram bot supports following text commands:
 

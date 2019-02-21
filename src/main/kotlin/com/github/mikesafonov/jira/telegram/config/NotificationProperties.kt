@@ -13,7 +13,7 @@ class NotificationProperties {
     /**
      * jira instance url for building browse link in notification message
      */
-    lateinit var jiraUrl : String
+    var jiraUrl : String = ""
     /**
      * is events fired by me will be sended to me
      */

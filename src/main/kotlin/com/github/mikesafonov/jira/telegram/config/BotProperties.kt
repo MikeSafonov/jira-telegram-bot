@@ -26,4 +26,9 @@ class BotProperties{
      * telegram bot http proxy port
      */
     var proxyPort : Int? = null
+
+    val isProxy : Boolean
+        get() {
+            return proxyHost != null && proxyPort != null
+        }
 }

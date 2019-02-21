@@ -1,6 +1,6 @@
 package com.github.mikesafonov.jira.telegram.service.destination
 
-import com.github.mikesafonov.jira.telegram.config.JiraBotProperties
+import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.Issue
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
@@ -10,14 +10,14 @@ import com.github.mikesafonov.jira.telegram.dto.User
  * Default implementation of [DestinationDetectorService]
  * @author Mike Safonov
  */
-class DefaultDestinationDetectorService(private val jiraBotProperties: JiraBotProperties) : DestinationDetectorService {
+class DefaultDestinationDetectorService(private val applicationProperties: ApplicationProperties) : DestinationDetectorService {
 
     /**
      * Find jira logins from [event] to send a telegram message
      */
     override fun findDestinations(event: Event): List<String> {
         if (event.issue != null) {
-            val notificationProperties = jiraBotProperties.notification
+            val notificationProperties = applicationProperties.notification
             when (event.issueEventTypeName) {
                 IssueEventTypeName.ISSUE_COMMENTED -> {
                     if (notificationProperties.sendToMe) {

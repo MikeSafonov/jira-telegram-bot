@@ -14,11 +14,6 @@ class EventEndpoint(
     private val eventService: EventService
 ) {
 
-//    @PostMapping("/")
-//    fun handleEvent(@RequestBody event: String) {
-//        println(event)
-//    }
-
     @PostMapping("/")
     fun handleEvent(@RequestBody event: Event) {
         eventService.handle(event)

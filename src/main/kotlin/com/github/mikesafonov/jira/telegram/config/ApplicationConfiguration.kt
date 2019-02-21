@@ -20,7 +20,7 @@ class ApplicationConfiguration {
     @Bean
     fun botOptions(botProperties: BotProperties): DefaultBotOptions {
         val botOptions = DefaultBotOptions()
-        if (botProperties.proxyHost != null && botProperties.proxyPort != null) {
+        if (botProperties.isProxy) {
             botOptions.proxyPort = botProperties.proxyPort ?: 0
             botOptions.proxyHost = botProperties.proxyHost
             botOptions.proxyType = DefaultBotOptions.ProxyType.HTTP
@@ -30,14 +30,14 @@ class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DestinationDetectorService::class)
-    fun defaultDestinationDetectorService(jiraBotProperties: JiraBotProperties) : DefaultDestinationDetectorService {
-        return DefaultDestinationDetectorService(jiraBotProperties)
+    fun defaultDestinationDetectorService(applicationProperties: ApplicationProperties) : DefaultDestinationDetectorService {
+        return DefaultDestinationDetectorService(applicationProperties)
     }
 
     @Bean
     @ConditionalOnMissingBean(ParametersBuilderService::class)
-    fun defaultParametersBuilderService(jiraBotProperties: JiraBotProperties) : DefaultParametersBuilderService {
-        return DefaultParametersBuilderService(jiraBotProperties)
+    fun defaultParametersBuilderService(applicationProperties: ApplicationProperties) : DefaultParametersBuilderService {
+        return DefaultParametersBuilderService(applicationProperties)
     }
 
     @Bean

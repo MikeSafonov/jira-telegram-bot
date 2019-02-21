@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("jira.bot")
-class JiraBotProperties {
+class ApplicationProperties {
 
     /**
      * type of supported template engine

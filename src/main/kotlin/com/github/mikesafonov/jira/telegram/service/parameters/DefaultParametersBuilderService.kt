@@ -1,6 +1,6 @@
 package com.github.mikesafonov.jira.telegram.service.parameters
 
-import com.github.mikesafonov.jira.telegram.config.JiraBotProperties
+import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
 import com.github.mikesafonov.jira.telegram.config.NotificationProperties
 import com.github.mikesafonov.jira.telegram.dto.Event
 
@@ -9,7 +9,7 @@ import com.github.mikesafonov.jira.telegram.dto.Event
  * @author Mike Safonov
  */
 
-class DefaultParametersBuilderService(private val jiraBotProperties: JiraBotProperties) : ParametersBuilderService {
+class DefaultParametersBuilderService(private val applicationProperties: ApplicationProperties) : ParametersBuilderService {
 
     /**
      * Create map from [event] and concatenated issue browse link
@@ -26,7 +26,7 @@ class DefaultParametersBuilderService(private val jiraBotProperties: JiraBotProp
      * @return link to browse issue
      */
     private fun buildIssueLink(event: Event): String {
-        val notificationProperties = jiraBotProperties.notification
+        val notificationProperties = applicationProperties.notification
         if (notificationProperties.jiraUrl.isNotBlank()) {
             return if (notificationProperties.jiraUrl.endsWith("/")) {
                 "${notificationProperties.jiraUrl}browse/${event.issue?.key}"

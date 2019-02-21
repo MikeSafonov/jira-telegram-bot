@@ -9,7 +9,7 @@ import com.github.mikesafonov.jira.telegram.dto.Event
 interface DestinationDetectorService {
 
     /**
-     * collect jira logins from [event] for notification
+     * Collect jira logins from [event] for notification
      */
     fun findDestinations(event: Event): List<String>
 }

@@ -1,14 +1,14 @@
-package com.github.mikesafonov.jira.telegram.service
+package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
-import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
+
 
 private val logger = KotlinLogging.logger {}
 
@@ -17,7 +17,7 @@ private val logger = KotlinLogging.logger {}
  * @author Mike Safonov
  */
 @Service
-class TelegramBotService(
+class TelegramBot(
     private val botProperties: BotProperties,
     private val chatRepository: ChatRepository,
     options: DefaultBotOptions?
@@ -39,39 +39,21 @@ class TelegramBotService(
         }
     }
 
-    /**
-     * Send telegram message to jira login [jiraLogin] user. If no chat id for this
-     * [jiraLogin] no message will be sended
-     * @param jiraLogin user jira login
-     * @param telegram message markdown text
-     */
-    fun sendMessage(jiraLogin: String, template: CompiledTemplate) {
-        chatRepository.findByJiraId(jiraLogin)?.let {
-            sendMessageToUser(it.telegramId, template)
-        }
-    }
-
-    /**
-     * Create telegram message with markdown syntax and send via telegram bot to user with id [user]
-     * @param user telegram user id
-     * @param messageText markdown text
-     */
-    private fun sendMessageToUser(user: Long, template: CompiledTemplate) {
-        val message = SendMessage().apply {
+    fun sendMarkdownMessage(user: Long, message: String) {
+        SendMessage().apply {
             chatId = user.toString()
-            text = template.message
-            // TODO: markdown only at the moment
+            text = message
             enableMarkdown(true)
-        }
-        execute(message)
+        }.also { execute(it) }
     }
 
-    private fun sendTextMessage(user: String, message: String) {
+    fun sendTextMessage(user: String, message: String) {
         SendMessage().apply {
             chatId = user
             text = message
         }.also { execute(it) }
     }
+
 
     /**
      * process [update]

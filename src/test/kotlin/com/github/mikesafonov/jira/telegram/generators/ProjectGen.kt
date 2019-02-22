@@ -8,8 +8,8 @@ import io.kotlintest.properties.Gen
  */
 class ProjectGen : Gen<Project> {
     companion object {
-        fun generate(): Project {
-            return ProjectGen().random().first()
+        fun generateDefault(): Project {
+            return ProjectGen().generateOne()
         }
 
         fun empty(): Project? {
@@ -23,13 +23,19 @@ class ProjectGen : Gen<Project> {
 
     override fun random(): Sequence<Project> {
         return generateSequence {
-            Project(
-                Gen.long().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first()
-            )
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        id: Long = Gen.long().random().first(),
+        self: String = Gen.string().random().first(),
+        description: String = Gen.string().random().first(),
+        name: String = Gen.string().random().first()
+    ): Project {
+        return Project(
+            id, self, description, name
+        )
     }
 
 }

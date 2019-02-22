@@ -8,8 +8,8 @@ import io.kotlintest.properties.Gen
  */
 class PriorityGen : Gen<Priority> {
     companion object {
-        fun generate(): Priority {
-            return PriorityGen().random().first()
+        fun generateDefault(): Priority {
+            return PriorityGen().generateOne()
         }
 
         fun empty(): Priority? {
@@ -23,8 +23,13 @@ class PriorityGen : Gen<Priority> {
 
     override fun random(): Sequence<Priority> {
         return generateSequence {
-            Priority(Gen.string().random().first(), Gen.string().random().first())
+            generateOne()
         }
+    }
+
+    fun generateOne(name : String = Gen.string().random().first(),
+                    iconUrl : String = Gen.string().random().first()) : Priority{
+        return Priority(name, iconUrl)
     }
 
 }

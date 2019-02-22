@@ -1,13 +1,8 @@
 package com.github.mikesafonov.jira.telegram
 
 import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
-import com.github.mikesafonov.jira.telegram.dto.Event
-import com.github.mikesafonov.jira.telegram.dto.WebHookEvent
-import com.github.mikesafonov.jira.telegram.generators.CommentGen
-import com.github.mikesafonov.jira.telegram.generators.IssueGen
-import com.github.mikesafonov.jira.telegram.generators.UserGen
+import com.github.mikesafonov.jira.telegram.generators.EventGen
 import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
-import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every
@@ -23,8 +18,7 @@ class DefaultParametersBuilderServiceTest : BehaviorSpec({
     Given("DefaultParametersBuilderService with not empty jiraUrl") {
         every { applicationProperties.notification.jiraUrl } returns "http://someurl.com"
         When("Issue is null") {
-            val event =
-                Event(WebHookEvent.COMMENT_CREATED, null, 10000L, UserGen.empty(), IssueGen.empty(), CommentGen.empty(), null)
+            val event = EventGen().generateOne(issue = null)
             Then("Return issueLink without key") {
                 parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
                     "event" to event,
@@ -33,10 +27,7 @@ class DefaultParametersBuilderServiceTest : BehaviorSpec({
             }
         }
         When("Issue is not null") {
-            val event = Event(
-                WebHookEvent.COMMENT_CREATED, null, Gen.long().random().first(), UserGen.empty(),
-                IssueGen.generate(), CommentGen.empty(), null
-            )
+            val event = EventGen.generateDefault()
 
             Then("Return issueLink without key") {
                 parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
@@ -50,8 +41,7 @@ class DefaultParametersBuilderServiceTest : BehaviorSpec({
     Given("DefaultParametersBuilderService with empty jiraUrl") {
         every { applicationProperties.notification.jiraUrl } returns ""
         When("Issue is null") {
-            val event =
-                Event(WebHookEvent.COMMENT_CREATED, null, 10000L, UserGen.empty(), IssueGen.empty(), CommentGen.empty(), null)
+            val event = EventGen().generateOne(issue = null)
             Then("Return empty issueLink") {
                 parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
                     "event" to event,
@@ -60,10 +50,7 @@ class DefaultParametersBuilderServiceTest : BehaviorSpec({
             }
         }
         When("Issue is not null") {
-            val event = Event(
-                WebHookEvent.COMMENT_CREATED, null, Gen.long().random().first(), UserGen.empty(),
-                IssueGen.generate(), CommentGen.empty(), null
-            )
+            val event = EventGen.generateDefault()
 
             Then("Return issueLink with self") {
                 parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(

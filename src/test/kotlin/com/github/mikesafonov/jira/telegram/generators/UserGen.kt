@@ -8,8 +8,8 @@ import io.kotlintest.properties.Gen
  */
 class UserGen : Gen<User> {
     companion object {
-        fun generate(): User {
-            return UserGen().random().first()
+        fun generateDefault(): User {
+            return UserGen().generateOne()
         }
 
         fun empty(): User? {
@@ -23,8 +23,15 @@ class UserGen : Gen<User> {
 
     override fun random(): Sequence<User> {
         return generateSequence {
-            User(Gen.string().random().first(), Gen.string().random().first())
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        name: String = Gen.string().random().first(),
+        displayName: String = Gen.string().random().first()
+    ): User {
+        return User(name, displayName)
     }
 
 }

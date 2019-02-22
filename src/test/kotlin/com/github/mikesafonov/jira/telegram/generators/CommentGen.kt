@@ -11,25 +11,13 @@ import java.time.LocalDateTime
 class CommentGen : Gen<Comment> {
 
     companion object {
-        fun generate(): Comment {
-            return CommentGen().random().first()
+        fun generateDefault(): Comment {
+            return CommentGen().generateOne()
         }
 
         fun empty(): Comment? {
             return null
         }
-
-        fun withUsers(user : User? = null, updateUser : User? = null) : Comment{
-            return Comment(
-                Gen.string().random().first(),
-                user,
-                LocalDateTime.now(),
-                updateUser,
-                Gen.string().random().first(),
-                LocalDateTime.now()
-            )
-        }
-
     }
 
     override fun constants(): Iterable<Comment> {
@@ -38,15 +26,19 @@ class CommentGen : Gen<Comment> {
 
     override fun random(): Sequence<Comment> {
         return generateSequence {
-            Comment(
-                Gen.string().random().first(),
-                UserGen.generate(),
-                LocalDateTime.now(),
-                UserGen.generate(),
-                Gen.string().random().first(),
-                LocalDateTime.now()
-            )
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        body: String = Gen.string().random().first(),
+        author: User? = UserGen.generateDefault(),
+        created: LocalDateTime = LocalDateTime.now(),
+        updateAuthor: User? = UserGen.generateDefault(),
+        self: String = Gen.string().random().first(),
+        updated: LocalDateTime? = LocalDateTime.now()
+    ): Comment {
+        return Comment(body, author, created, updateAuthor, self, updated)
     }
 
 }

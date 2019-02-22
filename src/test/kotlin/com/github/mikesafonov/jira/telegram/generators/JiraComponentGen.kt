@@ -8,8 +8,8 @@ import io.kotlintest.properties.Gen
  */
 class JiraComponentGen : Gen<JiraComponent> {
     companion object {
-        fun generate(): JiraComponent {
-            return JiraComponentGen().random().first()
+        fun generateDefault(): JiraComponent {
+            return JiraComponentGen().generateOne()
         }
 
         fun empty(): JiraComponent? {
@@ -23,8 +23,15 @@ class JiraComponentGen : Gen<JiraComponent> {
 
     override fun random(): Sequence<JiraComponent> {
         return generateSequence {
-            JiraComponent(Gen.string().random().first(), Gen.string().random().first())
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        self: String = Gen.string().random().first(),
+        name: String = Gen.string().random().first()
+    ): JiraComponent {
+        return JiraComponent(self, name)
     }
 
 }

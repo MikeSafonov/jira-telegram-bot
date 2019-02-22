@@ -9,7 +9,7 @@ import io.kotlintest.properties.Gen
  */
 class IssueGen : Gen<Issue> {
     companion object {
-        fun generate(): Issue {
+        fun generateDefault(): Issue {
             return IssueGen().random().first()
         }
 
@@ -30,9 +30,10 @@ class IssueGen : Gen<Issue> {
     }
 
     fun generateOne(
-        id: Long = Gen.long().random().first(), self: String = randomString(),
+        id: Long = Gen.long().random().first(),
+        self: String = randomString(),
         key: String = randomString(),
-        issueFields: IssueFields = IssueFieldsGen.generate()
+        issueFields: IssueFields = IssueFieldsGen.generateDefault()
     ): Issue {
         return Issue(id, self, key, issueFields)
     }

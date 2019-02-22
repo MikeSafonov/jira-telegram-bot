@@ -10,8 +10,12 @@ import io.kotlintest.properties.Gen
 class ChangelogItemGen : Gen<ChangelogItem> {
 
     companion object {
-        fun generate(): ChangelogItem {
-            return ChangelogItemGen().random().first()
+        fun generateDefault(): ChangelogItem {
+            return ChangelogItemGen().generateOne()
+        }
+
+        fun empty(): ChangelogItem? {
+            return null
         }
     }
 
@@ -22,12 +26,16 @@ class ChangelogItemGen : Gen<ChangelogItem> {
 
     override fun random(): Sequence<ChangelogItem> {
         return generateSequence {
-            ChangelogItem(
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first()
-            )
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        field: String = Gen.string().random().first(),
+        fromString: String? = Gen.string().random().first(),
+        newString: String? = Gen.string().random().first()
+    ): ChangelogItem {
+        return ChangelogItem(field, fromString, newString)
     }
 
 }

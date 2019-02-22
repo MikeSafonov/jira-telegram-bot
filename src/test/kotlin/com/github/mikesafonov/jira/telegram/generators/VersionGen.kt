@@ -9,8 +9,8 @@ import io.kotlintest.properties.Gen
 class VersionGen : Gen<Version> {
 
     companion object {
-        fun generate(): Version {
-            return VersionGen().random().first()
+        fun generateDefault(): Version {
+            return VersionGen().generateOne()
         }
 
         fun empty(): Version? {
@@ -24,15 +24,25 @@ class VersionGen : Gen<Version> {
 
     override fun random(): Sequence<Version> {
         return generateSequence {
-            Version(
-                Gen.long().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                Gen.bool().random().first(),
-                Gen.bool().random().first()
-            )
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        id: Long = Gen.long().random().first(),
+        self: String = randomString(),
+        description: String = randomString(),
+        name: String = randomString(),
+        archived: Boolean = Gen.bool().random().first(),
+        released: Boolean = Gen.bool().random().first()
+    ): Version {
+        return Version(
+            id, self, description, name, archived, released
+        )
+    }
+
+    private fun randomString(): String {
+        return Gen.string().random().first()
     }
 
 }

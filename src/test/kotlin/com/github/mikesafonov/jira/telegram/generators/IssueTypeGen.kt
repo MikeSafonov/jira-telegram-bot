@@ -9,8 +9,8 @@ import io.kotlintest.properties.Gen
 
 class IssueTypeGen : Gen<IssueType> {
     companion object {
-        fun generate(): IssueType {
-            return IssueTypeGen().random().first()
+        fun generateDefault(): IssueType {
+            return IssueTypeGen().generateOne()
         }
 
         fun empty(): IssueType? {
@@ -24,8 +24,15 @@ class IssueTypeGen : Gen<IssueType> {
 
     override fun random(): Sequence<IssueType> {
         return generateSequence {
-            IssueType(Gen.string().random().first(), Gen.string().random().first())
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        name: String = Gen.string().random().first(),
+        description: String = Gen.string().random().first()
+    ): IssueType {
+        return IssueType(name, description)
     }
 
 }

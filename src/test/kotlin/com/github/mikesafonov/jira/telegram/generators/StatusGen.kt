@@ -8,8 +8,8 @@ import io.kotlintest.properties.Gen
  */
 class StatusGen : Gen<Status> {
     companion object {
-        fun generate(): Status {
-            return StatusGen().random().first()
+        fun generateDefault(): Status {
+            return StatusGen().generateOne()
         }
 
         fun empty(): Status? {
@@ -23,8 +23,16 @@ class StatusGen : Gen<Status> {
 
     override fun random(): Sequence<Status> {
         return generateSequence {
-            Status(Gen.string().random().first(), Gen.string().random().first(), Gen.string().random().first())
+            generateOne()
         }
+    }
+
+    fun generateOne(
+        id: String = Gen.string().random().first(),
+        description: String = Gen.string().random().first(),
+        name: String = Gen.string().random().first()
+    ): Status {
+        return Status(id, description, name)
     }
 
 }

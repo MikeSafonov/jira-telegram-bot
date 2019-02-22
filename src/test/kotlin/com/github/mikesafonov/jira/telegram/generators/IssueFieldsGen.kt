@@ -1,6 +1,6 @@
 package com.github.mikesafonov.jira.telegram.generators
 
-import com.github.mikesafonov.jira.telegram.dto.IssueFields
+import com.github.mikesafonov.jira.telegram.dto.*
 import io.kotlintest.properties.Gen
 import java.time.LocalDateTime
 
@@ -11,8 +11,8 @@ import java.time.LocalDateTime
 class IssueFieldsGen : Gen<IssueFields> {
 
     companion object {
-        fun generate(): IssueFields {
-            return IssueFieldsGen().random().first()
+        fun generateDefault(): IssueFields {
+            return IssueFieldsGen().generateOne()
         }
 
         fun empty(): IssueFields? {
@@ -27,21 +27,44 @@ class IssueFieldsGen : Gen<IssueFields> {
 
     override fun random(): Sequence<IssueFields> {
         return generateSequence {
-            IssueFields(
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                ProjectGen.empty(),
-                UserGen.generate(),
-                IssueTypeGen.generate(),
-                emptyArray(),
-                emptyArray(),
-                LocalDateTime.now(),
-                UserGen.empty(),
-                UserGen.empty(),
-                LocalDateTime.now(),
-                StatusGen.generate(),
-                PriorityGen.generate()
-            )
+            generateOne()
         }
+    }
+
+
+    fun generateOne(
+        summary: String = Gen.string().random().first(),
+        description: String = Gen.string().random().first(),
+        project: Project? = ProjectGen.generateDefault(),
+        creator: User = UserGen.generateDefault(),
+        issuetype: IssueType = IssueTypeGen.generateDefault(),
+        fixVersions: Array<Version> = emptyArray(),
+        attachment: Array<Attachment> = emptyArray(),
+        created: LocalDateTime = LocalDateTime.now(),
+        reporter: User? = UserGen.generateDefault(),
+        assignee: User? = UserGen.generateDefault(),
+        updated: LocalDateTime? = LocalDateTime.now(),
+        status: Status = StatusGen.generateDefault(),
+        priority: Priority = PriorityGen.generateDefault(),
+        components: Array<JiraComponent> = emptyArray(),
+        labels: Array<String> = emptyArray()
+    ): IssueFields {
+        return IssueFields(
+            summary,
+            description,
+            project,
+            creator,
+            issuetype,
+            fixVersions,
+            attachment,
+            created,
+            reporter,
+            assignee,
+            updated,
+            status,
+            priority,
+            components,
+            labels
+        )
     }
 }

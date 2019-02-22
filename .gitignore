@@ -5,3 +5,4 @@ out/
 target/
 *.iml
 jira-bot-logs/
+.kotlintest/

@@ -28,10 +28,11 @@ class DefaultParametersBuilderService(private val applicationProperties: Applica
     private fun buildIssueLink(event: Event): String {
         val notificationProperties = applicationProperties.notification
         if (notificationProperties.jiraUrl.isNotBlank()) {
+            val issueKey = event.issue?.key ?: ""
             return if (notificationProperties.jiraUrl.endsWith("/")) {
-                "${notificationProperties.jiraUrl}browse/${event.issue?.key}"
+                "${notificationProperties.jiraUrl}browse/$issueKey"
             } else {
-                "${notificationProperties.jiraUrl}/browse/${event.issue?.key}"
+                "${notificationProperties.jiraUrl}/browse/$issueKey"
             }
         }
         return event.issue?.self ?: ""

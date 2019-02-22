@@ -6,8 +6,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     kotlin("jvm") version "1.3.21"
     idea
-    id ("org.jetbrains.kotlin.plugin.spring") version "1.3.21"
-    id ("org.jetbrains.kotlin.plugin.jpa") version "1.3.21"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.3.21"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.21"
     id("org.springframework.boot") version "2.1.3.RELEASE"
 
 }
@@ -19,6 +19,7 @@ group = "com.github.mikesafonov"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 tasks.withType<Wrapper> {
@@ -42,11 +43,13 @@ configure<DependencyManagementExtension> {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        includeEngines("spek2")
+    }
 }
 
 configurations {
-    compile{
+    compile {
         exclude(module = "spring-boot-starter-logging")
     }
 }
@@ -76,9 +79,7 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testCompile("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "junit")
-    }
-    testCompile("org.junit.jupiter:junit-jupiter-api")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation ("io.kotlintest:kotlintest-runner-junit5:3.2.1")
+    testImplementation("io.mockk:mockk:1.9.1")
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine")
 }

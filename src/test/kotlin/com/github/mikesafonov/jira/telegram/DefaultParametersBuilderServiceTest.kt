@@ -46,4 +46,31 @@ class DefaultParametersBuilderServiceTest : BehaviorSpec({
             }
         }
     }
+
+    Given("DefaultParametersBuilderService with empty jiraUrl") {
+        every { applicationProperties.notification.jiraUrl } returns ""
+        When("Issue is null") {
+            val event =
+                Event(WebHookEvent.COMMENT_CREATED, null, 10000L, UserGen.empty(), IssueGen.empty(), CommentGen.empty(), null)
+            Then("Return empty issueLink") {
+                parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
+                    "event" to event,
+                    "issueLink" to ""
+                )
+            }
+        }
+        When("Issue is not null") {
+            val event = Event(
+                WebHookEvent.COMMENT_CREATED, null, Gen.long().random().first(), UserGen.empty(),
+                IssueGen.generate(), CommentGen.empty(), null
+            )
+
+            Then("Return issueLink with self") {
+                parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
+                    "event" to event,
+                    "issueLink" to "${event.issue?.self}"
+                )
+            }
+        }
+    }
 })

@@ -4,6 +4,6 @@ before_install:
 
 addons:
   sonarcloud:
-    organization: "MikeSafonov_jira-telegram-bot"
+    organization: "mikesafonov-github"
 script:
   - sonar-scanner

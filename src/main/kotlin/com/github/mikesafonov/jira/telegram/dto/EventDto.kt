@@ -142,8 +142,11 @@ data class Event(
      */
     val isIssueEvent: Boolean
         get() {
-            return webhookEvent == WebHookEvent.JIRA_ISSUE_UPDATED || webhookEvent == WebHookEvent.JIRA_ISSUE_CREATED
-                    || webhookEvent == WebHookEvent.JIRA_ISSUE_DELETED
+            return webhookEvent in arrayOf(
+                WebHookEvent.JIRA_ISSUE_UPDATED,
+                WebHookEvent.JIRA_ISSUE_CREATED,
+                WebHookEvent.JIRA_ISSUE_DELETED
+            )
         }
 
     /**

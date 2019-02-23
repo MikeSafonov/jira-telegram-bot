@@ -2,6 +2,7 @@
 
 [![DepShield Badge](https://depshield.sonatype.org/badges/MikeSafonov/jira-telegram-bot/depshield.svg)](https://depshield.github.io)
 ![Travis-CI](https://travis-ci.com/MikeSafonov/jira-telegram-bot.svg?branch=master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MikeSafonov_jira-telegram-bot&metric=alert_status)](https://sonarcloud.io/dashboard?id=MikeSafonov_jira-telegram-bot)
 
 Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-boot) application which handing 
 [Jira](https://www.atlassian.com/software/jira) webhook events and sends notifications via 

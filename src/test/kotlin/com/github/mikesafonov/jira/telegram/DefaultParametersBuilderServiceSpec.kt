@@ -11,7 +11,7 @@ import io.mockk.mockk
 /**
  * @author Mike Safonov
  */
-class DefaultParametersBuilderServiceTest : BehaviorSpec({
+class DefaultParametersBuilderServiceSpec : BehaviorSpec({
     val applicationProperties = mockk<ApplicationProperties>()
     val parametersBuilderService = DefaultParametersBuilderService(applicationProperties)
 

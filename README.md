@@ -1,5 +1,7 @@
 # Jira Telegram Bot
 
+[![DepShield Badge](https://depshield.sonatype.org/badges/owner/repository/depshield.svg)](https://depshield.github.io)
+
 Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-boot) application which handing 
 [Jira](https://www.atlassian.com/software/jira) webhook events and sends notifications via 
 [Telegram](https://telegram.org) bot.

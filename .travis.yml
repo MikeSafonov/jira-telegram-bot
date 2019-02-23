@@ -1,3 +1,9 @@
 language: java
 before_install:
   - chmod +x gradlew
+
+addons:
+  sonarcloud:
+    organization: "MikeSafonov_jira-telegram-bot"
+script:
+  - sonar-scanner

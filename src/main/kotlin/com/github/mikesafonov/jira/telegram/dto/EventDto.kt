@@ -44,7 +44,21 @@ enum class WebHookEvent {
      * fired if issue deleted
      */
     @JsonProperty("jira:issue_deleted")
-    JIRA_ISSUE_DELETED
+    JIRA_ISSUE_DELETED;
+
+    companion object {
+        fun issueEvents(): Array<WebHookEvent> {
+            return arrayOf(
+                WebHookEvent.JIRA_ISSUE_UPDATED,
+                WebHookEvent.JIRA_ISSUE_CREATED,
+                WebHookEvent.JIRA_ISSUE_DELETED
+            )
+        }
+    }
+
+    fun isIssueEvent(): Boolean {
+        return this in issueEvents()
+    }
 
 }
 
@@ -142,11 +156,7 @@ data class Event(
      */
     val isIssueEvent: Boolean
         get() {
-            return webhookEvent in arrayOf(
-                WebHookEvent.JIRA_ISSUE_UPDATED,
-                WebHookEvent.JIRA_ISSUE_CREATED,
-                WebHookEvent.JIRA_ISSUE_DELETED
-            )
+            return webhookEvent.isIssueEvent()
         }
 
     /**

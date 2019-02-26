@@ -114,14 +114,17 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
-        When("ISSUE_COMMENT_EDITED,ISSUE_COMMENT_DELETED, ISSUE_GENERIC issue Event") {
-            val event = EventGen.generateDefault()
+        When("Issue Event") {
             Then("Return list of creator, reporter and assignee names") {
-                val expectedNames =
-                    listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName)
-                val destinations = defaultDestinationDetectorService.findDestinations(event)
+                IssueEventTypeName.values().forEach {
+                    val event = EventGen().generateOne(issueEventTypeName = it)
 
-                destinations shouldBe expectedNames
+                    val expectedNames =
+                        listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName)
+                    val destinations = defaultDestinationDetectorService.findDestinations(event)
+
+                    destinations shouldBe expectedNames
+                }
             }
         }
     }

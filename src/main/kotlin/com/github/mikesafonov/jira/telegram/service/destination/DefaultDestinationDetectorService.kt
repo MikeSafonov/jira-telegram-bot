@@ -32,6 +32,9 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
                     return allIssueUsersWithoutInitiator(event.issue, event.user)
                 }
                 IssueEventTypeName.ISSUE_GENERIC -> {
+                    if (notificationProperties.sendToMe) {
+                        return allIssueUsers(event.issue)
+                    }
                     return allIssueUsers(event.issue)
                 }
                 IssueEventTypeName.ISSUE_UPDATED -> {
@@ -40,12 +43,17 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
                     }
                     return allIssueUsersWithoutInitiator(event.issue, event.user)
                 }
-                // TODO: check event dto
                 IssueEventTypeName.ISSUE_COMMENT_EDITED -> {
+                    if (notificationProperties.sendToMe) {
+                        return allIssueUsers(event.issue)
+                    }
                     return allIssueUsers(event.issue)
                 }
-                // TODO: check event dto
+
                 IssueEventTypeName.ISSUE_COMMENT_DELETED -> {
+                    if (notificationProperties.sendToMe) {
+                        return allIssueUsers(event.issue)
+                    }
                     return allIssueUsers(event.issue)
                 }
             }

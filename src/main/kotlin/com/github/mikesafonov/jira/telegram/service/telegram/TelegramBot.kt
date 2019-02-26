@@ -1,7 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramRequestHandler
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.bots.DefaultBotOptions
@@ -19,7 +19,7 @@ private val logger = KotlinLogging.logger {}
 @Service
 class TelegramBot(
     private val botProperties: BotProperties,
-    private val chatRepository: ChatRepository,
+    private val handlers: List<TelegramRequestHandler>,
     options: DefaultBotOptions?
 ) :
     TelegramLongPollingBot(options) {
@@ -60,37 +60,12 @@ class TelegramBot(
      */
     private fun onUpdate(update: Update) {
         if (update.hasMessage() && update.message.hasText()) {
-            when (update.message.text) {
-                "/me" -> {
-                    val chatId = update.message.chatId.toString()
-                    sendTextMessage(chatId, "Your chat id: $chatId")
-                }
-
-                "/jira_login" -> {
-                    val chatId = update.message.chatId
-                    val jiraId = chatRepository.findByTelegramId(chatId)?.jiraId
-                    if (jiraId == null) {
-                        sendTextMessage(
-                            chatId.toString(),
-                            "You not registered at this bot yet. Please contact your system administrator for registration."
-                        )
-                    } else {
-                        sendTextMessage(chatId.toString(), "Your jira login: $jiraId")
-                    }
-                }
-                "/help" -> {
-                    val chatId = update.message.chatId.toString()
-                    val helpMessage = """This is jira-telegram-bot. Supported commands:
-/me - prints telegram chat id
-/jira_login - prints attached jira login to this telegram chat id
-/help - prints help message
-                    """.trimMargin()
-                    sendTextMessage(chatId, helpMessage)
-                }
-                else -> {
-                    sendTextMessage(update.message.chatId.toString(), "Unknown command. Try /help command")
-                }
-
+            val requestHandler = handlers.find { it.isHandle(update.message.text) }
+            if (requestHandler != null) {
+                val botApiMethod = requestHandler.handle(update.message)
+                execute(botApiMethod)
+            } else {
+                sendTextMessage(update.message.chatId.toString(), "Unknown command. Try /help command")
             }
         }
         logger.debug(update.toString())

@@ -18,8 +18,12 @@ class HelpTelegramRequestHandlerSpec : StringSpec({
     val handler = HelpTelegramRequestHandler()
 
     "isHandle should return expected value"{
-        handler.isHandle("/help") shouldBe true
-        handler.isHandle(Gen.string().random().first()) shouldBe false
+        handler.isHandle(mockk {
+            every { text } returns "/help"
+        }) shouldBe true
+        handler.isHandle(mockk {
+            every { text } returns Gen.string().random().first()
+        }) shouldBe false
     }
 
     "Should return expected help message"{

@@ -17,8 +17,13 @@ class MeTelegramRequestHandlerSpec : StringSpec({
     val handler = MeTelegramRequestHandler()
 
     "isHandle should return expected value"{
-        handler.isHandle("/me") shouldBe true
-        handler.isHandle(Gen.string().random().first()) shouldBe false
+        handler.isHandle(
+            mockk {
+                every { text } returns "/me"
+            }) shouldBe true
+        handler.isHandle(mockk {
+            every { text } returns Gen.string().random().first()
+        }) shouldBe false
     }
 
     "Should return chat id in message"{

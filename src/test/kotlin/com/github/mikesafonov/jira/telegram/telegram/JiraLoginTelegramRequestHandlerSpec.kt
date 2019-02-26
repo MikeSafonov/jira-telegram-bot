@@ -21,8 +21,13 @@ class JiraLoginTelegramRequestHandlerSpec : StringSpec({
     val handler = JiraLoginTelegramRequestHandler(chatRepository)
 
     "isHandle should return expected value"{
-        handler.isHandle("/jira_login") shouldBe true
-        handler.isHandle(Gen.string().random().first()) shouldBe false
+        handler.isHandle(
+            mockk {
+                every { text } returns "/jira_login"
+            }) shouldBe true
+        handler.isHandle(mockk {
+            every { text } returns Gen.string().random().first()
+        }) shouldBe false
     }
 
     "Should return not registered message"{
@@ -52,7 +57,11 @@ class JiraLoginTelegramRequestHandlerSpec : StringSpec({
         val message = mockk<Message> {
             every { chatId } returns randomId
         }
-        every { chatRepository.findByTelegramId(randomId) } returns Chat(Gen.int().random().first(), jiraLogin, randomId)
+        every { chatRepository.findByTelegramId(randomId) } returns Chat(
+            Gen.int().random().first(),
+            jiraLogin,
+            randomId
+        )
 
         handler.handle(message) shouldBe expectedMessage
     }

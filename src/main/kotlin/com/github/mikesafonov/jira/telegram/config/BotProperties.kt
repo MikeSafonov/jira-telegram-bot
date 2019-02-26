@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("telegram.bot")
-class BotProperties{
+class BotProperties {
     /**
      * telegram bot secret token
      */
@@ -19,15 +19,20 @@ class BotProperties{
     lateinit var name: String
 
     /**
+     * id of telegram bot admin
+     */
+    var adminId: Long? = null
+
+    /**
      * telegram bot http proxy host
      */
-    var proxyHost : String? = null
+    var proxyHost: String? = null
     /**
      * telegram bot http proxy port
      */
-    var proxyPort : Int? = null
+    var proxyPort: Int? = null
 
-    val isProxy : Boolean
+    val isProxy: Boolean
         get() {
             return proxyHost != null && proxyPort != null
         }

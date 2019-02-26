@@ -10,8 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.Message
  */
 @Service
 class HelpTelegramRequestHandler : TelegramRequestHandler {
-    override fun isHandle(command: String): Boolean {
-        return command == "/help"
+    override fun isHandle(message: Message): Boolean {
+        return message.text == "/help"
     }
 
     override fun handle(message: Message): BotApiMethod<Message> {

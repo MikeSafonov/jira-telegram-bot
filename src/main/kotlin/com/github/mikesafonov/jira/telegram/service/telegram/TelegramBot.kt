@@ -60,7 +60,7 @@ class TelegramBot(
      */
     private fun onUpdate(update: Update) {
         if (update.hasMessage() && update.message.hasText()) {
-            val requestHandler = handlers.find { it.isHandle(update.message.text) }
+            val requestHandler = handlers.find { it.isHandle(update.message) }
             if (requestHandler != null) {
                 val botApiMethod = requestHandler.handle(update.message)
                 execute(botApiMethod)

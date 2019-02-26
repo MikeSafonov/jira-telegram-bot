@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Message
  */
 interface TelegramRequestHandler {
 
-    fun isHandle(command : String) : Boolean
+    fun isHandle(message: Message) : Boolean
 
     fun handle(message: Message): BotApiMethod<Message>
 }

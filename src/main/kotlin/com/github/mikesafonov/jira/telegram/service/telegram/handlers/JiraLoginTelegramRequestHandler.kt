@@ -11,8 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.Message
  */
 @Service
 class JiraLoginTelegramRequestHandler(private val chatRepository : ChatRepository) : TelegramRequestHandler {
-    override fun isHandle(command: String): Boolean {
-        return command == "/jira_login"
+    override fun isHandle(message: Message): Boolean {
+        return message.text == "/jira_login"
     }
 
     override fun handle(message: Message): BotApiMethod<Message> {

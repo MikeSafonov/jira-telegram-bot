@@ -10,7 +10,7 @@ import javax.persistence.*
 data class Chat(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int,
+    val id: Int?,
 
     @Column(name = "jira_id", nullable = false)
     val jiraId: String,

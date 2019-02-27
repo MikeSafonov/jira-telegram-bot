@@ -9,6 +9,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 
 /**
@@ -201,6 +202,9 @@ class AddUserTelegramRequestHandlerSpec : BehaviorSpec({
                         every { text } returns "/add_user $jiraLogin $telegramId"
                         every { chatId } returns messageChatId
                     }) shouldBe expectedMessage
+                verify {
+                    chatRepository.save(chat)
+                }
             }
         }
     }

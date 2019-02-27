@@ -4,7 +4,6 @@ import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
 /**
@@ -28,9 +27,6 @@ class UsersListTelegramRequestHandler(
         }
 
         val id = message.chatId.toString()
-        return SendMessage().apply {
-            chatId = id
-            text = messageBuilder.toString()
-        }
+        return createMessage(id, messageBuilder.toString())
     }
 }

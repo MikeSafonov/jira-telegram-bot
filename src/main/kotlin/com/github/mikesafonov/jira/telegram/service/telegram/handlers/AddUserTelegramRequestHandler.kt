@@ -6,7 +6,6 @@ import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
 
@@ -32,7 +31,7 @@ class AddUserTelegramRequestHandler(
         val id = message.chatId.toString()
         val commandArgs = getCommandArgs(message.text)
         if (commandArgs.size < 3) {
-            return createMessage(id, "Wrong command syntax: Should be: /add_user <jiraLogin> <telegramId>")
+            return createMessage(id, "Wrong command syntax: Should be: $commandPrefix <jiraLogin> <telegramId>")
         } else {
             return try {
                 val jiraLogin = validateJiraLogin(commandArgs[1])
@@ -111,13 +110,6 @@ class AddUserTelegramRequestHandler(
         }
 
         return telegramId
-    }
-
-    private fun createMessage(id: String, message: String): SendMessage {
-        return SendMessage().apply {
-            chatId = id
-            text = message
-        }
     }
 
     private fun addNewChat(jiraLogin: String, telegramId: Long) {

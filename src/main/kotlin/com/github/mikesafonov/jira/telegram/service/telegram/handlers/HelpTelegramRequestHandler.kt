@@ -3,26 +3,20 @@ package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
 /**
  * @author Mike Safonov
  */
 @Service
-class HelpTelegramRequestHandler(private val botProperties: BotProperties) : TelegramRequestHandler {
+class HelpTelegramRequestHandler(private val botProperties: BotProperties) : BaseRequestHandler() {
     override fun isHandle(message: Message): Boolean {
         return message.text == "/help"
     }
 
     override fun handle(message: Message): BotApiMethod<Message> {
-
         val helpMessage = getHelpMessage(message)
-        val id = message.chatId
-        return SendMessage().apply {
-            chatId = id.toString()
-            text = helpMessage
-        }
+        return createMessage(message.chatId.toString(), helpMessage)
     }
 
     private fun getHelpMessage(message: Message): String {

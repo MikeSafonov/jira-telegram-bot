@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Message
 /**
  * @author Mike Safonov
  */
-abstract class AdminCommandTelegramRequestHandler(private val botProperties: BotProperties) : TelegramRequestHandler {
+abstract class AdminCommandTelegramRequestHandler(private val botProperties: BotProperties) : BaseRequestHandler() {
 
     protected fun isAdminUser(message : Message) : Boolean{
         return botProperties.adminId != null && botProperties.adminId == message.chatId

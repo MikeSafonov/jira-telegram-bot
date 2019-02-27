@@ -6,6 +6,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     kotlin("jvm") version "1.3.21"
     idea
+    jacoco
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.21"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.3.21"
     id("org.springframework.boot") version "2.1.3.RELEASE"
@@ -43,9 +44,7 @@ configure<DependencyManagementExtension> {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform {
-        includeEngines("spek2")
-    }
+    useJUnitPlatform()
 }
 
 configurations {
@@ -82,4 +81,15 @@ dependencies {
     testImplementation ("io.kotlintest:kotlintest-runner-junit5:3.2.1")
     testImplementation("io.mockk:mockk:1.9.1")
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine")
+}
+
+jacoco{
+    toolVersion = "0.8.3"
+}
+
+tasks.jacocoTestReport{
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = false
+    }
 }

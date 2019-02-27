@@ -6,5 +6,5 @@ addons:
   sonarcloud:
     organization: "mikesafonov-github"
 script:
-  - test
+  - ./gradlew test
   - sonar-scanner

@@ -68,7 +68,7 @@ class AddUserTelegramRequestHandlerSpec : BehaviorSpec({
                 val messageChatId = Gen.long().random().first()
                 val expectedMessage = SendMessage().apply {
                     chatId = messageChatId.toString()
-                    text = "Wrong command syntax: Should be: /add_user <jiraLogin> <telegramId>"
+                    text = "Wrong command syntax\n Should be: /add_user <jiraLogin> <telegramId>"
                 }
                 handler.handle(
                     mockk {

@@ -67,7 +67,7 @@ class RemoveUserTelegramRequestHandlerSpec : BehaviorSpec({
                 val messageChatId = Gen.long().random().first()
                 val expectedMessage = SendMessage().apply {
                     chatId = messageChatId.toString()
-                    text = "Wrong command syntax: Should be: /remove_user <jiraLogin>"
+                    text = "Wrong command syntax\n Should be: /remove_user <jiraLogin>"
                 }
                 handler.handle(
                     mockk {

@@ -31,7 +31,7 @@ class AddUserTelegramRequestHandler(
         val id = message.chatId.toString()
         val commandArgs = getCommandArgs(message.text)
         if (commandArgs.size < 3) {
-            return createMessage(id, "Wrong command syntax: Should be: $commandPrefix <jiraLogin> <telegramId>")
+            return createMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin> <telegramId>")
         } else {
             return try {
                 val jiraLogin = validateJiraLogin(commandArgs[1])

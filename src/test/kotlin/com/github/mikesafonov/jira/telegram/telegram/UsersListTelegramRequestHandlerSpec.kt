@@ -73,7 +73,7 @@ class UsersListTelegramRequestHandlerSpec : BehaviorSpec({
                 every { chatRepository.findAll() } returns allChats
                 val messageBuilder = StringBuilder("Jira users: \n")
                 allChats.forEach {
-                    messageBuilder.append("- ${it.jiraId}")
+                    messageBuilder.append("- ${it.jiraId}\n")
                 }
 
                 val expectedMessage = SendMessage().apply {

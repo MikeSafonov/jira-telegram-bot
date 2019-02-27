@@ -27,7 +27,7 @@ class HelpTelegramRequestHandler(private val botProperties: BotProperties) : Bas
 /help - prints help message
 /users_list - prints list of users
 /add_user <jiraLogin> <telegramId> -  add new user to bot
-/remove <jiraLogin> - remove user from bot
+/remove_user <jiraLogin> - remove user from bot
                     """.trimMargin()
         } else {
             """This is jira-telegram-bot. Supported commands:

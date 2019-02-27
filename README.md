@@ -67,6 +67,9 @@ locations:
   <dt>telegram.bot.name</dt>
   <dd>telegram bot name</dd>
   
+  <dt>telegram.bot.adminId</dt>
+  <dd>id of telegram bot admin</dd>
+  
   <dt>telegram.bot.proxyHost</dt>
   <dd>http proxy host</dd>
 
@@ -117,3 +120,9 @@ Telegram bot supports following text commands:
 - /me - prints telegram chat id
 - /jira_login - prints attached jira login to this telegram chat id 
 - /help - prints help message
+
+Admin commands:
+
+- /users_list - prints list of users
+- /add_user <jiraLogin> <telegramId> -  add new user to bot
+- /remove_user <jiraLogin> - remove user from bot

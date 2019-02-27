@@ -23,7 +23,7 @@ class UsersListTelegramRequestHandler(
     override fun handle(message: Message): BotApiMethod<Message> {
         val messageBuilder = StringBuilder("Jira users: \n")
         chatRepository.findAll().forEach {
-            messageBuilder.append("- ${it.jiraId}")
+            messageBuilder.append("- ${it.jiraId}\n")
         }
 
         val id = message.chatId.toString()

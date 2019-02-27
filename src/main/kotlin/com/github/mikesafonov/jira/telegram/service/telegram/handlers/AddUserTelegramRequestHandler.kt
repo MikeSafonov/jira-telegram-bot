@@ -9,11 +9,12 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
+
+private val logger = KotlinLogging.logger {}
+
 /**
  * @author Mike Safonov
  */
-private val logger = KotlinLogging.logger {}
-
 @Service
 class AddUserTelegramRequestHandler(
     botProperties: BotProperties,
@@ -29,49 +30,87 @@ class AddUserTelegramRequestHandler(
 
     override fun handle(message: Message): BotApiMethod<Message> {
         val id = message.chatId.toString()
-        val commandArgs = getCommandArgs(message)
-        if (commandArgs.size < 2) {
+        val commandArgs = getCommandArgs(message.text)
+        if (commandArgs.size < 3) {
             return createMessage(id, "Wrong command syntax: Should be: /add_user <jiraLogin> <telegramId>")
         } else {
-            val jiraLogin = commandArgs[0]
-            if (jiraLogin.isBlank()) {
-                return createMessage(id, "Wrong command args: jiraLogin must not be blank")
-            }
-
-            if (isJiraUserExist(jiraLogin)) {
-                return createMessage(id, "Jira login $jiraLogin already exist")
-            }
-
-            try {
-                val telegramId = commandArgs[1].toLong()
-                if (telegramId < 0) {
-                    return createMessage(id, "Wrong command args: telegramId must be a positive number")
-                }
-
-                if (isTelegramUserExist(telegramId)) {
-                    return createMessage(id, "Telegram id $telegramId already exist")
-                }
+            return try {
+                val jiraLogin = validateJiraLogin(commandArgs[1])
+                val telegramId = validateTelegramId(commandArgs[2].toLong())
                 addNewChat(jiraLogin, telegramId)
-                return createMessage(id, "Jira user $jiraLogin with telegram id $telegramId was added successfully")
+                createMessage(id, "Jira user $jiraLogin with telegram id $telegramId was added successfully")
             } catch (e: NumberFormatException) {
-                return createMessage(id, "Wrong command args: telegramId must be a positive number")
+                createMessage(id, "Wrong command args: telegramId must be a positive number")
+            } catch (e: AddUserBotException) {
+                createMessage(id, e.message ?: "")
             } catch (e: Exception) {
                 logger.error(e.message, e)
-                return createMessage(id, "Unexpected error")
+                createMessage(id, "Unexpected error")
             }
         }
     }
 
-    private fun getCommandArgs(message: Message): List<String> {
-        return message.text.replace(commandPrefix, "").split(" ")
+    /**
+     * Method collects command arguments from full command text [message]
+     * @param message text command
+     * @return list of command arguments
+     */
+    private fun getCommandArgs(message: String): List<String> {
+        return message.split(" ")
     }
 
+    /**
+     * Searching in database chat with [jiraId] jira login.
+     * @param jiraId jira login
+     * @return true if [jiraId] exist in database
+     */
     private fun isJiraUserExist(jiraId: String): Boolean {
         return chatRepository.findByJiraId(jiraId) != null
     }
 
+    /**
+     * Searching in database chat with [telegramId] telegram chat id.
+     * @param telegramId telegram chat id
+     * @return true if [telegramId] exist in database
+     */
     private fun isTelegramUserExist(telegramId: Long): Boolean {
         return chatRepository.findByTelegramId(telegramId) != null
+    }
+
+    /**
+     * Validates [jiraLogin] : check if login not blank and not exist in database
+     * @param jiraLogin jira login
+     * @return [jiraLogin] back if check success
+     * @throws AddUserBotException
+     */
+    private fun validateJiraLogin(jiraLogin: String): String {
+        if (jiraLogin.isBlank()) {
+            throw AddUserBotException("Wrong command args: jiraLogin must not be blank")
+        }
+
+        if (isJiraUserExist(jiraLogin)) {
+            throw AddUserBotException("Jira login $jiraLogin already exist")
+        }
+
+        return jiraLogin
+    }
+
+    /**
+     * Validates [telegramId] : check if chat id non negative and not exist in database
+     * @param telegramId telegram chat id
+     * @return [telegramId] back if check success
+     * @throws AddUserBotException
+     */
+    private fun validateTelegramId(telegramId: Long): Long {
+        if (telegramId < 0) {
+            throw AddUserBotException("Wrong command args: telegramId must be a positive number")
+        }
+
+        if (isTelegramUserExist(telegramId)) {
+            throw AddUserBotException("Telegram id $telegramId already exist")
+        }
+
+        return telegramId
     }
 
     private fun createMessage(id: String, message: String): SendMessage {
@@ -85,5 +124,4 @@ class AddUserTelegramRequestHandler(
         val chat = Chat(null, jiraLogin, telegramId)
         chatRepository.save(chat)
     }
-
 }

@@ -93,3 +93,7 @@ tasks.jacocoTestReport{
         csv.isEnabled = false
     }
 }
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}

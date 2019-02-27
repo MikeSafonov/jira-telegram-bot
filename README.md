@@ -124,5 +124,5 @@ Telegram bot supports following text commands:
 Admin commands:
 
 - /users_list - prints list of users
-- /add_user <jiraLogin> <telegramId> -  add new user to bot
-- /remove_user <jiraLogin> - remove user from bot
+- /add_user *jiraLogin* *telegramId* -  add new user to bot
+- /remove_user *jiraLogin* - remove user from bot

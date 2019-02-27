@@ -35,9 +35,7 @@ class UsersListTelegramRequestHandlerSpec : BehaviorSpec({
                 every { botProperties.adminId } returns admin
                 handler.isHandle(mockk {
                     every { text } returns Gen.string().random().first()
-                    every { chat } returns mockk {
-                        every { id } returns admin
-                    }
+                    every { chatId } returns admin
                 }) shouldBe false
             }
         }
@@ -59,9 +57,7 @@ class UsersListTelegramRequestHandlerSpec : BehaviorSpec({
                 handler.isHandle(
                     mockk {
                         every { text } returns "/users_list"
-                        every { chat } returns mockk {
-                            every { id } returns admin
-                        }
+                        every { chatId } returns admin
                     }) shouldBe true
             }
         }

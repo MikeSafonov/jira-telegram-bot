@@ -43,9 +43,7 @@ class AddUserTelegramRequestHandlerSpec : BehaviorSpec({
                 every { botProperties.adminId } returns admin
                 handler.isHandle(mockk {
                     every { text } returns Gen.string().random().first()
-                    every { chat } returns mockk {
-                        every { id } returns admin
-                    }
+                    every { chatId } returns admin
                 }) shouldBe false
             }
         }
@@ -57,9 +55,7 @@ class AddUserTelegramRequestHandlerSpec : BehaviorSpec({
                 handler.isHandle(
                     mockk {
                         every { text } returns "/add_user"
-                        every { chat } returns mockk {
-                            every { id } returns admin
-                        }
+                        every { chatId } returns admin
                     }) shouldBe true
             }
         }

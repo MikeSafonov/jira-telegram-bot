@@ -10,51 +10,35 @@ import com.github.mikesafonov.jira.telegram.dto.User
  * Default implementation of [DestinationDetectorService]
  * @author Mike Safonov
  */
-class DefaultDestinationDetectorService(private val applicationProperties: ApplicationProperties) : DestinationDetectorService {
+class DefaultDestinationDetectorService(private val applicationProperties: ApplicationProperties) :
+    DestinationDetectorService {
 
     /**
      * Find jira logins from [event] to send a telegram message
      */
     override fun findDestinations(event: Event): List<String> {
+        val notificationProperties = applicationProperties.notification
+        return if (notificationProperties.sendToMe) {
+            if (event.issue != null && event.issueEventTypeName != null) {
+                allIssueUsers(event.issue)
+            } else {
+                emptyList()
+            }
+        } else {
+            requiredDestinations(event)
+        }
+    }
+
+    private fun requiredDestinations(event: Event): List<String> {
         if (event.issue != null) {
-            val notificationProperties = applicationProperties.notification
             when (event.issueEventTypeName) {
                 IssueEventTypeName.ISSUE_COMMENTED -> {
-                    if (notificationProperties.sendToMe) {
-                        return allIssueUsers(event.issue)
-                    }
                     return allIssueUsersWithoutInitiator(event.issue, event.comment?.author)
                 }
-                IssueEventTypeName.ISSUE_CREATED -> {
-                    if (notificationProperties.sendToMe) {
-                        return allIssueUsers(event.issue)
-                    }
-                    return allIssueUsersWithoutInitiator(event.issue, event.user)
-                }
-                IssueEventTypeName.ISSUE_GENERIC -> {
-                    if (notificationProperties.sendToMe) {
-                        return allIssueUsers(event.issue)
-                    }
-                    return allIssueUsers(event.issue)
-                }
-                IssueEventTypeName.ISSUE_UPDATED -> {
-                    if (notificationProperties.sendToMe) {
-                        return allIssueUsers(event.issue)
-                    }
-                    return allIssueUsersWithoutInitiator(event.issue, event.user)
-                }
-                IssueEventTypeName.ISSUE_COMMENT_EDITED -> {
-                    if (notificationProperties.sendToMe) {
-                        return allIssueUsers(event.issue)
-                    }
-                    return allIssueUsers(event.issue)
-                }
-
+                IssueEventTypeName.ISSUE_CREATED, IssueEventTypeName.ISSUE_GENERIC,
+                IssueEventTypeName.ISSUE_UPDATED, IssueEventTypeName.ISSUE_COMMENT_EDITED,
                 IssueEventTypeName.ISSUE_COMMENT_DELETED -> {
-                    if (notificationProperties.sendToMe) {
-                        return allIssueUsers(event.issue)
-                    }
-                    return allIssueUsers(event.issue)
+                    return allIssueUsersWithoutInitiator(event.issue, event.user)
                 }
             }
         }

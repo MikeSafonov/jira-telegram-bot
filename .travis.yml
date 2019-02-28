@@ -5,7 +5,16 @@ before_install:
 addons:
   sonarcloud:
     organization: "mikesafonov-github"
-jobs:
-  include:
-    - script: ./gradlew test
-    - script: sonar-scanner
+install:
+  - ./gradlew build --scan
+script:
+  - sonar-scanner
+
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/modules-2/
+    - $HOME/.gradle/wrapper/dists/

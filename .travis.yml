@@ -10,15 +10,6 @@ install:
 script:
   - sonar-scanner
 
-
-before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/modules-2/
-    - $HOME/.gradle/wrapper/dists/
-
 deploy:
   provider: releases
   api_key:  $GITHUB_OAUTH_TOKEN
@@ -27,3 +18,11 @@ deploy:
   draft: true
   on:
     tags: true
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/modules-2/
+    - $HOME/.gradle/wrapper/dists/

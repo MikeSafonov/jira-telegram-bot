@@ -5,6 +5,7 @@ before_install:
 addons:
   sonarcloud:
     organization: "mikesafonov-github"
-script:
-  - ./gradlew test
-  - sonar-scanner
+jobs:
+  include:
+    - script: ./gradlew test
+    - script: sonar-scanner

@@ -18,3 +18,12 @@ cache:
   directories:
     - $HOME/.gradle/caches/modules-2/
     - $HOME/.gradle/wrapper/dists/
+
+deploy:
+  provider: releases
+  api_key:  $GITHUB_OAUTH_TOKEN
+  file: "./build/libs/jira-telegram-bot.jar"
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: true

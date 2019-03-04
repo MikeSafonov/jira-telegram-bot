@@ -91,6 +91,7 @@ By default jira-telegram-bot process only following issue events:
 - issue_updated
 - issue_generic
 - issue_commented
+- issue_assigned
 
 If you want to process any other issue event or change default template you can modify corresponding row in jira-telegram-bot
 database table called **templates**.

@@ -30,15 +30,15 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
     }
 
     private fun requiredDestinations(event: Event): List<String> {
-        if (event.issue != null) {
-            when (event.issueEventTypeName) {
+        if (event.issue != null && event.issueEventTypeName != null) {
+            return when (event.issueEventTypeName) {
                 IssueEventTypeName.ISSUE_COMMENTED -> {
-                    return allIssueUsersWithoutInitiator(event.issue, event.comment?.author)
+                    allIssueUsersWithoutInitiator(event.issue, event.comment?.author)
                 }
                 IssueEventTypeName.ISSUE_CREATED, IssueEventTypeName.ISSUE_GENERIC,
                 IssueEventTypeName.ISSUE_UPDATED, IssueEventTypeName.ISSUE_COMMENT_EDITED,
-                IssueEventTypeName.ISSUE_COMMENT_DELETED -> {
-                    return allIssueUsersWithoutInitiator(event.issue, event.user)
+                IssueEventTypeName.ISSUE_COMMENT_DELETED, IssueEventTypeName.ISSUE_ASSIGNED -> {
+                    allIssueUsersWithoutInitiator(event.issue, event.user)
                 }
             }
         }

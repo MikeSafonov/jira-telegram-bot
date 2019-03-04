@@ -61,8 +61,13 @@ class EventService(
      */
     private fun sendMessagesToTelegram(destinationLogins: List<String>, template: CompiledTemplate) {
         destinationLogins.forEach {
+            val login = it
             chatRepository.findByJiraId(it)?.let {
-                telegramBot.sendMarkdownMessage(it.telegramId, template.message)
+                try {
+                    telegramBot.sendMarkdownMessage(it.telegramId, template.message)
+                } catch (e: Exception) {
+                    logger.error("Exception: ${e.message} when sending message to user $login with message: ${template.message}", e)
+                }
             }
         }
     }

@@ -32,6 +32,21 @@ class BotProperties {
      */
     var proxyPort: Int? = null
 
+    /**
+     * timeout in milliseconds until a connection is established
+     */
+    var connectionTimeout: Int = -1
+
+    /**
+     * timeout in milliseconds used when requesting a connection
+     */
+    var connectionRequestTimeout: Int = -1
+    /**
+     * the socket timeout in milliseconds, which is the timeout for waiting for data  or, put differently,
+     * a maximum period inactivity between two consecutive data packets)
+     */
+    var socketTimeout: Int = -1
+
     val isProxy: Boolean
         get() {
             return proxyHost != null && proxyPort != null

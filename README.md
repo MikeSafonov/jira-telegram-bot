@@ -75,6 +75,15 @@ locations:
 
   <dt>telegram.bot.proxyPort</dt>
   <dd>http proxy port</dd>
+  
+  <dt>telegram.bot.connectionTimeout</dt>
+  <dd>timeout in milliseconds until a connection is established</dd>
+  
+  <dt>telegram.bot.connectionRequestTimeout</dt>
+  <dd>timeout in milliseconds used when requesting a connection</dd>
+    
+  <dt>telegram.bot.socketTimeout</dt>
+  <dd>the socket timeout in milliseconds, which is the timeout for waiting for data  or, put differently, a maximum period inactivity between two consecutive data packets)</dd>
 </dl>
 
 

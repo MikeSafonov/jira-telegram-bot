@@ -370,7 +370,7 @@ data class Version(
     /**
      * version description
      */
-    val description: String,
+    val description: String?,
     /**
      * version name
      */

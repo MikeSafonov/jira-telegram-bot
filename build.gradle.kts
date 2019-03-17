@@ -75,6 +75,9 @@ dependencies {
     compile("com.h2database:h2")
     compile("mysql:mysql-connector-java")
     compile("org.flywaydb:flyway-core")
+    compile("com.atlassian.jira:jira-rest-java-client-core:5.1.2-2bd0a62e")
+    compile("com.google.oauth-client:google-oauth-client:1.28.0")
+    compile("com.google.http-client:google-http-client-jackson2:1.28.0")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 

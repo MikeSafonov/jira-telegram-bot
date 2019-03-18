@@ -12,4 +12,12 @@ abstract class BaseRequestHandler : TelegramRequestHandler{
             text = message
         }
     }
+
+    protected fun createMarkdownMessage(id: String, message: String): SendMessage {
+        return SendMessage().apply {
+            enableMarkdown(true)
+            chatId = id
+            text = message
+        }
+    }
 }

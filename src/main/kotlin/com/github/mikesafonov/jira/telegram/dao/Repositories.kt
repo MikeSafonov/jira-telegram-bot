@@ -19,3 +19,7 @@ interface ChatRepository : JpaRepository<Chat, Int> {
 interface TemplateRepository : JpaRepository<Template, Int> {
     fun findByKey(key: String): Template?
 }
+
+interface AuthorizationRepository : JpaRepository<Authorization, Long>{
+
+}

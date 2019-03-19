@@ -35,3 +35,16 @@ data class Template(
     @Column(name = "template", nullable = false)
     val template: String
 )
+
+@Entity
+@Table(name = "authorizations")
+data class Authorization(
+    @Id
+    val id: Long?,
+
+    @Column(name = "access_token")
+    var accessToken: String?,
+
+    @Column(name = "secret_token")
+    var secretToken: String?
+)

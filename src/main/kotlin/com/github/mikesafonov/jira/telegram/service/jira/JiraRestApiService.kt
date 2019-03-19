@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service
  */
 
 @Service
-class JiraRestApiService{
+class JiraRestApiService (private val jiraAuthService: JiraAuthService){
 
 }

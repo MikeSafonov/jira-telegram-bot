@@ -14,10 +14,9 @@ class JiraOAuthClient(
     /**
      * Gets temporary request token and creates url to authorize it
      *
-     * @param id telegram id
      * @return request token value, secret and authorize url
      */
-    fun getAndAuthorizeTemporaryToken(id: Long): JiraTempTokenAndAuthorizeUrl {
+    fun getAndAuthorizeTemporaryToken(): JiraTempTokenAndAuthorizeUrl {
         val temporaryToken = factory.getTempToken()
         val credentialsResponse = temporaryToken.execute()
         val authorizationURL = OAuthAuthorizeTemporaryTokenUrl(properties.authorizationUrl)

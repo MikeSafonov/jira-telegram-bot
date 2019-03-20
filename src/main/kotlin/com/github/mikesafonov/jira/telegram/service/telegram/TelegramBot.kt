@@ -6,7 +6,6 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 
 
@@ -20,10 +19,10 @@ private val logger = KotlinLogging.logger {}
 class TelegramBot(
     private val botProperties: BotProperties,
     private val handlers: List<TelegramRequestHandler>,
+    private val telegramMessageBuilder: TelegramMessageBuilder,
     options: DefaultBotOptions?
 ) :
     TelegramLongPollingBot(options) {
-
 
     override fun getBotToken(): String {
         return botProperties.token
@@ -40,20 +39,8 @@ class TelegramBot(
     }
 
     fun sendMarkdownMessage(user: Long, message: String) {
-        SendMessage().apply {
-            chatId = user.toString()
-            text = message
-            enableMarkdown(true)
-        }.also { execute(it) }
+        telegramMessageBuilder.createMarkdownMessage(user, message).also { execute(it) }
     }
-
-    fun sendTextMessage(user: String, message: String) {
-        SendMessage().apply {
-            chatId = user
-            text = message
-        }.also { execute(it) }
-    }
-
 
     /**
      * process [update]
@@ -65,7 +52,8 @@ class TelegramBot(
                 val botApiMethod = requestHandler.handle(update.message)
                 execute(botApiMethod)
             } else {
-                sendTextMessage(update.message.chatId.toString(), "Unknown command. Try /help command")
+                telegramMessageBuilder.createMessage(update.message.chatId, "Unknown command. Try /help command")
+                    .also { execute(it) }
             }
         }
         logger.debug(update.toString())

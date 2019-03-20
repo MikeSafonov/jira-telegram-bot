@@ -4,12 +4,14 @@ import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthTokenFactory
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.KeyReader
 import com.google.api.client.auth.oauth.OAuthRsaSigner
+import com.google.api.client.http.GenericUrl
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every
 import io.mockk.mockk
+import java.net.URL
 
 /**
  * @author Mike Safonov
@@ -30,8 +32,13 @@ class JiraOAuthTokenFactorySpec : BehaviorSpec({
             every { jiraOAuthProperties.consumerKey } returns consumerKey
             Then("Create token request with expected parameters") {
 
+                val url = URL(requestUrl)
                 val token = jiraOAuthTokenFactory.getTempToken()
 
+                token.host = url.host
+                token.port = url.port
+                token.scheme = url.protocol
+                token.pathParts = GenericUrl.toPathParts(url.path)
                 token.consumerKey shouldBe consumerKey
                 token.signer::class shouldBeSameInstanceAs  OAuthRsaSigner::class
             }
@@ -45,9 +52,13 @@ class JiraOAuthTokenFactorySpec : BehaviorSpec({
             every { jiraOAuthProperties.accessTokenUrl } returns requestUrl
             every { jiraOAuthProperties.consumerKey } returns consumerKey
             Then("Create token request with expected parameters") {
-
+                val url = URL(requestUrl)
                 val token = jiraOAuthTokenFactory.getAccessToken(secretToken, tempToken)
 
+                token.host = url.host
+                token.port = url.port
+                token.scheme = url.protocol
+                token.pathParts = GenericUrl.toPathParts(url.path)
                 token.consumerKey shouldBe consumerKey
                 token.temporaryToken shouldBe tempToken
                 token.verifier shouldBe secretToken

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.objects.Update
-import java.util.concurrent.ConcurrentHashMap
 
 
 private val logger = KotlinLogging.logger {}
@@ -24,8 +23,6 @@ class TelegramBot(
     options: DefaultBotOptions?
 ) :
     TelegramLongPollingBot(options) {
-
-    private val chatState = ConcurrentHashMap<Long, State>()
 
     override fun getBotToken(): String {
         return botProperties.token
@@ -60,9 +57,5 @@ class TelegramBot(
             }
         }
         logger.debug(update.toString())
-    }
-
-    private fun getTextCommand(message: String): String {
-        return message.split(" ")[0]
     }
 }

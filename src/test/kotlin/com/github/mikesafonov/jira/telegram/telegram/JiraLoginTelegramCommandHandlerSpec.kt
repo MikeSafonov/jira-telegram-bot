@@ -2,7 +2,7 @@ package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraLoginTelegramRequestHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraLoginTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -15,10 +15,10 @@ import org.telegram.telegrambots.meta.api.objects.Message
  * @author Mike Safonov
  */
 
-class JiraLoginTelegramRequestHandlerSpec : BehaviorSpec({
+class JiraLoginTelegramCommandHandlerSpec : BehaviorSpec({
 
     val chatRepository = mockk<ChatRepository>()
-    val handler = JiraLoginTelegramRequestHandler(chatRepository)
+    val handler = JiraLoginTelegramCommandHandler(chatRepository)
 
     Given("'/jira_login' telegram command handler") {
         When("incoming message contain wrong command") {

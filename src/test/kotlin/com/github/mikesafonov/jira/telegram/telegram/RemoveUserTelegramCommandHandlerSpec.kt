@@ -2,7 +2,7 @@ package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.RemoveUserTelegramRequestHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.RemoveUserTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -14,10 +14,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 /**
  * @author Mike Safonov
  */
-class RemoveUserTelegramRequestHandlerSpec : BehaviorSpec({
+class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
     val chatRepository = mockk<ChatRepository>()
     val botProperties = mockk<BotProperties>()
-    val handler = RemoveUserTelegramRequestHandler(botProperties, chatRepository)
+    val handler = RemoveUserTelegramCommandHandler(botProperties, chatRepository)
 
     Given("'/remove_user' telegram command handler") {
         When("incoming message contain wrong command and user not admin") {

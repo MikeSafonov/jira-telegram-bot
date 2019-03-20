@@ -3,7 +3,7 @@ package com.github.mikesafonov.jira.telegram.telegram
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.AddUserTelegramRequestHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.AddUserTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -15,10 +15,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 /**
  * @author Mike Safonov
  */
-class AddUserTelegramRequestHandlerSpec : BehaviorSpec({
+class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
     val chatRepository = mockk<ChatRepository>()
     val botProperties = mockk<BotProperties>()
-    val handler = AddUserTelegramRequestHandler(botProperties, chatRepository)
+    val handler = AddUserTelegramCommandHandler(botProperties, chatRepository)
 
     Given("'/add_user' telegram command handler") {
         When("incoming message contain wrong command and user not admin") {

@@ -1,7 +1,7 @@
 package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.HelpTelegramRequestHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.HelpTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -14,10 +14,10 @@ import org.telegram.telegrambots.meta.api.objects.Message
  * @author Mike Safonov
  */
 
-class HelpTelegramRequestHandlerSpec : BehaviorSpec({
+class HelpTelegramCommandHandlerSpec : BehaviorSpec({
 
     val botProperties = mockk<BotProperties>()
-    val handler = HelpTelegramRequestHandler(botProperties)
+    val handler = HelpTelegramCommandHandler(botProperties)
 
     Given("'/help' telegram command handler") {
         When("incoming message contain wrong command") {

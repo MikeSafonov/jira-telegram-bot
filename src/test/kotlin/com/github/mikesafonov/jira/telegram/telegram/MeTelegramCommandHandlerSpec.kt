@@ -1,6 +1,6 @@
 package com.github.mikesafonov.jira.telegram.telegram
 
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.MeTelegramRequestHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.MeTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -13,8 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Message
  * @author Mike Safonov
  */
 
-class MeTelegramRequestHandlerSpec : BehaviorSpec({
-    val handler = MeTelegramRequestHandler()
+class MeTelegramCommandHandlerSpec : BehaviorSpec({
+    val handler = MeTelegramCommandHandler()
 
     Given("'/me' telegram command handler") {
         When("incoming message contain wrong command") {

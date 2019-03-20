@@ -3,10 +3,12 @@ package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod
-import org.telegram.telegrambots.meta.api.objects.Message
 
 
 private val logger = KotlinLogging.logger {}
@@ -15,38 +17,41 @@ private val logger = KotlinLogging.logger {}
  * @author Mike Safonov
  */
 @Service
-class AddUserTelegramRequestHandler(
+class AddUserTelegramCommandHandler(
     botProperties: BotProperties,
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    private val telegramMessageBuilder: TelegramMessageBuilder
 ) :
-    AdminCommandTelegramRequestHandler(botProperties) {
+    AdminCommandTelegramCommandHandler(botProperties) {
 
     private val commandPrefix = "/add_user"
 
-    override fun isHandle(message: Message): Boolean {
-        return isAdminUser(message) && message.text.startsWith(commandPrefix)
+    override fun isHandle(command: TelegramCommand): Boolean {
+        return isAdminUser(command) && isInState(command, State.INIT) && isStartsWithText(command, commandPrefix)
     }
 
-    override fun handle(message: Message): BotApiMethod<Message> {
-        val id = message.chatId.toString()
-        val commandArgs = getCommandArgs(message.text)
-        if (commandArgs.size < 3) {
-            return createMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin> <telegramId>")
+    override fun handle(command: TelegramCommand): TelegramCommandResponse {
+        val id = command.chatId
+        val commandArgs = getCommandArgs(command.text!!)
+        val method = if (commandArgs.size < 3) {
+            telegramMessageBuilder.createMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin> <telegramId>")
         } else {
-            return try {
+            try {
                 val jiraLogin = validateJiraLogin(commandArgs[1])
                 val telegramId = validateTelegramId(commandArgs[2].toLong())
                 addNewChat(jiraLogin, telegramId)
-                createMessage(id, "Jira user $jiraLogin with telegram id $telegramId was added successfully")
+                telegramMessageBuilder.createMessage(id, "Jira user $jiraLogin with telegram id $telegramId was added successfully")
             } catch (e: NumberFormatException) {
-                createMessage(id, "Wrong command args: telegramId must be a positive number")
+                telegramMessageBuilder.createMessage(id, "Wrong command args: telegramId must be a positive number")
             } catch (e: AddUserBotException) {
-                createMessage(id, e.message ?: "")
+                telegramMessageBuilder.createMessage(id, e.message!!)
             } catch (e: Exception) {
                 logger.error(e.message, e)
-                createMessage(id, "Unexpected error")
+                telegramMessageBuilder.createMessage(id, "Unexpected error")
             }
         }
+
+        return TelegramCommandResponse(method, State.INIT)
     }
 
     /**
@@ -113,7 +118,7 @@ class AddUserTelegramRequestHandler(
     }
 
     private fun addNewChat(jiraLogin: String, telegramId: Long) {
-        val chat = Chat(null, jiraLogin, telegramId)
+        val chat = Chat(null, jiraLogin, telegramId, State.INIT)
         chatRepository.save(chat)
     }
 }

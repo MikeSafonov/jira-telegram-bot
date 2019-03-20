@@ -192,7 +192,7 @@ data class IssueFields(
 )
 
 /**
- * Issue typ
+ * Issue type
  * @author Mike Safonov
  */
 data class IssueType(

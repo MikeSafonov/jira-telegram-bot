@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.WebHookEvent
 import com.github.mikesafonov.jira.telegram.generators.EventGen
@@ -183,7 +184,8 @@ class EventServiceSpec : BehaviorSpec() {
                         every { chatRepository.findByJiraId(destinationLogin) } returns Chat(
                             Gen.int().random().first(),
                             destinationLogin,
-                            telegramId
+                            telegramId,
+                            State.INIT
                         )
                         every { telegramBot.sendMarkdownMessage(any(), any()) } answers {}
 

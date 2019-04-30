@@ -3,6 +3,10 @@ package com.github.mikesafonov.jira.telegram.telegram
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.AddUserTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
@@ -18,63 +22,110 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
     val chatRepository = mockk<ChatRepository>()
     val botProperties = mockk<BotProperties>()
-    val handler = AddUserTelegramCommandHandler(botProperties, chatRepository)
 
     Given("'/add_user' telegram command handler") {
+        val handler = AddUserTelegramCommandHandler(botProperties, chatRepository, TelegramMessageBuilder())
+
         When("incoming message contain wrong command and user not admin") {
-            Then("isHandle returns false") {
-                every { botProperties.adminId } returns null
-                handler.isHandle(mockk {
+            every { botProperties.adminId } returns null
+            val command: TelegramCommand = mockk {
+                every { message } returns mockk {
                     every { text } returns Gen.string().random().first()
-                }) shouldBe false
+                }
+            }
+
+            Then("isHandle returns false") {
+                handler.isHandle(command) shouldBe false
             }
         }
 
         When("incoming message contain right command and user not admin") {
+            every { botProperties.adminId } returns null
+            val command: TelegramCommand = mockk {
+                every { message } returns mockk {
+                    every { text } returns "/add_user"
+                }
+            }
+
             Then("isHandle returns false") {
-                every { botProperties.adminId } returns null
                 handler.isHandle(
-                    mockk {
-                        every { text } returns "/add_user"
-                    }) shouldBe false
+                    command
+                ) shouldBe false
             }
         }
 
         When("incoming message contain wrong command and user admin") {
+            val admin = Gen.long().random().first()
+            every { botProperties.adminId } returns admin
+            val command: TelegramCommand = mockk {
+                every { text } returns Gen.string().random().first()
+                every { chatId } returns admin
+                every { hasText } returns true
+                every { chat } returns mockk {
+                    every { state } returns State.INIT
+                }
+            }
+
             Then("isHandle returns false") {
-                val admin = Gen.long().random().first()
-                every { botProperties.adminId } returns admin
-                handler.isHandle(mockk {
-                    every { text } returns Gen.string().random().first()
-                    every { chatId } returns admin
-                }) shouldBe false
+                handler.isHandle(command) shouldBe false
+            }
+        }
+
+        When("incoming message contain right command and user admin, but not INIT state") {
+            val admin = Gen.long().random().first()
+            every { botProperties.adminId } returns admin
+            val command: TelegramCommand = mockk {
+                every { text } returns "/add_user"
+                every { chatId } returns admin
+                every { hasText } returns true
+                every { chat } returns mockk {
+                    every { state } returns State.WAIT_APPROVE
+                }
+            }
+
+            Then("isHandle returns false") {
+                handler.isHandle(
+                    command
+                ) shouldBe false
             }
         }
 
         When("incoming message contain right command and user admin") {
+            val admin = Gen.long().random().first()
+            every { botProperties.adminId } returns admin
+            val command: TelegramCommand = mockk {
+                every { text } returns "/add_user"
+                every { chatId } returns admin
+                every { hasText } returns true
+                every { chat } returns mockk {
+                    every { state } returns State.INIT
+                }
+            }
+
             Then("isHandle returns true") {
-                val admin = Gen.long().random().first()
-                every { botProperties.adminId } returns admin
                 handler.isHandle(
-                    mockk {
-                        every { text } returns "/add_user"
-                        every { chatId } returns admin
-                    }) shouldBe true
+                    command
+                ) shouldBe true
             }
         }
 
+
         When("incoming message not contain expected arguments") {
+            val messageChatId = Gen.long().random().first()
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user"
+            }
+
             Then("returns message with text about command correct syntax") {
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Wrong command syntax\n Should be: /add_user <jiraLogin> <telegramId>"
-                }
+                }, State.INIT)
+
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
 
                 handler.handle(
                     mockk {
@@ -85,123 +136,147 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("jiraLogin in incoming message exists in database") {
+            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val telegramId = Gen.string().random().first().replace(" ", "_")
+            val messageChatId = Gen.long().random().first()
+            every { chatRepository.findByJiraId(jiraLogin) } returns Chat(
+                Gen.int().random().first(),
+                jiraLogin, Gen.long().random().first(), State.INIT
+            )
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user $jiraLogin $telegramId"
+            }
             Then("returns message with text about jira login exists in database") {
-                val jiraLogin = Gen.string().random().first().replace(" ", "_")
-                val telegramId = Gen.string().random().first().replace(" ", "_")
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Jira login $jiraLogin already exist"
-                }
-                every { chatRepository.findByJiraId(jiraLogin) } returns Chat(
-                    Gen.int().random().first(),
-                    jiraLogin, Gen.long().random().first()
-                )
+                }, State.INIT)
+
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user $jiraLogin $telegramId"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
             }
         }
 
         When("telegramId in incoming message is not a number") {
+            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val telegramId = Gen.string().random().first().replace(" ", "_")
+            val messageChatId = Gen.long().random().first()
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user $jiraLogin $telegramId"
+            }
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+
+
             Then("returns message with text about telegramId must be non negative number") {
-                val jiraLogin = Gen.string().random().first().replace(" ", "_")
-                val telegramId = Gen.string().random().first().replace(" ", "_")
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Wrong command args: telegramId must be a positive number"
-                }
-                every { chatRepository.findByJiraId(jiraLogin) } returns null
+                }, State.INIT)
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user $jiraLogin $telegramId"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
             }
         }
 
         When("telegramId in incoming message is negative") {
+            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val telegramId = -1000
+            val messageChatId = Gen.long().random().first()
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user $jiraLogin $telegramId"
+            }
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+
             Then("returns message with text about telegramId must not be negative") {
-                val jiraLogin = Gen.string().random().first().replace(" ", "_")
-                val telegramId = -1000
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Wrong command args: telegramId must be a positive number"
-                }
-                every { chatRepository.findByJiraId(jiraLogin) } returns null
+                }, State.INIT)
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user $jiraLogin $telegramId"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
             }
         }
 
         When("telegramId in incoming message exists in database") {
+            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val telegramId = Gen.long().random().first()
+            val messageChatId = Gen.long().random().first()
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+            every { chatRepository.findByTelegramId(telegramId) } returns Chat(
+                Gen.int().random().first(),
+                Gen.string().random().first(), telegramId, State.INIT
+            )
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user $jiraLogin $telegramId"
+            }
             Then("returns message with text about telegramId exists in database") {
-                val jiraLogin = Gen.string().random().first().replace(" ", "_")
-                val telegramId = Gen.long().random().first()
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Telegram id $telegramId already exist"
-                }
-                every { chatRepository.findByJiraId(jiraLogin) } returns null
-                every { chatRepository.findByTelegramId(telegramId) } returns Chat(
-                    Gen.int().random().first(),
-                    Gen.string().random().first(), telegramId
-                )
+                }, State.INIT)
+
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user $jiraLogin $telegramId"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
             }
         }
 
         When("exception fired when saving new chat to database") {
+            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val telegramId = Gen.long().random().first()
+            val messageChatId = Gen.long().random().first()
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+            every { chatRepository.findByTelegramId(telegramId) } returns null
+            val chat = Chat(null, jiraLogin, telegramId, State.INIT)
+            every { chatRepository.save(chat) } throws RuntimeException("")
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user $jiraLogin $telegramId"
+            }
+
             Then("returns message with text about unexpected exception") {
-                val jiraLogin = Gen.string().random().first().replace(" ", "_")
-                val telegramId = Gen.long().random().first()
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Unexpected error"
-                }
-                every { chatRepository.findByJiraId(jiraLogin) } returns null
-                every { chatRepository.findByTelegramId(telegramId) } returns null
-                val chat = Chat(null, jiraLogin, telegramId)
-                every { chatRepository.save(chat) } throws RuntimeException("")
+                }, State.INIT)
+
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user $jiraLogin $telegramId"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
             }
         }
 
         When("successfully saved in database") {
+            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val telegramId = Gen.long().random().first()
+            val messageChatId = Gen.long().random().first()
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+            every { chatRepository.findByTelegramId(telegramId) } returns null
+            val chat = Chat(null, jiraLogin, telegramId, State.INIT)
+            every { chatRepository.save(chat) } returns chat
+            val command: TelegramCommand = mockk {
+                every { chatId } returns messageChatId
+                every { text } returns "/add_user $jiraLogin $telegramId"
+            }
             Then("returns message with text about new chat") {
-                val jiraLogin = Gen.string().random().first().replace(" ", "_")
-                val telegramId = Gen.long().random().first()
-                val messageChatId = Gen.long().random().first()
-                val expectedMessage = SendMessage().apply {
+
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = messageChatId.toString()
                     text = "Jira user $jiraLogin with telegram id $telegramId was added successfully"
-                }
-                every { chatRepository.findByJiraId(jiraLogin) } returns null
-                every { chatRepository.findByTelegramId(telegramId) } returns null
-                val chat = Chat(null, jiraLogin, telegramId)
-                every { chatRepository.save(chat) } returns chat
+                }, State.INIT)
+
                 handler.handle(
-                    mockk {
-                        every { text } returns "/add_user $jiraLogin $telegramId"
-                        every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    command
+                ) shouldBe expectedMessage
                 verify {
                     chatRepository.save(chat)
                 }

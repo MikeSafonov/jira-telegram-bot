@@ -38,6 +38,22 @@ or
 
     ./jira-telegram-bot
 
+### Building and running app with Docker and docker-compose
+
+ - For building the application and creation Docker image run
+ 
+    docker-compose build
+
+ - Customise configs with you prefered editor
+
+   place configs in ./config directory 
+ 
+ - Add to  docker-compose.yaml your prefered database service  
+
+ - Run the docker image  
+
+     docker-compose up -d
+
 ### Configuration
 
 You can see all the necessary configuration properties in the file [example/application.properties](examples/application.properties)

@@ -25,7 +25,7 @@ class RemoveUserTelegramCommandHandler(
     private val commandPrefix = "/remove_user"
 
     override fun isHandle(command: TelegramCommand): Boolean {
-        return isAdminUser(command) && isInState(command, State.INIT) &&  isStartsWithText(command, commandPrefix)
+        return super.isHandle(command) && isInState(command, State.INIT) &&  isStartsWithText(command, commandPrefix)
     }
 
     @Transactional

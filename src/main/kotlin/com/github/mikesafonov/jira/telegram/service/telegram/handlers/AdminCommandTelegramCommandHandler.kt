@@ -8,8 +8,7 @@ import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
  */
 abstract class AdminCommandTelegramCommandHandler(private val botProperties: BotProperties) : BaseCommandHandler() {
 
-    protected fun isAdminUser(command: TelegramCommand): Boolean {
+    override fun isHandle(command: TelegramCommand): Boolean {
         return botProperties.adminId != null && botProperties.adminId == command.chatId
     }
-
 }

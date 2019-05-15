@@ -16,7 +16,11 @@ data class Chat(
     val jiraId: String,
 
     @Column(name = "telegram_id", nullable = false)
-    val telegramId: Long
+    val telegramId: Long,
+
+    @Column(name = "state", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    var state : State
 )
 
 /**
@@ -48,3 +52,8 @@ data class Authorization(
     @Column(name = "secret_token")
     var secretToken: String?
 )
+
+enum class State {
+    INIT,
+    WAIT_APPROVE
+}

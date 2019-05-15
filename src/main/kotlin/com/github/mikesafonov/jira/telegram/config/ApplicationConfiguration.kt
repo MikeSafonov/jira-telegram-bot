@@ -26,11 +26,11 @@ class ApplicationConfiguration {
             .setSocketTimeout(botProperties.socketTimeout)
             .setConnectionRequestTimeout(botProperties.connectionRequestTimeout)
             .setConnectTimeout(botProperties.connectionTimeout)
-        if (botProperties.isProxy) {
+        botOptions.requestConfig = if (botProperties.isProxy) {
             val proxy = HttpHost(botProperties.proxyHost, botProperties.proxyPort!!)
-            botOptions.requestConfig = requestConfigBuilder.setProxy(proxy).build()
+            requestConfigBuilder.setProxy(proxy).build()
         } else {
-            botOptions.requestConfig = requestConfigBuilder.build()
+            requestConfigBuilder.build()
         }
         return botOptions
     }

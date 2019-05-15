@@ -2,11 +2,10 @@ package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
-import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraTempTokenAndAuthorizeUrl
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthTelegramCommandHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthApproveTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -17,18 +16,15 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 /**
  * @author Mike Safonov
  */
-class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
+class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
     val jiraAuthService = mockk<JiraAuthService>()
     val telegramMessageBuilder = TelegramMessageBuilder()
 
-    Given("jira '/auth' command handler") {
-        val handler = JiraAuthTelegramCommandHandler(jiraAuthService, telegramMessageBuilder)
+    Given("jira auth approve command handler") {
+        val handler = JiraAuthApproveTelegramCommandHandler(jiraAuthService, telegramMessageBuilder)
 
-        When("incoming message contain wrong command") {
-
+        When("incoming message contain wrong state") {
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
-                every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
@@ -38,25 +34,10 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
             }
         }
 
-        When("incoming message contain right command and wrong state") {
+        When("incoming message contain right state") {
             val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
-                every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
-                }
-            }
-            Then("isHandle returns false") {
-                handler.isHandle(command) shouldBe false
-            }
-        }
-
-        When("incoming message contain right command") {
-            val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
-                every { hasText } returns true
-                every { chat } returns mockk {
-                    every { state } returns State.INIT
                 }
             }
             Then("isHandle returns true") {
@@ -64,58 +45,79 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
             }
         }
 
-        When("unable to crate temporary token") {
+        When("command without text") {
             val telegramChatId = 1L
             val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
+                every { text } returns null
                 every { chatId } returns telegramChatId
-                every { hasText } returns true
                 every { chat } returns mockk {
-                    every { state } returns State.INIT
+                    every { state } returns State.WAIT_APPROVE
                 }
             }
 
             every { jiraAuthService.createTemporaryToken(telegramChatId) } throws RuntimeException()
 
-            Then("return unexpected error") {
+            Then("return wrong command syntax") {
 
                 val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = telegramChatId.toString()
-                    text = "Unexpected error: unable to create temporary access token"
+                    text = "Wrong command syntax\n Should be: <verification code>"
                 }, State.INIT)
 
                 handler.handle(command) shouldBe expectedMessage
             }
         }
 
-        When("successful crate temporary token") {
+        When("unable to crate access token") {
             val telegramChatId = 1L
+            val code = Gen.string().random().first()
+
             val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
+                every { text } returns code
                 every { chatId } returns telegramChatId
                 every { hasText } returns true
                 every { chat } returns mockk {
-                    every { state } returns State.INIT
+                    every { state } returns State.WAIT_APPROVE
                 }
             }
 
-            val tempToken = JiraTempTokenAndAuthorizeUrl(
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first()
-            )
-            every { jiraAuthService.createTemporaryToken(telegramChatId) } returns tempToken
+            every { jiraAuthService.createAccessToken(telegramChatId, code) } throws RuntimeException()
 
-            Then("return jira access url") {
+            Then("return unexpected error") {
 
                 val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = telegramChatId.toString()
-                    text = """Please allow access [Jira Access](${tempToken.url})"""
-                    enableMarkdown(true)
-                }, State.WAIT_APPROVE)
+                    text = "Unexpected error"
+                }, State.INIT)
 
                 handler.handle(command) shouldBe expectedMessage
             }
         }
+
+        When("successful crate access token") {
+            val telegramChatId = 1L
+            val code = Gen.string().random().first()
+            val command: TelegramCommand = mockk {
+                every { text } returns code
+                every { chatId } returns telegramChatId
+                every { hasText } returns true
+                every { chat } returns mockk {
+                    every { state } returns State.WAIT_APPROVE
+                }
+            }
+
+            every { jiraAuthService.createAccessToken(telegramChatId, code) } returns Unit
+
+            Then("return authorization success") {
+
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
+                    chatId = telegramChatId.toString()
+                    text = "Authorization success!"
+                }, State.INIT)
+
+                handler.handle(command) shouldBe expectedMessage
+            }
+        }
+
     }
 })

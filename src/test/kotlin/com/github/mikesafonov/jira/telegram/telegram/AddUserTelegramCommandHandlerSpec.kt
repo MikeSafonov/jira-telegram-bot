@@ -4,6 +4,7 @@ import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
@@ -24,7 +25,8 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
     val botProperties = mockk<BotProperties>()
 
     Given("'/add_user' telegram command handler") {
-        val handler = AddUserTelegramCommandHandler(botProperties, chatRepository, TelegramMessageBuilder())
+        val chatService = ChatService(chatRepository)
+        val handler = AddUserTelegramCommandHandler(botProperties, chatService, TelegramMessageBuilder())
 
         When("incoming message contain wrong command and user not admin") {
             every { botProperties.adminId } returns null
@@ -137,7 +139,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
 
         When("jiraLogin in incoming message exists in database") {
             val jiraLogin = Gen.string().random().first().replace(" ", "_")
-            val telegramId = Gen.string().random().first().replace(" ", "_")
+            val telegramId = Gen.long().random().first()
             val messageChatId = Gen.long().random().first()
             every { chatRepository.findByJiraId(jiraLogin) } returns Chat(
                 Gen.int().random().first(),

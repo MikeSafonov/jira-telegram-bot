@@ -2,7 +2,6 @@ package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
-import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -12,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message
  */
 @Service
 class TelegramCommandExecutor(
-    private val handlers: List<TelegramCommandHandler>,
+    private val holder: TelegramHandlersHolder,
     private val chatRepository: ChatRepository,
     private val telegramMessageBuilder: TelegramMessageBuilder
 ) {
@@ -33,7 +32,7 @@ class TelegramCommandExecutor(
      * Find first handler for [command] and handle it. If no handlers return unknown command response
      */
     private fun executeByHandler(command: TelegramCommand): TelegramCommandResponse {
-        val handler = handlers.find { it.isHandle(command) }
+        val handler = holder.findHandler(command)
         return handler?.handle(command) ?: unknownCommandResponse(command)
     }
 
@@ -47,15 +46,17 @@ class TelegramCommandExecutor(
         }
     }
 
-    private fun unknownChatResponse(command: TelegramCommand) : TelegramCommandResponse {
-        return TelegramCommandResponse(telegramMessageBuilder.createMessage(
-            command.chatId,
-            "You not registered at this bot yet. Please contact your system administrator for registration."
-        ),
-            State.INIT)
+    private fun unknownChatResponse(command: TelegramCommand): TelegramCommandResponse {
+        return TelegramCommandResponse(
+            telegramMessageBuilder.createMessage(
+                command.chatId,
+                "You not registered at this bot yet. Please contact your system administrator for registration."
+            ),
+            State.INIT
+        )
     }
 
-    private fun unknownCommandResponse(command: TelegramCommand) : TelegramCommandResponse {
+    private fun unknownCommandResponse(command: TelegramCommand): TelegramCommandResponse {
         return TelegramCommandResponse(
             telegramMessageBuilder.createMessage(
                 command.chatId,

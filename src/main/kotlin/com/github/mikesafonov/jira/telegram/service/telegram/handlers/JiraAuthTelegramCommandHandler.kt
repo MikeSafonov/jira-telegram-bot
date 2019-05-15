@@ -30,7 +30,7 @@ class JiraAuthTelegramCommandHandler(
             TelegramCommandResponse(telegramMessageBuilder.createMarkdownMessage(id, text), State.WAIT_APPROVE)
         } catch (e: Exception) {
             logger.error(e.message, e)
-            TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Unexpected error"), State.INIT)
+            TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Unexpected error: unable to create temporary access token"), State.INIT)
         }
     }
 }

@@ -25,7 +25,7 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
         val handler = HelpTelegramCommandHandler(botProperties, TelegramMessageBuilder())
 
         When("incoming message contain wrong command") {
-            val command : TelegramCommand = mockk {
+            val command: TelegramCommand = mockk {
                 every { text } returns Gen.string().random().first()
                 every { hasText } returns true
                 every { chat } returns mockk {
@@ -38,8 +38,8 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and wrong state ") {
-            val command : TelegramCommand = mockk {
-                every { text } returns  "/help"
+            val command: TelegramCommand = mockk {
+                every { text } returns "/help"
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
@@ -47,13 +47,14 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
             }
             Then("isHandle returns false") {
                 handler.isHandle(
-                    command) shouldBe false
+                    command
+                ) shouldBe false
             }
         }
 
         When("incoming message contain right command ") {
-            val command : TelegramCommand = mockk {
-                every { text } returns  "/help"
+            val command: TelegramCommand = mockk {
+                every { text } returns "/help"
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
@@ -61,7 +62,8 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
             }
             Then("isHandle returns true") {
                 handler.isHandle(
-                    command) shouldBe true
+                    command
+                ) shouldBe true
             }
         }
 
@@ -72,10 +74,7 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns randomChatId
             }
 
-            val helpMessage = """This is jira-telegram-bot. Supported commands:
-/me - prints telegram chat id
-/jira_login - prints attached jira login to this telegram chat id
-/help - prints help message""".trimMargin()
+            val helpMessage = HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE
             val id = message.chatId
             Then("Should return expected help message") {
 
@@ -91,18 +90,11 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
         When("Message processing and user admin") {
             val admin = Gen.long().random().first()
             every { botProperties.adminId } returns admin
-            val message : TelegramCommand = mockk {
+            val message: TelegramCommand = mockk {
                 every { chatId } returns admin
             }
 
-            val helpMessage = """This is jira-telegram-bot. Supported commands:
-/me - prints telegram chat id
-/jira_login - prints attached jira login to this telegram chat id
-/help - prints help message
-/users_list - prints list of users
-/add_user <jiraLogin> <telegramId> -  add new user to bot
-/remove_user <jiraLogin> - remove user from bot
-                    """.trimMargin()
+            val helpMessage = HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE
             val id = message.chatId
             Then("Should return expected help message") {
 

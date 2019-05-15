@@ -15,13 +15,15 @@ class HelpTelegramCommandHandler(
     private val botProperties: BotProperties,
     private val telegramMessageBuilder: TelegramMessageBuilder
 ) : BaseCommandHandler() {
-    override fun isHandle(command: TelegramCommand): Boolean {
-        return isInState(command, State.INIT) && isMatchText(command, "/help")
-    }
 
-    override fun handle(command: TelegramCommand): TelegramCommandResponse {
-        val helpMessage = if (isAdminUser(command.chatId)) {
-            """This is jira-telegram-bot. Supported commands:
+    companion object{
+        val DEFAULT_HELP_MESSAGE = """This is jira-telegram-bot. Supported commands:
+/me - prints telegram chat id
+/jira_login - prints attached jira login to this telegram chat id
+/help - prints help message
+                    """.trimMargin()
+
+        val ADMIN_HELP_MESSAGE = """This is jira-telegram-bot. Supported commands:
 /me - prints telegram chat id
 /jira_login - prints attached jira login to this telegram chat id
 /help - prints help message
@@ -29,12 +31,18 @@ class HelpTelegramCommandHandler(
 /add_user <jiraLogin> <telegramId> -  add new user to bot
 /remove_user <jiraLogin> - remove user from bot
                     """.trimMargin()
+    }
+
+
+    override fun isHandle(command: TelegramCommand): Boolean {
+        return isInState(command, State.INIT) && isMatchText(command, "/help")
+    }
+
+    override fun handle(command: TelegramCommand): TelegramCommandResponse {
+        val helpMessage = if (isAdminUser(command.chatId)) {
+            ADMIN_HELP_MESSAGE
         } else {
-            """This is jira-telegram-bot. Supported commands:
-/me - prints telegram chat id
-/jira_login - prints attached jira login to this telegram chat id
-/help - prints help message
-                    """.trimMargin()
+            DEFAULT_HELP_MESSAGE
         }
         return TelegramCommandResponse(telegramMessageBuilder.createMessage(command.chatId, helpMessage), State.INIT)
     }

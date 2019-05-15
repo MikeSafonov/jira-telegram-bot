@@ -13,7 +13,7 @@ abstract class BaseCommandHandler : TelegramCommandHandler {
     }
 
     protected fun isInState(command: TelegramCommand, state: State): Boolean {
-        return isChatExist(command) && command.chat!!.state == state
+        return command.chat != null && command.chat.state == state
     }
 
     protected fun isMatchText(command: TelegramCommand, text : String) : Boolean {

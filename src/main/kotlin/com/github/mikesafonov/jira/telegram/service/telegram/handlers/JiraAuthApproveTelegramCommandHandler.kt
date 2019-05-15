@@ -25,7 +25,7 @@ class JiraAuthApproveTelegramCommandHandler(
 
     override fun handle(command: TelegramCommand): TelegramCommandResponse {
         val id = command.chatId
-        return if (command.text == null) {
+        return if (command.text.isNullOrBlank()) {
             TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Wrong command syntax\n Should be: <verification code>"), State.INIT)
         } else {
             try {

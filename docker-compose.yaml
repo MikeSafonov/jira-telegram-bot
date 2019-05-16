@@ -1,0 +1,4 @@
+jira-telegram-bot:
+  build:  .
+  volumes:
+    - ./config:/app/config

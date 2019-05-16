@@ -24,8 +24,8 @@ repositories {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "5.2.1"
-    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = "5.4.1"
+    distributionType = Wrapper.DistributionType.BIN
 }
 
 tasks.getByName<BootJar>("bootJar") {
@@ -104,6 +104,6 @@ tasks.test {
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
-    
+
     publishAlways()
 }

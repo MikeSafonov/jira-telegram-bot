@@ -31,6 +31,10 @@ class JiraAuthApproveTelegramCommandHandler(
             try {
                 jiraAuthService.createAccessToken(id, command.text!!)
                 TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Authorization success!"), State.INIT)
+            } catch (e: HttpResponseException) {
+                logger.error(e.message, e)
+                val message = "${e.statusCode} ${e.content}"
+                TelegramCommandResponse(telegramMessageBuilder.createMessage(id, message), State.INIT)
             } catch (e: Exception) {
                 logger.error(e.message, e)
                 TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Unexpected error"), State.INIT)

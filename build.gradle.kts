@@ -69,6 +69,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
@@ -79,6 +80,9 @@ dependencies {
 
     implementation("io.github.microutils:kotlin-logging:1.6.22")
     implementation("org.apache.logging.log4j:log4j-web")
+
+    implementation ("io.micrometer:micrometer-core")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")

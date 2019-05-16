@@ -152,3 +152,20 @@ Admin commands:
 - /users_list - prints list of users
 - /add_user *jiraLogin* *telegramId* -  add new user to bot
 - /remove_user *jiraLogin* - remove user from bot
+
+
+### Monitoring using [Prometheus](https://prometheus.io)
+
+You can access prometheus metrics by url: 
+
+    {host:port}/actuator/prometheus
+    
+Jira bot comes with next custom counter metrics:
+
+<dl>
+  <dt>jira_bot_event_counter</dt>
+  <dd>number of incoming events</dd>
+  
+  <dt>jira_bot_event_error_counter</dt>
+  <dd>number of incoming events with an error</dd>
+ </dl>

@@ -185,6 +185,11 @@ To use Jira OAuth in Jira-telegram-bot you must provide next properties:
   <dd>client RSA private key</dd>
 </dl>
 
+
+After all properties configured properly new telegram command will be allowed:
+
+    /auth
+
 ### Monitoring using [Prometheus](https://prometheus.io)
 
 You can access prometheus metrics by url: 

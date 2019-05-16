@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
+import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
@@ -13,10 +14,11 @@ import org.springframework.stereotype.Service
 @Service
 class HelpTelegramCommandHandler(
     private val botProperties: BotProperties,
+    private val jiraOAuthProperties: JiraOAuthProperties,
     private val telegramMessageBuilder: TelegramMessageBuilder
 ) : BaseCommandHandler() {
 
-    companion object{
+    companion object {
         val DEFAULT_HELP_MESSAGE = """This is jira-telegram-bot. Supported commands:
 /me - prints telegram chat id
 /jira_login - prints attached jira login to this telegram chat id
@@ -44,7 +46,22 @@ class HelpTelegramCommandHandler(
         } else {
             DEFAULT_HELP_MESSAGE
         }
-        return TelegramCommandResponse(telegramMessageBuilder.createMessage(command.chatId, helpMessage), State.INIT)
+
+        if (jiraOAuthProperties.isNotEmpty) {
+            val helpMessageWithJiraCommands = helpMessage + """
+                /auth - start jira OAuth
+            """.trimIndent()
+            return TelegramCommandResponse(
+                telegramMessageBuilder.createMessage(command.chatId, helpMessageWithJiraCommands),
+                State.INIT
+            )
+
+        } else {
+            return TelegramCommandResponse(
+                telegramMessageBuilder.createMessage(command.chatId, helpMessage),
+                State.INIT
+            )
+        }
     }
 
 

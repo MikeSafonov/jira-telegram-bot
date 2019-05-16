@@ -12,4 +12,15 @@ class JiraOAuthProperties {
     var authorizationUrl: String = ""
     var accessTokenUrl: String = ""
     var requestTokenUrl: String = ""
+
+
+    val isNotEmpty: Boolean
+        get() {
+            return accessTokenUrl.isNotBlank() &&
+                    authorizationUrl.isNotBlank() &&
+                    consumerKey.isNotBlank() &&
+                    privateKey.isNotBlank() &&
+                    requestTokenUrl.isNotBlank()
+        }
+
 }

@@ -1,5 +1,6 @@
 package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
+import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
@@ -14,6 +15,7 @@ private val logger = KotlinLogging.logger {}
  * @author Mike Safonov
  */
 @Service
+@ConditionalOnJiraOAuth
 class JiraAuthTelegramCommandHandler(
     private val jiraAuthService: JiraAuthService,
     private val telegramMessageBuilder: TelegramMessageBuilder

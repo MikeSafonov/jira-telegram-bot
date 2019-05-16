@@ -1,11 +1,13 @@
 package com.github.mikesafonov.jira.telegram.service.jira.oauth
 
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
+import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import com.google.api.client.auth.oauth.OAuthAuthorizeTemporaryTokenUrl
 import com.google.api.client.auth.oauth.OAuthParameters
 import org.springframework.stereotype.Service
 
 @Service
+@ConditionalOnJiraOAuth
 class JiraOAuthClient(
     private val factory: JiraOAuthTokenFactory,
     private val properties: JiraOAuthProperties

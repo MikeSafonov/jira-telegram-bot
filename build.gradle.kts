@@ -18,7 +18,6 @@ apply(plugin = "io.spring.dependency-management")
 group = "com.github.mikesafonov"
 version = "1.1.0"
 
-
 repositories {
     mavenCentral()
     jcenter()
@@ -30,6 +29,7 @@ tasks.withType<Wrapper> {
 }
 
 tasks.getByName<BootJar>("bootJar") {
+    archiveFileName.set("jira-telegram-bot.jar")
     launchScript()
 }
 

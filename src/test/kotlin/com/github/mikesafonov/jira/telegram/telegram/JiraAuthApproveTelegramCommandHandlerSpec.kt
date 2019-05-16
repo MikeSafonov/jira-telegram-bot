@@ -6,6 +6,8 @@ import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthApproveTelegramCommandHandler
+import com.google.api.client.http.HttpHeaders
+import com.google.api.client.http.HttpResponseException
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -68,7 +70,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             }
         }
 
-        When("unable to crate access token") {
+        When("unable to create access token") {
             val telegramChatId = 1L
             val code = Gen.string().random().first()
 
@@ -94,7 +96,36 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             }
         }
 
-        When("successful crate access token") {
+        When("return 401 status") {
+            val telegramChatId = 1L
+            val code = Gen.string().random().first()
+
+            val command: TelegramCommand = mockk {
+                every { text } returns code
+                every { chatId } returns telegramChatId
+                every { hasText } returns true
+                every { chat } returns mockk {
+                    every { state } returns State.WAIT_APPROVE
+                }
+            }
+
+            val message = "oauth_problem=permission_unknown"
+            val exception = HttpResponseException.Builder(401, message, HttpHeaders()).setContent(message).build()
+
+            every { jiraAuthService.createAccessToken(telegramChatId, code) } throws exception
+
+            Then("return unexpected error") {
+
+                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
+                    chatId = telegramChatId.toString()
+                    text = "401 $message"
+                }, State.INIT)
+
+                handler.handle(command) shouldBe expectedMessage
+            }
+        }
+
+        When("successful create access token") {
             val telegramChatId = 1L
             val code = Gen.string().random().first()
             val command: TelegramCommand = mockk {

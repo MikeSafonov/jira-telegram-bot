@@ -13,6 +13,8 @@ Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-b
 - processing Jira webhook issue events
 - notification templating (using [Apache FreeMarker](https://freemarker.apache.org) template engine by default)
 - support several databases (PostgreSQL, MySQL, H2)
+- [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/)
+- monitoring using [Prometheus](https://prometheus.io)
 
 
 ## Getting started 
@@ -42,17 +44,17 @@ or
 
  - For building the application and creation Docker image run
  
-    docker-compose build
+        docker-compose build
 
- - Customise configs with you prefered editor
+ - Customise configs with you preferred editor
 
    place configs in ./config directory 
  
- - Add to  docker-compose.yaml your prefered database service  
+ - Add to  docker-compose.yaml your preferred database service  
 
  - Run the docker image  
 
-     docker-compose up -d
+        docker-compose up -d
 
 ### Configuration
 
@@ -153,6 +155,35 @@ Admin commands:
 - /add_user *jiraLogin* *telegramId* -  add new user to bot
 - /remove_user *jiraLogin* - remove user from bot
 
+### Jira OAuth 
+
+Please read [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/) to understand how to configure Jira
+before using Jira OAuth in Jira-telegram-bot.
+
+To use Jira OAuth in Jira-telegram-bot you must provide next properties:
+
+<dl>
+  <dt>jira.oauth.baseUrl</dt>
+  <dd>your jira instance url</dd>
+  
+  <dt>jira.oauth.authorizationUrl</dt>
+  <dd>jira authorization url, {jira.oauth.baseUrl}/plugins/servlet/oauth/authorize</dd>
+    
+  <dt>jira.oauth.accessTokenUrl</dt>
+  <dd>jira access token url, {jira.oauth.baseUrl}/plugins/servlet/oauth/access-token</dd>
+  
+  <dt>jira.oauth.requestTokenUrl</dt>
+  <dd>jira request token url, {jira.oauth.baseUrl}/plugins/servlet/oauth/request-token</dd>
+  
+  <dt>jira.oauth.consumerKey</dt>
+  <dd>consumer key</dd>
+  
+  <dt>jira.oauth.publicKey</dt>
+  <dd>client RSA public key</dd>
+  
+  <dt>jira.oauth.privateKey</dt>
+  <dd>client RSA private key</dd>
+</dl>
 
 ### Monitoring using [Prometheus](https://prometheus.io)
 

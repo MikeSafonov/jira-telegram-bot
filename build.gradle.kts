@@ -82,8 +82,8 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation ("io.kotlintest:kotlintest-runner-junit5:3.2.1")
-    testImplementation("io.mockk:mockk:1.9.1")
+    testImplementation ("io.kotlintest:kotlintest-runner-junit5:3.3.2")
+    testImplementation("io.mockk:mockk:1.9.3")
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine")
 }
 

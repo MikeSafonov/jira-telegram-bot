@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.3.31"
     idea
     jacoco
-    id("org.jetbrains.kotlin.plugin.spring") version "1.3.21"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.21"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.31"
     id("org.springframework.boot") version "2.1.3.RELEASE"
     `build-scan` version "2.2"
 }

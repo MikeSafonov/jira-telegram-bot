@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
+import com.github.mikesafonov.jira.telegram.config.BuildInfo
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
@@ -15,17 +16,20 @@ import org.springframework.stereotype.Service
 class HelpTelegramCommandHandler(
     private val botProperties: BotProperties,
     private val jiraOAuthProperties: JiraOAuthProperties,
-    private val telegramMessageBuilder: TelegramMessageBuilder
+    private val telegramMessageBuilder: TelegramMessageBuilder,
+    private val buildInfo: BuildInfo
 ) : BaseCommandHandler() {
 
     companion object {
-        val DEFAULT_HELP_MESSAGE = """This is jira-telegram-bot. Supported commands:
+        val DEFAULT_HELP_MESSAGE = """
+Supported commands:
 /me - prints telegram chat id
 /jira_login - prints attached jira login to this telegram chat id
 /help - prints help message
                     """.trimMargin()
 
-        val ADMIN_HELP_MESSAGE = """This is jira-telegram-bot. Supported commands:
+        val ADMIN_HELP_MESSAGE = """
+Supported commands:
 /me - prints telegram chat id
 /jira_login - prints attached jira login to this telegram chat id
 /help - prints help message
@@ -41,26 +45,29 @@ class HelpTelegramCommandHandler(
     }
 
     override fun handle(command: TelegramCommand): TelegramCommandResponse {
+        val helpMessage = buildMessage(command)
+
+        return TelegramCommandResponse(
+            telegramMessageBuilder.createMessage(command.chatId, helpMessage),
+            State.INIT
+        )
+    }
+
+    private fun buildMessage(command: TelegramCommand): String {
         val helpMessage = if (isAdminUser(command.chatId)) {
             ADMIN_HELP_MESSAGE
         } else {
             DEFAULT_HELP_MESSAGE
         }
 
-        if (jiraOAuthProperties.isNotEmpty) {
-            val helpMessageWithJiraCommands = helpMessage + """
-                /auth - start jira OAuth
-            """.trimIndent()
-            return TelegramCommandResponse(
-                telegramMessageBuilder.createMessage(command.chatId, helpMessageWithJiraCommands),
-                State.INIT
-            )
-
+        return if (jiraOAuthProperties.isNotEmpty) {
+            """This is jira-telegram-bot v ${buildInfo.version}
+$helpMessage
+/auth - start jira OAuth
+                """.trimMargin()
         } else {
-            return TelegramCommandResponse(
-                telegramMessageBuilder.createMessage(command.chatId, helpMessage),
-                State.INIT
-            )
+            """This is jira-telegram-bot v ${buildInfo.version}
+$helpMessage""".trimIndent()
         }
     }
 

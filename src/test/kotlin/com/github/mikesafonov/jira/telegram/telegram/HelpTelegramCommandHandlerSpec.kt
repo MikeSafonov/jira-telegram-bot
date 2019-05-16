@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
+import com.github.mikesafonov.jira.telegram.config.BuildInfo
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
@@ -22,9 +23,11 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
 
     val botProperties = mockk<BotProperties>()
     val jiraOAuthProperties = mockk<JiraOAuthProperties>()
+    val buildInfo = mockk<BuildInfo>()
 
     Given("'/help' telegram command handler") {
-        val handler = HelpTelegramCommandHandler(botProperties, jiraOAuthProperties, TelegramMessageBuilder())
+        val handler =
+            HelpTelegramCommandHandler(botProperties, jiraOAuthProperties, TelegramMessageBuilder(), buildInfo)
 
         When("incoming message contain wrong command") {
             val command: TelegramCommand = mockk {
@@ -70,6 +73,8 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("Message processing and user not admin") {
+            val currentVersion = "1.1.0"
+            every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns null
             every { jiraOAuthProperties.isNotEmpty } returns false
             val randomChatId = Gen.long().random().first()
@@ -77,7 +82,8 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns randomChatId
             }
 
-            val helpMessage = HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE
+            val helpMessage = """This is jira-telegram-bot v $currentVersion
+${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
             val id = message.chatId
             Then("Should return expected help message") {
 
@@ -91,6 +97,8 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("Message processing and user not admin and jira allowed") {
+            val currentVersion = "1.1.0"
+            every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns null
             every { jiraOAuthProperties.isNotEmpty } returns true
             val randomChatId = Gen.long().random().first()
@@ -98,8 +106,9 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns randomChatId
             }
 
-            val helpMessage = HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE + """
-                /auth - start jira OAuth
+            val helpMessage = """This is jira-telegram-bot v $currentVersion
+${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}
+/auth - start jira OAuth
             """.trimIndent()
             val id = message.chatId
             Then("Should return expected help message") {
@@ -115,13 +124,16 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
 
         When("Message processing and user admin") {
             val admin = Gen.long().random().first()
+            val currentVersion = "1.1.0"
+            every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns admin
             every { jiraOAuthProperties.isNotEmpty } returns false
             val message: TelegramCommand = mockk {
                 every { chatId } returns admin
             }
 
-            val helpMessage = HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE
+            val helpMessage = """This is jira-telegram-bot v $currentVersion
+${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
             val id = message.chatId
             Then("Should return expected help message") {
 
@@ -136,14 +148,17 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
 
         When("Message processing and user admin and jira allowed") {
             val admin = Gen.long().random().first()
+            val currentVersion = "1.1.0"
+            every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns admin
             every { jiraOAuthProperties.isNotEmpty } returns true
             val message: TelegramCommand = mockk {
                 every { chatId } returns admin
             }
 
-            val helpMessage = HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE + """
-                /auth - start jira OAuth
+            val helpMessage = """This is jira-telegram-bot v $currentVersion
+${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}
+/auth - start jira OAuth
             """.trimIndent()
             val id = message.chatId
             Then("Should return expected help message") {

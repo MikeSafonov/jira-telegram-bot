@@ -16,6 +16,7 @@ plugins {
 apply(plugin = "io.spring.dependency-management")
 
 group = "com.github.mikesafonov"
+version = "1.1.0"
 
 
 repositories {
@@ -30,6 +31,14 @@ tasks.withType<Wrapper> {
 
 tasks.getByName<BootJar>("bootJar") {
     launchScript()
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            additional = mapOf("version" to project.version)
+        }
+    }
 }
 
 tasks.withType<KotlinCompile> {
@@ -82,16 +91,16 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation ("io.kotlintest:kotlintest-runner-junit5:3.3.2")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
     testImplementation("io.mockk:mockk:1.9.3")
-    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
-jacoco{
+jacoco {
     toolVersion = "0.8.3"
 }
 
-tasks.jacocoTestReport{
+tasks.jacocoTestReport {
     reports {
         xml.isEnabled = true
         csv.isEnabled = false

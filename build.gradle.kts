@@ -9,7 +9,7 @@ plugins {
     jacoco
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.3.31"
-    id("org.springframework.boot") version "2.1.3.RELEASE"
+    id("org.springframework.boot") version "2.1.4.RELEASE"
     `build-scan` version "2.2"
 }
 
@@ -39,7 +39,7 @@ tasks.withType<KotlinCompile> {
 
 configure<DependencyManagementExtension> {
     imports(delegateClosureOf<ImportsHandler> {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1")
     })
 }
 
@@ -57,27 +57,28 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
 
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    compile("org.telegram:telegrambots-spring-boot-starter:4.1.2")
+    implementation("org.telegram:telegrambots-spring-boot-starter:4.2")
 
-    compile("org.freemarker:freemarker:2.3.28")
-    compile("no.api.freemarker:freemarker-java8:1.3.0")
+    implementation("org.freemarker:freemarker:2.3.28")
+    implementation("no.api.freemarker:freemarker-java8:1.3.0")
 
-    compile("io.github.microutils:kotlin-logging:1.6.22")
-    compile("org.apache.logging.log4j:log4j-web")
+    implementation("io.github.microutils:kotlin-logging:1.6.22")
+    implementation("org.apache.logging.log4j:log4j-web")
 
-    compile("org.postgresql:postgresql")
-    compile("com.h2database:h2")
-    compile("mysql:mysql-connector-java")
-    compile("org.flywaydb:flyway-core")
-    compile("com.atlassian.jira:jira-rest-java-client-core:5.1.2-2bd0a62e")
-    compile("com.google.oauth-client:google-oauth-client:1.28.0")
-    compile("com.google.http-client:google-http-client-jackson2:1.28.0")
+    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("mysql:mysql-connector-java")
+
+    implementation("org.flywaydb:flyway-core")
+    implementation("com.atlassian.jira:jira-rest-java-client-core:5.1.2-2bd0a62e")
+    implementation("com.google.oauth-client:google-oauth-client:1.28.0")
+    implementation("com.google.http-client:google-http-client-jackson2:1.28.0")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 

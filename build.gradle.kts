@@ -73,12 +73,12 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.telegram:telegrambots-spring-boot-starter:4.2")
+    implementation("org.telegram:telegrambots-spring-boot-starter:4.3")
 
     implementation("org.freemarker:freemarker:2.3.28")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")
 
-    implementation("io.github.microutils:kotlin-logging:1.6.22")
+    implementation("io.github.microutils:kotlin-logging:1.6.26")
     implementation("org.apache.logging.log4j:log4j-web")
 
     implementation ("io.micrometer:micrometer-core")

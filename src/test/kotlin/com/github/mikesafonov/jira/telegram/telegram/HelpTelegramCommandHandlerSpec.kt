@@ -82,7 +82,8 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns randomChatId
             }
 
-            val helpMessage = """This is jira-telegram-bot v $currentVersion
+            val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
+
 ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
             val id = message.chatId
             Then("Should return expected help message") {
@@ -90,6 +91,7 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
                 val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = id.toString()
                     text = helpMessage
+                    enableMarkdown(true)
                 }, State.INIT)
 
                 handler.handle(message) shouldBe expectedMessage
@@ -106,8 +108,11 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
                 every { chatId } returns randomChatId
             }
 
-            val helpMessage = """This is jira-telegram-bot v $currentVersion
+            val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
+
 ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}
+
+Jira commands:
 /auth - start jira OAuth
             """.trimIndent()
             val id = message.chatId
@@ -116,6 +121,7 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}
                 val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = id.toString()
                     text = helpMessage
+                    enableMarkdown(true)
                 }, State.INIT)
 
                 handler.handle(message) shouldBe expectedMessage
@@ -132,7 +138,8 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}
                 every { chatId } returns admin
             }
 
-            val helpMessage = """This is jira-telegram-bot v $currentVersion
+            val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
+
 ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
             val id = message.chatId
             Then("Should return expected help message") {
@@ -140,6 +147,7 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
                 val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = id.toString()
                     text = helpMessage
+                    enableMarkdown(true)
                 }, State.INIT)
 
                 handler.handle(message) shouldBe expectedMessage
@@ -156,8 +164,11 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
                 every { chatId } returns admin
             }
 
-            val helpMessage = """This is jira-telegram-bot v $currentVersion
+            val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
+
 ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}
+
+Jira commands:
 /auth - start jira OAuth
             """.trimIndent()
             val id = message.chatId
@@ -166,6 +177,7 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}
                 val expectedMessage = TelegramCommandResponse(SendMessage().apply {
                     chatId = id.toString()
                     text = helpMessage
+                    enableMarkdown(true)
                 }, State.INIT)
 
                 handler.handle(message) shouldBe expectedMessage

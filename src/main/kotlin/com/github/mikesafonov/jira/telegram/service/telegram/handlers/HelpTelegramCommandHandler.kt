@@ -22,21 +22,17 @@ class HelpTelegramCommandHandler(
 
     companion object {
         val DEFAULT_HELP_MESSAGE = """
-Supported commands:
+Telegram commands:
 /me - prints telegram chat id
-/jira_login - prints attached jira login to this telegram chat id
-/help - prints help message
-                    """.trimMargin()
+/jira\_login - prints attached jira login to this telegram chat id
+/help - prints help message""".trimMargin()
 
-        val ADMIN_HELP_MESSAGE = """
-Supported commands:
-/me - prints telegram chat id
-/jira_login - prints attached jira login to this telegram chat id
-/help - prints help message
-/users_list - prints list of users
-/add_user <jiraLogin> <telegramId> -  add new user to bot
-/remove_user <jiraLogin> - remove user from bot
-                    """.trimMargin()
+        val ADMIN_HELP_MESSAGE = """$DEFAULT_HELP_MESSAGE
+
+Admin commands:
+/users\_list - prints list of users
+/add\_user <jiraLogin> <telegramId> -  add new user to bot
+/remove\_user <jiraLogin> - remove user from bot""".trimMargin()
     }
 
 
@@ -48,7 +44,7 @@ Supported commands:
         val helpMessage = buildMessage(command)
 
         return TelegramCommandResponse(
-            telegramMessageBuilder.createMessage(command.chatId, helpMessage),
+            telegramMessageBuilder.createMarkdownMessage(command.chatId, helpMessage),
             State.INIT
         )
     }
@@ -61,12 +57,16 @@ Supported commands:
         }
 
         return if (jiraOAuthProperties.isNotEmpty) {
-            """This is jira-telegram-bot v ${buildInfo.version}
+            """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *${buildInfo.version}*
+
 $helpMessage
+
+Jira commands:
 /auth - start jira OAuth
                 """.trimMargin()
         } else {
-            """This is jira-telegram-bot v ${buildInfo.version}
+            """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *${buildInfo.version}*
+
 $helpMessage""".trimIndent()
         }
     }

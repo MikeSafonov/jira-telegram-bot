@@ -15,7 +15,7 @@ class NotificationProperties {
      */
     var jiraUrl : String = ""
     /**
-     * is events fired by me will be sended to me
+     * is events fired by me will be sent to me
      */
     var sendToMe : Boolean = false
 

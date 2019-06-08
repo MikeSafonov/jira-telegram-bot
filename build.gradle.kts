@@ -9,7 +9,7 @@ plugins {
     jacoco
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.3.31"
-    id("org.springframework.boot") version "2.1.4.RELEASE"
+    id("org.springframework.boot") version "2.1.5.RELEASE"
     `build-scan` version "2.2"
 }
 

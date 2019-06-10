@@ -5,17 +5,13 @@ import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.ChatService
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.AddUserTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import io.mockk.*
 
 /**
  * @author Mike Safonov
@@ -23,10 +19,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
     val chatRepository = mockk<ChatRepository>()
     val botProperties = mockk<BotProperties>()
+    val telegramClient = mockk<TelegramClient>()
 
     Given("'/add_user' telegram command handler") {
         val chatService = ChatService(chatRepository)
-        val handler = AddUserTelegramCommandHandler(botProperties, chatService, TelegramMessageBuilder())
+        val handler = AddUserTelegramCommandHandler(chatService, botProperties, telegramClient)
 
         When("incoming message contain wrong command and user not admin") {
             every { botProperties.adminId } returns null
@@ -118,22 +115,25 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user"
             }
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
 
             Then("returns message with text about command correct syntax") {
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Wrong command syntax\n Should be: /add_user <jiraLogin> <telegramId>"
-                }, State.INIT)
-
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Wrong command syntax\n Should be: /add_user <jiraLogin> <telegramId>"
+                    )
+                }
 
                 handler.handle(
                     mockk {
                         every { text } returns "/add_user myLogin"
                         every { chatId } returns messageChatId
-                    }) shouldBe expectedMessage
+                    }) shouldBe State.INIT
             }
         }
 
@@ -149,15 +149,19 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user $jiraLogin $telegramId"
             }
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about jira login exists in database") {
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Jira login $jiraLogin already exist"
-                }, State.INIT)
 
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Jira login $jiraLogin already exist"
+                    )
+                }
             }
         }
 
@@ -170,16 +174,20 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { text } returns "/add_user $jiraLogin $telegramId"
             }
             every { chatRepository.findByJiraId(jiraLogin) } returns null
-
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
 
             Then("returns message with text about telegramId must be non negative number") {
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Wrong command args: telegramId must be a positive number"
-                }, State.INIT)
+
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Wrong command args: telegramId must be a positive number"
+                    )
+                }
             }
         }
 
@@ -192,16 +200,18 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { text } returns "/add_user $jiraLogin $telegramId"
             }
             every { chatRepository.findByJiraId(jiraLogin) } returns null
-
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about telegramId must not be negative") {
-
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Wrong command args: telegramId must be a positive number"
-                }, State.INIT)
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Wrong command args: telegramId must be a positive number"
+                    )
+                }
             }
         }
 
@@ -218,16 +228,18 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user $jiraLogin $telegramId"
             }
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about telegramId exists in database") {
-
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Telegram id $telegramId already exist"
-                }, State.INIT)
-
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Telegram id $telegramId already exist"
+                    )
+                }
             }
         }
 
@@ -243,17 +255,19 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user $jiraLogin $telegramId"
             }
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
 
             Then("returns message with text about unexpected exception") {
-
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Unexpected error"
-                }, State.INIT)
-
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Unexpected error"
+                    )
+                }
             }
         }
 
@@ -269,18 +283,19 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user $jiraLogin $telegramId"
             }
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about new chat") {
-
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = messageChatId.toString()
-                    text = "Jira user $jiraLogin with telegram id $telegramId was added successfully"
-                }, State.INIT)
-
                 handler.handle(
                     command
-                ) shouldBe expectedMessage
+                ) shouldBe State.INIT
+
                 verify {
                     chatRepository.save(chat)
+
+                    telegramClient.sendTextMessage(
+                        messageChatId,
+                        "Jira user $jiraLogin with telegram id $telegramId was added successfully"
+                    )
                 }
             }
         }

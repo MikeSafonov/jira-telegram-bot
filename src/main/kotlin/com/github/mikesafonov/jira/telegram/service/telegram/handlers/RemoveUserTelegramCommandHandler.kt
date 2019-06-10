@@ -3,9 +3,8 @@ package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,33 +18,33 @@ private val logger = KotlinLogging.logger {}
 class RemoveUserTelegramCommandHandler(
     botProperties: BotProperties,
     private val chatRepository: ChatRepository,
-    private val telegramMessageBuilder: TelegramMessageBuilder
-) : AdminCommandTelegramCommandHandler(botProperties) {
+    telegramClient: TelegramClient
+) : AdminCommandTelegramCommandHandler(botProperties, telegramClient) {
 
     private val commandPrefix = "/remove_user"
 
     override fun isHandle(command: TelegramCommand): Boolean {
-        return super.isHandle(command) && isInState(command, State.INIT) &&  isStartsWithText(command, commandPrefix)
+        return super.isHandle(command) && isInState(command, State.INIT) && isStartsWithText(command, commandPrefix)
     }
 
     @Transactional
-    override fun handle(command: TelegramCommand): TelegramCommandResponse {
+    override fun handle(command: TelegramCommand): State {
         val id = command.chatId
         val commandArgs = getCommandArgs(command.text!!)
-        val method = if (commandArgs.size < 2) {
-            telegramMessageBuilder.createMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin>")
+        if (commandArgs.size < 2) {
+            telegramClient.sendTextMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin>")
         } else {
             try {
                 val jiraLogin = commandArgs[1]
                 chatRepository.deleteByJiraId(jiraLogin)
-                telegramMessageBuilder.createMessage(id, "User $jiraLogin was removed successfully")
+                telegramClient.sendTextMessage(id, "User $jiraLogin was removed successfully")
             } catch (e: Exception) {
                 logger.error(e.message, e)
-                telegramMessageBuilder.createMessage(id, "Unexpected error")
+                telegramClient.sendTextMessage(id, "Unexpected error")
             }
         }
 
-        return TelegramCommandResponse(method, State.INIT)
+        return State.INIT
     }
 
     /**

@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service
  * @author Mike Safonov
  */
 @Service
-class JiraLoginTelegramCommandHandler(
-    telegramClient: TelegramClient
-) : BaseCommandHandler(telegramClient) {
+class UnknownCommandTelegramCommandHandler(telegramClient: TelegramClient) : BaseCommandHandler(telegramClient) {
     override fun isHandle(command: TelegramCommand): Boolean {
-        return isInState(command, State.INIT) && isMatchText(command, "/jira_login")
+        return false
     }
 
     override fun handle(command: TelegramCommand): State {
-        val jiraId = command.chat!!.jiraId
-        telegramClient.sendTextMessage(command.chatId, "Your jira login: $jiraId")
+        telegramClient.sendTextMessage(
+            command.chatId,
+            "Unknown command. Please use /help to see allowed commands"
+        )
         return State.INIT
     }
 }

@@ -4,9 +4,8 @@ import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.AddChatException
 import com.github.mikesafonov.jira.telegram.service.ChatService
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
@@ -18,11 +17,11 @@ private val logger = KotlinLogging.logger {}
  */
 @Service
 class AddUserTelegramCommandHandler(
-    botProperties: BotProperties,
     private val chatService: ChatService,
-    private val telegramMessageBuilder: TelegramMessageBuilder
+    botProperties: BotProperties,
+    telegramClient: TelegramClient
 ) :
-    AdminCommandTelegramCommandHandler(botProperties) {
+    AdminCommandTelegramCommandHandler(botProperties, telegramClient) {
 
     private val commandPrefix = "/add_user"
 
@@ -30,28 +29,28 @@ class AddUserTelegramCommandHandler(
         return super.isHandle(command) && isInState(command, State.INIT) && isStartsWithText(command, commandPrefix)
     }
 
-    override fun handle(command: TelegramCommand): TelegramCommandResponse {
+    override fun handle(command: TelegramCommand): State {
         val id = command.chatId
         val commandArgs = getCommandArgs(command.text!!)
-        val method = if (commandArgs.size < 3) {
-            telegramMessageBuilder.createMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin> <telegramId>")
+        if (commandArgs.size < 3) {
+            telegramClient.sendTextMessage(id, "Wrong command syntax\n Should be: $commandPrefix <jiraLogin> <telegramId>")
         } else {
             try {
                 val jiraLogin = commandArgs[1]
                 val telegramId = commandArgs[2].toLong()
                 chatService.addNewChat(jiraLogin, telegramId)
-                telegramMessageBuilder.createMessage(id, "Jira user $jiraLogin with telegram id $telegramId was added successfully")
+                telegramClient.sendTextMessage(id, "Jira user $jiraLogin with telegram id $telegramId was added successfully")
             } catch (e: NumberFormatException) {
-                telegramMessageBuilder.createMessage(id, "Wrong command args: telegramId must be a positive number")
+                telegramClient.sendTextMessage(id, "Wrong command args: telegramId must be a positive number")
             } catch (e: AddChatException) {
-                telegramMessageBuilder.createMessage(id, e.message!!)
+                telegramClient.sendTextMessage(id, e.message!!)
             } catch (e: Exception) {
                 logger.error(e.message, e)
-                telegramMessageBuilder.createMessage(id, "Unexpected error")
+                telegramClient.sendTextMessage(id, "Unexpected error")
             }
         }
 
-        return TelegramCommandResponse(method, State.INIT)
+        return State.INIT
     }
 
     /**

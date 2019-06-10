@@ -3,9 +3,8 @@ package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.google.api.client.http.HttpResponseException
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
@@ -19,35 +18,33 @@ private val logger = KotlinLogging.logger {}
 @ConditionalOnJiraOAuth
 class JiraAuthApproveTelegramCommandHandler(
     private val jiraAuthService: JiraAuthService,
-    private val telegramMessageBuilder: TelegramMessageBuilder
-) : BaseCommandHandler() {
+    telegramClient: TelegramClient
+) : BaseCommandHandler(telegramClient) {
 
     override fun isHandle(command: TelegramCommand): Boolean {
         return isInState(command, State.WAIT_APPROVE)
     }
 
-    override fun handle(command: TelegramCommand): TelegramCommandResponse {
+    override fun handle(command: TelegramCommand): State {
         val id = command.chatId
-        return if (command.text.isNullOrBlank()) {
-            TelegramCommandResponse(
-                telegramMessageBuilder.createMessage(
-                    id,
-                    "Wrong command syntax\n Should be: <verification code>"
-                ), State.INIT
-            )
+        val messageId = command.message.messageId
+        if (command.text.isNullOrBlank()) {
+            telegramClient.sendReplaceMessage(id, messageId, "Wrong command syntax\n Should be: <verification code>")
         } else {
             try {
                 jiraAuthService.createAccessToken(id, command.text!!)
-                TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Authorization success!"), State.INIT)
+                telegramClient.sendReplaceMessage(id, messageId,  "Authorization success!")
             } catch (e: HttpResponseException) {
                 logger.error(e.message, e)
                 val message = "${e.statusCode} ${e.content}"
-                TelegramCommandResponse(telegramMessageBuilder.createMessage(id, message), State.INIT)
+                telegramClient.sendReplaceMessage(id, messageId,   message)
             } catch (e: Exception) {
                 logger.error(e.message, e)
-                TelegramCommandResponse(telegramMessageBuilder.createMessage(id, "Unexpected error"), State.INIT)
+                telegramClient.sendReplaceMessage(id, messageId,   "Unexpected error")
             }
         }
+
+        return State.INIT
     }
 
 }

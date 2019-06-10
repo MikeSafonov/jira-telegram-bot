@@ -2,7 +2,9 @@ package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramHandlersHolder
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.NoChatTelegramCommandHandler
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
+import com.github.mikesafonov.jira.telegram.service.telegram.handlers.UnknownCommandTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -14,57 +16,75 @@ import io.mockk.mockk
  */
 class TelegramHandlersHolderSpec : BehaviorSpec({
 
-    Given("telegram handlers holder without handlers") {
-        val holder = TelegramHandlersHolder(emptyList())
-        When("any command incoming") {
+    Given("telegram handlers holder with default handlers") {
+        val noChatHandler = NoChatTelegramCommandHandler(mockk())
+        val unknownHandler = UnknownCommandTelegramCommandHandler(mockk())
+        val holder = TelegramHandlersHolder(
+            listOf(
+                noChatHandler, unknownHandler
+            )
+        )
+        When("command without chat incoming") {
             val command: TelegramCommand = mockk {
+                every { chat } returns null
                 every { text } returns Gen.string().random().first()
                 every { chatId } returns Gen.long().random().first()
                 every { hasText } returns true
             }
 
-            Then("return null handler") {
-                holder.findHandler(command) shouldBe null
+            Then("return expected handler") {
+                holder.findHandler(command) shouldBe noChatHandler
+            }
+        }
+
+        When("command with chat incoming") {
+            val command: TelegramCommand = mockk {
+                every { chat } returns mockk()
+                every { text } returns Gen.string().random().first()
+                every { chatId } returns Gen.long().random().first()
+                every { hasText } returns true
+            }
+
+            Then("return expected handler") {
+                holder.findHandler(command) shouldBe unknownHandler
             }
         }
     }
 
-    Given("telegram handlers holder with always success handler") {
-        val handler = mockk<TelegramCommandHandler>{
+    Given("telegram handlers holder with handlers") {
+        val noChatHandler = NoChatTelegramCommandHandler(mockk())
+        val unknownHandler = UnknownCommandTelegramCommandHandler(mockk())
+        val alwaysSuccessHandler = mockk<TelegramCommandHandler>{
             every { isHandle(any()) } returns true
         }
-        val holder = TelegramHandlersHolder(listOf(
-            handler
-        ))
-        When("command incoming") {
+        val holder = TelegramHandlersHolder(
+            listOf(
+                noChatHandler, unknownHandler, alwaysSuccessHandler
+            )
+        )
+        When("command without chat incoming") {
             val command: TelegramCommand = mockk {
+                every { chat } returns null
                 every { text } returns Gen.string().random().first()
                 every { chatId } returns Gen.long().random().first()
                 every { hasText } returns true
             }
 
             Then("return expected handler") {
-                holder.findHandler(command) shouldBe handler
+                holder.findHandler(command) shouldBe noChatHandler
             }
         }
-    }
 
-    Given("telegram handlers holder with always false handler") {
-        val handler = mockk<TelegramCommandHandler>{
-            every { isHandle(any()) } returns false
-        }
-        val holder = TelegramHandlersHolder(listOf(
-            handler
-        ))
-        When("command incoming") {
+        When("command with chat incoming") {
             val command: TelegramCommand = mockk {
+                every { chat } returns mockk()
                 every { text } returns Gen.string().random().first()
                 every { chatId } returns Gen.long().random().first()
                 every { hasText } returns true
             }
 
             Then("return expected handler") {
-                holder.findHandler(command) shouldBe null
+                holder.findHandler(command) shouldBe alwaysSuccessHandler
             }
         }
     }

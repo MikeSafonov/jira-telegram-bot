@@ -2,8 +2,6 @@ package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.Chat
-import com.github.mikesafonov.jira.telegram.dao.State
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod
 import org.telegram.telegrambots.meta.api.objects.Message
 
 /**
@@ -30,5 +28,3 @@ data class TelegramCommand(
             return message.hasText()
         }
 }
-
-data class TelegramCommandResponse(val method : BotApiMethod<Message>, val nextState : State)

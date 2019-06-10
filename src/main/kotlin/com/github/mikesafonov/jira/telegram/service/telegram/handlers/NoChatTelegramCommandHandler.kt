@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service
  * @author Mike Safonov
  */
 @Service
-class JiraLoginTelegramCommandHandler(
-    telegramClient: TelegramClient
-) : BaseCommandHandler(telegramClient) {
+class NoChatTelegramCommandHandler(telegramClient: TelegramClient) : BaseCommandHandler(telegramClient) {
     override fun isHandle(command: TelegramCommand): Boolean {
-        return isInState(command, State.INIT) && isMatchText(command, "/jira_login")
+        return command.chat == null
     }
 
     override fun handle(command: TelegramCommand): State {
-        val jiraId = command.chat!!.jiraId
-        telegramClient.sendTextMessage(command.chatId, "Your jira login: $jiraId")
+        telegramClient.sendTextMessage(
+            command.chatId,
+            "You not registered at this bot yet. Please contact your system administrator for registration."
+        )
         return State.INIT
     }
 }

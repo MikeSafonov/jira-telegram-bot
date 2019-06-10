@@ -4,9 +4,8 @@ import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.config.BuildInfo
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import org.springframework.stereotype.Service
 
 /**
@@ -16,9 +15,9 @@ import org.springframework.stereotype.Service
 class HelpTelegramCommandHandler(
     private val botProperties: BotProperties,
     private val jiraOAuthProperties: JiraOAuthProperties,
-    private val telegramMessageBuilder: TelegramMessageBuilder,
-    private val buildInfo: BuildInfo
-) : BaseCommandHandler() {
+    private val buildInfo: BuildInfo,
+    telegramClient: TelegramClient
+) : BaseCommandHandler(telegramClient) {
 
     companion object {
         val DEFAULT_HELP_MESSAGE = """
@@ -40,13 +39,12 @@ Admin commands:
         return isInState(command, State.INIT) && isMatchText(command, "/help")
     }
 
-    override fun handle(command: TelegramCommand): TelegramCommandResponse {
+    override fun handle(command: TelegramCommand): State {
         val helpMessage = buildMessage(command)
 
-        return TelegramCommandResponse(
-            telegramMessageBuilder.createMarkdownMessage(command.chatId, helpMessage),
-            State.INIT
-        )
+        telegramClient.sendMarkdownMessage(command.chatId, helpMessage)
+        return State.INIT
+
     }
 
     private fun buildMessage(command: TelegramCommand): String {

@@ -3,26 +3,23 @@ package com.github.mikesafonov.jira.telegram.telegram
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraTempTokenAndAuthorizeUrl
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
-import io.mockk.every
-import io.mockk.mockk
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import io.mockk.*
 
 /**
  * @author Mike Safonov
  */
 class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
     val jiraAuthService = mockk<JiraAuthService>()
-    val telegramMessageBuilder = TelegramMessageBuilder()
+    val telegramClient = mockk<TelegramClient>()
 
     Given("jira '/auth' command handler") {
-        val handler = JiraAuthTelegramCommandHandler(jiraAuthService, telegramMessageBuilder)
+        val handler = JiraAuthTelegramCommandHandler(jiraAuthService, telegramClient)
 
         When("incoming message contain wrong command") {
 
@@ -76,15 +73,17 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
             }
 
             every { jiraAuthService.createTemporaryToken(telegramChatId) } throws RuntimeException()
-
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("return unexpected error") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = telegramChatId.toString()
-                    text = "Unexpected error: unable to create temporary access token"
-                }, State.INIT)
+                handler.handle(command) shouldBe State.INIT
 
-                handler.handle(command) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendTextMessage(
+                        telegramChatId,
+                        "Unexpected error: unable to create temporary access token"
+                    )
+                }
             }
         }
 
@@ -105,16 +104,17 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
                 Gen.string().random().first()
             )
             every { jiraAuthService.createTemporaryToken(telegramChatId) } returns tempToken
-
+            every { telegramClient.sendMarkdownMessage(any(), any()) } just Runs
             Then("return jira access url") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = telegramChatId.toString()
-                    text = """Please allow access [Jira Access](${tempToken.url})"""
-                    enableMarkdown(true)
-                }, State.WAIT_APPROVE)
+                handler.handle(command) shouldBe State.WAIT_APPROVE
 
-                handler.handle(command) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendMarkdownMessage(
+                        telegramChatId,
+                        "Please allow access [Jira Access](${tempToken.url})"
+                    )
+                }
             }
         }
     }

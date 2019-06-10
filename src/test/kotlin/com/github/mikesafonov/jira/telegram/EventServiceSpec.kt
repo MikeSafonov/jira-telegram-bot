@@ -9,7 +9,7 @@ import com.github.mikesafonov.jira.telegram.generators.EventGen
 import com.github.mikesafonov.jira.telegram.service.EventService
 import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramBot
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import io.kotlintest.IsolationMode
@@ -28,7 +28,7 @@ class EventServiceSpec : BehaviorSpec() {
     override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
     init {
-        val telegramBot = mockk<TelegramBot>()
+        val telegramClient = mockk<TelegramClient>()
         val templateService = mockk<TemplateService>()
         val destinationDetectorService = mockk<DestinationDetectorService>()
         val parametersBuilderService = mockk<ParametersBuilderService>()
@@ -38,7 +38,7 @@ class EventServiceSpec : BehaviorSpec() {
                 templateService,
                 destinationDetectorService,
                 parametersBuilderService,
-                telegramBot,
+                telegramClient,
                 chatRepository
             )
 
@@ -58,7 +58,7 @@ class EventServiceSpec : BehaviorSpec() {
                         eventService.handle(it)
                         verify {
                             listOf(
-                                telegramBot,
+                                telegramClient,
                                 templateService,
                                 destinationDetectorService,
                                 parametersBuilderService,
@@ -89,7 +89,7 @@ class EventServiceSpec : BehaviorSpec() {
                         eventService.handle(it)
                         verify {
                             listOf(
-                                telegramBot,
+                                telegramClient,
                                 templateService,
                                 destinationDetectorService,
                                 parametersBuilderService,
@@ -108,7 +108,7 @@ class EventServiceSpec : BehaviorSpec() {
 
                         verify {
                             listOf(
-                                telegramBot,
+                                telegramClient,
                                 templateService,
                                 parametersBuilderService,
                                 chatRepository
@@ -130,7 +130,7 @@ class EventServiceSpec : BehaviorSpec() {
 
                         verify {
                             listOf(
-                                telegramBot,
+                                telegramClient,
                                 chatRepository
                             ) wasNot Called
                             parametersBuilderService.buildTemplateParameters(it)
@@ -160,7 +160,7 @@ class EventServiceSpec : BehaviorSpec() {
 
                         verify {
                             listOf(
-                                telegramBot
+                                telegramClient
                             ) wasNot Called
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
@@ -187,14 +187,14 @@ class EventServiceSpec : BehaviorSpec() {
                             telegramId,
                             State.INIT
                         )
-                        every { telegramBot.sendMarkdownMessage(any(), any()) } answers {}
+                        every { telegramClient.sendMarkdownMessage(any(), any()) } answers {}
 
                         eventService.handle(it)
 
                         verify {
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
-                            telegramBot.sendMarkdownMessage(telegramId, template.message)
+                            telegramClient.sendMarkdownMessage(telegramId, template.message)
                             chatRepository.findByJiraId(destinationLogin)
                             templateService.buildMessage(it, parameters)
                         }

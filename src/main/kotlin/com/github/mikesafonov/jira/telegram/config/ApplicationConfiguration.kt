@@ -4,6 +4,7 @@ import com.github.mikesafonov.jira.telegram.service.destination.DefaultDestinati
 import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramUpdateManager
 import org.apache.http.HttpHost
 import org.apache.http.client.config.RequestConfig
 import org.springframework.beans.factory.annotation.Value
@@ -11,7 +12,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.filter.CommonsRequestLoggingFilter
+import org.telegram.telegrambots.bots.DefaultAbsSender
 import org.telegram.telegrambots.bots.DefaultBotOptions
+import org.telegram.telegrambots.bots.TelegramLongPollingBot
+import org.telegram.telegrambots.meta.api.objects.Update
 
 /**
  * @author Mike Safonov
@@ -33,6 +37,38 @@ class ApplicationConfiguration {
             requestConfigBuilder.build()
         }
         return botOptions
+    }
+
+    @Bean
+    fun telegramSender(botOptions: DefaultBotOptions, botProperties: BotProperties): DefaultAbsSender {
+        return object : DefaultAbsSender(botOptions) {
+            override fun getBotToken(): String {
+                return botProperties.token
+            }
+
+        }
+    }
+
+    @Bean
+    fun telegramBot(
+        telegramUpdateManager: TelegramUpdateManager, botOptions: DefaultBotOptions,
+        botProperties: BotProperties
+    ): Any {
+        return object : TelegramLongPollingBot(botOptions) {
+            override fun getBotUsername(): String {
+                return botProperties.name
+            }
+
+            override fun getBotToken(): String {
+                return botProperties.token
+            }
+
+            override fun onUpdateReceived(update: Update?) {
+                update?.let {
+                    telegramUpdateManager.onUpdate(it)
+                }
+            }
+        }
     }
 
 

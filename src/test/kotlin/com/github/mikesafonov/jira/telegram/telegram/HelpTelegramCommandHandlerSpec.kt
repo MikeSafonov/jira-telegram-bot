@@ -4,16 +4,13 @@ import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.config.BuildInfo
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.HelpTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
-import io.mockk.every
-import io.mockk.mockk
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import io.mockk.*
 
 /**
  * @author Mike Safonov
@@ -23,11 +20,12 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
 
     val botProperties = mockk<BotProperties>()
     val jiraOAuthProperties = mockk<JiraOAuthProperties>()
+    val telegramClient = mockk<TelegramClient>()
     val buildInfo = mockk<BuildInfo>()
 
     Given("'/help' telegram command handler") {
         val handler =
-            HelpTelegramCommandHandler(botProperties, jiraOAuthProperties, TelegramMessageBuilder(), buildInfo)
+            HelpTelegramCommandHandler(botProperties, jiraOAuthProperties, buildInfo, telegramClient)
 
         When("incoming message contain wrong command") {
             val command: TelegramCommand = mockk {
@@ -81,20 +79,21 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
             val message: TelegramCommand = mockk {
                 every { chatId } returns randomChatId
             }
-
+            every { telegramClient.sendMarkdownMessage(any(), any()) } just Runs
             val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
 
 ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
             val id = message.chatId
             Then("Should return expected help message") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = id.toString()
-                    text = helpMessage
-                    enableMarkdown(true)
-                }, State.INIT)
+                handler.handle(message) shouldBe State.INIT
 
-                handler.handle(message) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendMarkdownMessage(
+                        id,
+                        helpMessage
+                    )
+                }
             }
         }
 
@@ -107,7 +106,7 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
             val message: TelegramCommand = mockk {
                 every { chatId } returns randomChatId
             }
-
+            every { telegramClient.sendMarkdownMessage(any(), any()) } just Runs
             val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
 
 ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}
@@ -118,13 +117,14 @@ Jira commands:
             val id = message.chatId
             Then("Should return expected help message") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = id.toString()
-                    text = helpMessage
-                    enableMarkdown(true)
-                }, State.INIT)
+                handler.handle(message) shouldBe State.INIT
 
-                handler.handle(message) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendMarkdownMessage(
+                        id,
+                        helpMessage
+                    )
+                }
             }
         }
 
@@ -137,20 +137,21 @@ Jira commands:
             val message: TelegramCommand = mockk {
                 every { chatId } returns admin
             }
-
+            every { telegramClient.sendMarkdownMessage(any(), any()) } just Runs
             val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
 
 ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
             val id = message.chatId
             Then("Should return expected help message") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = id.toString()
-                    text = helpMessage
-                    enableMarkdown(true)
-                }, State.INIT)
+                handler.handle(message) shouldBe State.INIT
 
-                handler.handle(message) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendMarkdownMessage(
+                        id,
+                        helpMessage
+                    )
+                }
             }
         }
 
@@ -163,7 +164,7 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
             val message: TelegramCommand = mockk {
                 every { chatId } returns admin
             }
-
+            every { telegramClient.sendMarkdownMessage(any(), any()) } just Runs
             val helpMessage = """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *$currentVersion*
 
 ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}
@@ -174,13 +175,14 @@ Jira commands:
             val id = message.chatId
             Then("Should return expected help message") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = id.toString()
-                    text = helpMessage
-                    enableMarkdown(true)
-                }, State.INIT)
+                handler.handle(message) shouldBe State.INIT
 
-                handler.handle(message) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendMarkdownMessage(
+                        id,
+                        helpMessage
+                    )
+                }
             }
         }
     }

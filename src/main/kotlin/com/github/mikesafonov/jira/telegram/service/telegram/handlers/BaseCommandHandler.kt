@@ -1,12 +1,13 @@
 package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 
 /**
  * @author Mike Safonov
  */
-abstract class BaseCommandHandler : TelegramCommandHandler {
+abstract class BaseCommandHandler(protected val telegramClient: TelegramClient) : TelegramCommandHandler {
 
     protected fun isChatExist(command: TelegramCommand): Boolean {
         return command.chat != null

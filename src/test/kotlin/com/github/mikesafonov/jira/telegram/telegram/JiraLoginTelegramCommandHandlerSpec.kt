@@ -1,25 +1,23 @@
 package com.github.mikesafonov.jira.telegram.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommandResponse
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraLoginTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
-import io.mockk.every
-import io.mockk.mockk
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import io.mockk.*
 
 /**
  * @author Mike Safonov
  */
 
 class JiraLoginTelegramCommandHandlerSpec : BehaviorSpec({
+    val telegramClient = mockk<TelegramClient>()
 
     Given("'/jira_login' telegram command handler") {
-        val handler = JiraLoginTelegramCommandHandler(TelegramMessageBuilder())
+        val handler = JiraLoginTelegramCommandHandler(telegramClient)
         When("incoming message contain wrong command") {
             val command: TelegramCommand = mockk {
                 every { text } returns Gen.string().random().first()
@@ -69,15 +67,17 @@ class JiraLoginTelegramCommandHandlerSpec : BehaviorSpec({
                     every { state } returns State.INIT
                 }
             }
-
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("Should return jira login message") {
 
-                val expectedMessage = TelegramCommandResponse(SendMessage().apply {
-                    chatId = randomId.toString()
-                    text = "Your jira login: $jiraLogin"
-                }, State.INIT)
+                handler.handle(message) shouldBe State.INIT
 
-                handler.handle(message) shouldBe expectedMessage
+                verify {
+                    telegramClient.sendTextMessage(
+                        randomId,
+                        "Your jira login: $jiraLogin"
+                    )
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramBot
+import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import mu.KotlinLogging
@@ -21,7 +21,7 @@ class EventService(
     private val templateService: TemplateService,
     private val destinationDetectorService: DestinationDetectorService,
     private val parametersBuilderService: ParametersBuilderService,
-    private val telegramBot: TelegramBot,
+    private val telegramClient: TelegramClient,
     private val chatRepository: ChatRepository
 ) {
 
@@ -64,7 +64,7 @@ class EventService(
             val login = it
             chatRepository.findByJiraId(it)?.let {
                 try {
-                    telegramBot.sendMarkdownMessage(it.telegramId, template.message)
+                    telegramClient.sendMarkdownMessage(it.telegramId, template.message)
                 } catch (e: Exception) {
                     logger.error("Exception: ${e.message} when sending message to user $login with message: ${template.message}", e)
                 }

@@ -1,4 +1,4 @@
-package com.github.mikesafonov.jira.telegram
+package com.github.mikesafonov.jira.telegram.dto
 
 import com.github.mikesafonov.jira.telegram.generators.*
 import io.kotlintest.matchers.string.shouldHaveLength

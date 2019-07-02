@@ -1,8 +1,6 @@
-package com.github.mikesafonov.jira.telegram.telegram
+package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.State
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.UnknownCommandTelegramCommandHandler
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec

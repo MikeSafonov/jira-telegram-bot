@@ -1,10 +1,6 @@
-package com.github.mikesafonov.jira.telegram.jira
+package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.dao.Authorization
-import com.github.mikesafonov.jira.telegram.service.jira.AuthorizationService
-import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
-import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthorizationException
-import com.github.mikesafonov.jira.telegram.service.jira.TempTokenStorageService
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthClient
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraTempTokenAndAuthorizeUrl
 import com.google.api.client.auth.oauth.OAuthParameters

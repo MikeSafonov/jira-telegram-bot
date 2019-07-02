@@ -1,8 +1,7 @@
-package com.github.mikesafonov.jira.telegram
+package com.github.mikesafonov.jira.telegram.service.parameters
 
 import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
 import com.github.mikesafonov.jira.telegram.generators.EventGen
-import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every

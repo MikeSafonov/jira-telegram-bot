@@ -1,6 +1,5 @@
-package com.github.mikesafonov.jira.telegram.jira
+package com.github.mikesafonov.jira.telegram.service.jira
 
-import com.github.mikesafonov.jira.telegram.service.jira.TempTokenStorageService
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec

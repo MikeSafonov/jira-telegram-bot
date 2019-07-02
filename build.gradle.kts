@@ -17,12 +17,12 @@ buildscript {
 
 
 plugins {
-    kotlin("jvm") version "1.3.31"
+    kotlin("jvm") version "1.3.40"
     idea
     jacoco
-    id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.31"
-    id("org.springframework.boot") version "2.1.5.RELEASE"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.3.40"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.40"
+    id("org.springframework.boot") version "2.1.6.RELEASE"
     `build-scan` version "2.2"
 }
 
@@ -88,7 +88,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.telegram:telegrambots-spring-boot-starter:4.3")
+    implementation("org.telegram:telegrambots-spring-boot-starter:4.3.1")
 
     implementation("org.freemarker:freemarker:2.3.28")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")

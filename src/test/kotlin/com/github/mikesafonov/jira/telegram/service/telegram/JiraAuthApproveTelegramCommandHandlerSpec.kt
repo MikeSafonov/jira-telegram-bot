@@ -1,9 +1,7 @@
-package com.github.mikesafonov.jira.telegram.telegram
+package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthApproveTelegramCommandHandler
 import com.google.api.client.http.HttpHeaders
 import com.google.api.client.http.HttpResponseException

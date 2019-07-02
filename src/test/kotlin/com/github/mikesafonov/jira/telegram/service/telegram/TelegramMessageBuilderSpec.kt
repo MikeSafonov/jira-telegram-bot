@@ -1,6 +1,5 @@
-package com.github.mikesafonov.jira.telegram.telegram
+package com.github.mikesafonov.jira.telegram.service.telegram
 
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramMessageBuilder
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec

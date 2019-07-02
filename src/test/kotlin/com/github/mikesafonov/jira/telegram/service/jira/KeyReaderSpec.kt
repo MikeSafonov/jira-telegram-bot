@@ -1,4 +1,4 @@
-package com.github.mikesafonov.jira.telegram.jira
+package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.KeyReader
 import io.kotlintest.properties.Gen

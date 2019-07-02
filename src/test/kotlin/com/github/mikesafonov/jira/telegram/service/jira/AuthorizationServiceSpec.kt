@@ -1,8 +1,7 @@
-package com.github.mikesafonov.jira.telegram.jira
+package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository
-import com.github.mikesafonov.jira.telegram.service.jira.AuthorizationService
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every

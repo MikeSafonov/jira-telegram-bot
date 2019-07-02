@@ -1,4 +1,4 @@
-package com.github.mikesafonov.jira.telegram
+package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
@@ -6,7 +6,6 @@ import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.WebHookEvent
 import com.github.mikesafonov.jira.telegram.generators.EventGen
-import com.github.mikesafonov.jira.telegram.service.EventService
 import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient

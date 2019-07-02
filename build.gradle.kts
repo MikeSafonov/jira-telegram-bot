@@ -1,7 +1,20 @@
+import info.solidsoft.gradle.pitest.PitestPluginExtension
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import io.spring.gradle.dependencymanagement.dsl.ImportsHandler
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    configurations.maybeCreate("pitest")
+    dependencies {
+        classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.0")
+        "pitest"("io.kotlintest:kotlintest-plugins-pitest:3.3.3")
+    }
+}
+
 
 plugins {
     kotlin("jvm") version "1.3.31"
@@ -14,6 +27,8 @@ plugins {
 }
 
 apply(plugin = "io.spring.dependency-management")
+apply(plugin = "info.solidsoft.pitest")
+
 
 group = "com.github.mikesafonov"
 version = "1.1.0"
@@ -81,7 +96,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:1.6.26")
     implementation("org.apache.logging.log4j:log4j-web")
 
-    implementation ("io.micrometer:micrometer-core")
+    implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
 
     runtimeOnly("org.postgresql:postgresql")
@@ -95,9 +110,9 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.9.3")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
 }
 
 jacoco {
@@ -113,11 +128,28 @@ tasks.jacocoTestReport {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
+    finalizedBy(tasks.getByName("pitest"))
 }
+
 
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
 
     publishAlways()
+}
+
+configure<PitestPluginExtension> {
+    pitestVersion = "1.4.5"
+    testPlugin = "KotlinTest"
+    avoidCallsTo = setOf("kotlin.jvm.internal")
+    targetClasses = setOf("com.github.mikesafonov.jira.telegram.service.*",
+        "com.github.mikesafonov.jira.telegram.dto.*")
+    targetTests = setOf("com.github.mikesafonov.jira.telegram.service.*",
+        "com.github.mikesafonov.jira.telegram.dto.*")
+    threads = 4
+    outputFormats = setOf("HTML", "XML")
+    timestampedReports = false
+    useClasspathFile = true
+    enableDefaultIncrementalAnalysis = true
 }

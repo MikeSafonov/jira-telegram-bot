@@ -1,7 +1,5 @@
-package com.github.mikesafonov.jira.telegram.telegram
+package com.github.mikesafonov.jira.telegram.service.telegram
 
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramHandlersHolder
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.NoChatTelegramCommandHandler
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.UnknownCommandTelegramCommandHandler

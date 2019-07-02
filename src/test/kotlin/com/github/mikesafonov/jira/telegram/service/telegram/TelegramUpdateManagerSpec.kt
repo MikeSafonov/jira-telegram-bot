@@ -1,12 +1,9 @@
-package com.github.mikesafonov.jira.telegram.telegram
+package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramHandlersHolder
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramUpdateManager
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.Called

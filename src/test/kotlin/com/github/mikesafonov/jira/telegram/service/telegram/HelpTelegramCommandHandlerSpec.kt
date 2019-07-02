@@ -1,11 +1,9 @@
-package com.github.mikesafonov.jira.telegram.telegram
+package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.config.BuildInfo
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.dao.State
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
-import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.HelpTelegramCommandHandler
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe

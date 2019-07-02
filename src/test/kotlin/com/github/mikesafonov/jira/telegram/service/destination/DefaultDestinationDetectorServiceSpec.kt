@@ -1,9 +1,8 @@
-package com.github.mikesafonov.jira.telegram
+package com.github.mikesafonov.jira.telegram.service.destination
 
 import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
 import com.github.mikesafonov.jira.telegram.generators.*
-import com.github.mikesafonov.jira.telegram.service.destination.DefaultDestinationDetectorService
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec

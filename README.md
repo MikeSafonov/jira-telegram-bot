@@ -1,6 +1,5 @@
 # Jira Telegram Bot
-
-[![DepShield Badge](https://depshield.sonatype.org/badges/MikeSafonov/jira-telegram-bot/depshield.svg)](https://depshield.github.io)
+[![codecov](https://codecov.io/gh/MikeSafonov/jira-telegram-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/MikeSafonov/jira-telegram-bot)
 ![Travis-CI](https://travis-ci.com/MikeSafonov/jira-telegram-bot.svg?branch=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MikeSafonov_jira-telegram-bot&metric=alert_status)](https://sonarcloud.io/dashboard?id=MikeSafonov_jira-telegram-bot)
 

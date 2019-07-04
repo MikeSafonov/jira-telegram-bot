@@ -143,10 +143,8 @@ configure<PitestPluginExtension> {
     pitestVersion = "1.4.5"
     testPlugin = "KotlinTest"
     avoidCallsTo = setOf("kotlin.jvm.internal")
-    targetClasses = setOf("com.github.mikesafonov.jira.telegram.service.*",
-        "com.github.mikesafonov.jira.telegram.dto.*")
-    targetTests = setOf("com.github.mikesafonov.jira.telegram.service.*",
-        "com.github.mikesafonov.jira.telegram.dto.*")
+    targetClasses = setOf("com.github.mikesafonov.jira.telegram.service.*")
+    targetTests = setOf("com.github.mikesafonov.jira.telegram.service.*")
     threads = 4
     outputFormats = setOf("HTML", "XML")
     timestampedReports = false

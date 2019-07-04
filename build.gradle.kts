@@ -150,4 +150,6 @@ configure<PitestPluginExtension> {
     timestampedReports = false
     useClasspathFile = true
     enableDefaultIncrementalAnalysis = true
+    setHistoryInputLocation(".pitest/pitHistory.txt")
+    setHistoryOutputLocation(".pitest/pitHistory.txt")
 }

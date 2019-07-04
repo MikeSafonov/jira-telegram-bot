@@ -7,3 +7,4 @@ target/
 jira-bot-logs/
 .kotlintest/
 *-dev.properties
+.pitest/

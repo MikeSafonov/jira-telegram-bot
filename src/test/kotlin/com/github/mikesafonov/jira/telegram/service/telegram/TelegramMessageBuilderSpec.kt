@@ -4,7 +4,6 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 
 /**
  * @author Mike Safonov
@@ -49,15 +48,7 @@ class TelegramMessageBuilderSpec : BehaviorSpec({
         When("edit message") {
             val id = Gen.long().random().first()
             val idMessage = Gen.int().random().first()
-            val newMessage = "aa"
-
-
-            val expectedMessage = EditMessageText().apply {
-                enableMarkdown(true)
-                chatId = id.toString()
-                text = newMessage
-                messageId = idMessage
-            }
+            val newMessage = Gen.string().random().first()
 
             Then("Expected messages") {
                 var value = builder.createEditMarkdownMessage(id, idMessage, newMessage)

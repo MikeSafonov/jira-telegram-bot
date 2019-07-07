@@ -90,7 +90,7 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             )
             Then("Return list of reporter and assignee names") {
                 val expectedNames =
-                    listOfNotNull(event.issue?.reporterName, event.issue?.assigneeName)
+                    listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName)
                 val destinations = defaultDestinationDetectorService.findDestinations(event)
 
                 destinations shouldBe expectedNames

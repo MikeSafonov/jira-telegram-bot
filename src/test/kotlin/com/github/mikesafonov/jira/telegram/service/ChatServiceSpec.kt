@@ -41,7 +41,7 @@ class ChatServiceSpec : BehaviorSpec({
         }
 
         When("telegramId is invalid") {
-            val jiraLogin = Gen.string().random().first().replace(" ", "_")
+            val jiraLogin = "validJiraLogin"
             val telegramId = -1L
             every { chatRepository.findByJiraId(jiraLogin) } returns null
             Then("throw exception") {

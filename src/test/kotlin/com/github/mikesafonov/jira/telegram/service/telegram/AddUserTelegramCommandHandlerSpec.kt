@@ -61,6 +61,8 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.INIT) } returns true
+                every { isStartsWithText(any()) } returns false
             }
 
             Then("isHandle returns false") {
@@ -78,6 +80,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
                 }
+                every { isInState(State.INIT) } returns false
             }
 
             Then("isHandle returns false") {
@@ -97,6 +100,8 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.INIT) } returns true
+                every { isStartsWithText("/add_user") } returns true
             }
 
             Then("isHandle returns true") {

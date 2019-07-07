@@ -26,7 +26,8 @@ class AddUserTelegramCommandHandler(
     private val commandPrefix = "/add_user"
 
     override fun isHandle(command: TelegramCommand): Boolean {
-        return super.isHandle(command) && isInState(command, State.INIT) && isStartsWithText(command, commandPrefix)
+        return super.isHandle(command) && command.isInState(State.INIT)
+                && command.isStartsWithText(commandPrefix)
     }
 
     override fun handle(command: TelegramCommand): State {

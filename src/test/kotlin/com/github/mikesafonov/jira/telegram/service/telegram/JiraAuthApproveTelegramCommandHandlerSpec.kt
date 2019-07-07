@@ -5,7 +5,6 @@ import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthApproveTelegramCommandHandler
 import com.google.api.client.http.HttpHeaders
 import com.google.api.client.http.HttpResponseException
-import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.*
@@ -25,6 +24,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.WAIT_APPROVE) } returns false
             }
             Then("isHandle returns false") {
                 handler.isHandle(command) shouldBe false
@@ -36,6 +36,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
                 }
+                every { isInState(State.WAIT_APPROVE) } returns true
             }
             Then("isHandle returns true") {
                 handler.isHandle(command) shouldBe true
@@ -74,7 +75,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
 
         When("unable to create access token") {
             val telegramChatId = 1L
-            val code = Gen.string().random().first()
+            val code = "code"
             val messageIdValue = 1
             val command: TelegramCommand = mockk {
                 every { text } returns code
@@ -106,7 +107,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
 
         When("return 401 status") {
             val telegramChatId = 1L
-            val code = Gen.string().random().first()
+            val code = "code"
             val messageIdValue = 1
             val command: TelegramCommand = mockk {
                 every { text } returns code
@@ -142,7 +143,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
         When("successful create access token") {
             val telegramChatId = 1L
             val messageIdValue = 1
-            val code = Gen.string().random().first()
+            val code = "code"
             val command: TelegramCommand = mockk {
                 every { text } returns code
                 every { chatId } returns telegramChatId

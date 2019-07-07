@@ -58,6 +58,8 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.INIT) } returns true
+                every { isStartsWithText(any()) } returns false
             }
             Then("isHandle returns false") {
                 handler.isHandle(command) shouldBe false
@@ -73,6 +75,8 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
                 }
+                every { isInState(State.INIT) } returns false
+                every { isStartsWithText("/remove_user") } returns true
             }
 
             Then("isHandle returns false") {
@@ -92,6 +96,8 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.INIT) } returns true
+                every { isStartsWithText("/remove_user") } returns true
             }
 
             Then("isHandle returns true") {
@@ -163,7 +169,7 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
             every { chatRepository.deleteByJiraId(jiraLogin) } returns Unit
             every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about new chat") {
-                 handler.handle(command) shouldBe State.INIT
+                handler.handle(command) shouldBe State.INIT
 
                 verify {
                     chatRepository.deleteByJiraId(jiraLogin)

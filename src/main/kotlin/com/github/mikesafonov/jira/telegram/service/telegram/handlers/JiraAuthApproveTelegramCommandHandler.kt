@@ -22,7 +22,7 @@ class JiraAuthApproveTelegramCommandHandler(
 ) : BaseCommandHandler(telegramClient) {
 
     override fun isHandle(command: TelegramCommand): Boolean {
-        return isInState(command, State.WAIT_APPROVE)
+        return command.isInState(State.WAIT_APPROVE)
     }
 
     override fun handle(command: TelegramCommand): State {

@@ -19,7 +19,7 @@ class UsersListTelegramCommandHandler(
     AdminCommandTelegramCommandHandler(botProperties, telegramClient) {
 
     override fun isHandle(command: TelegramCommand): Boolean {
-        return super.isHandle(command) && isInState(command, State.INIT) && isMatchText(command, "/users_list")
+        return super.isHandle(command) && command.isInState(State.INIT) && command.isMatchText("/users_list")
     }
 
     override fun handle(command: TelegramCommand): State {

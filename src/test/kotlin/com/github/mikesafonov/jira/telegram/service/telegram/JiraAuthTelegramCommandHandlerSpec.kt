@@ -27,6 +27,8 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.INIT) } returns true
+                every { isMatchText(any()) } returns false
             }
             Then("isHandle returns false") {
                 handler.isHandle(command) shouldBe false
@@ -40,6 +42,8 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
                 }
+                every { isInState(State.INIT) } returns false
+                every { isMatchText("/auth") } returns true
             }
             Then("isHandle returns false") {
                 handler.isHandle(command) shouldBe false
@@ -53,6 +57,8 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isInState(State.INIT) } returns true
+                every { isMatchText("/auth") } returns true
             }
             Then("isHandle returns true") {
                 handler.isHandle(command) shouldBe true

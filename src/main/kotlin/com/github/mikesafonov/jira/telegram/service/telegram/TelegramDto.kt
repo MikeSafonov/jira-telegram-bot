@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.Chat
+import com.github.mikesafonov.jira.telegram.dao.State
 import org.telegram.telegrambots.meta.api.objects.Message
 
 /**
@@ -27,4 +28,20 @@ data class TelegramCommand(
         get() {
             return message.hasText()
         }
+
+    fun isChatExist(): Boolean {
+        return chat != null
+    }
+
+    fun isInState(state: State): Boolean {
+        return chat != null && chat.state == state
+    }
+
+    fun isMatchText(textValue : String) : Boolean{
+        return hasText && text == textValue
+    }
+
+    fun isStartsWithText(textValue : String) : Boolean {
+        return hasText && text!!.startsWith(textValue)
+    }
 }

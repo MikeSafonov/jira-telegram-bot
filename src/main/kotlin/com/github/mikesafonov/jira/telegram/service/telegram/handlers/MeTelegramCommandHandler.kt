@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class MeTelegramCommandHandler(telegramClient: TelegramClient) : BaseCommandHandler(telegramClient) {
     override fun isHandle(command: TelegramCommand): Boolean {
-        return isMatchText(command, "/me") && isInState(command, State.INIT)
+        return command.isInState(State.INIT) && command.isMatchText("/me")
     }
 
     override fun handle(command: TelegramCommand): State {

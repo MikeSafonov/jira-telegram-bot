@@ -36,7 +36,7 @@ Admin commands:
 
 
     override fun isHandle(command: TelegramCommand): Boolean {
-        return isInState(command, State.INIT) && isMatchText(command, "/help")
+        return command.isInState(State.INIT) && command.isMatchText("/help")
     }
 
     override fun handle(command: TelegramCommand): State {

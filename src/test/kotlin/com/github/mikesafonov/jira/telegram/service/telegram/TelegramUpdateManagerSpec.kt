@@ -58,7 +58,38 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
             }
         }
 
-        When("handler exist and  need to change chat state") {
+        When("handler exist and chat is null and no need to change chat state") {
+            val telegramChatId = 1L
+            val update: Update = mockk {
+                every { hasMessage() } returns true
+                every { message } returns mockk {
+                    every { hasText() } returns true
+                    every { chatId } returns telegramChatId
+                }
+            }
+
+            every { chatRepository.findByTelegramId(telegramChatId) } returns null
+            every { authorizationRepository.findById(any()) } returns Optional.empty()
+            val commandHandler = mockk<TelegramCommandHandler> {
+                every { isHandle(ofType(TelegramCommand::class)) } returns true
+                every { handle(ofType(TelegramCommand::class)) } returns State.INIT
+            }
+
+            every { holder.findHandler(ofType(TelegramCommand::class)) } returns commandHandler
+
+            Then("return command response and not change chat state") {
+
+                manager.onUpdate(update)
+
+
+                verify {
+                    chatRepository.save(ofType(Chat::class)) wasNot Called
+                }
+
+            }
+        }
+
+        When("handler exist and need to change chat state") {
             val telegramChatId = 1L
             val update: Update = mockk {
                 every { hasMessage() } returns true

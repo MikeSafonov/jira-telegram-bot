@@ -81,6 +81,22 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
+        When("ISSUE_COMMENTED issue Event and comment author is null and issue creator exist") {
+            val authorUser = UserGen.generateDefault()
+            val event = EventGen().generateOne(
+                issueEventTypeName = IssueEventTypeName.ISSUE_COMMENTED,
+                issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser)),
+                comment = CommentGen().generateOne(author = null)
+            )
+            Then("Return list of reporter and assignee names") {
+                val expectedNames =
+                    listOfNotNull(event.issue?.reporterName, event.issue?.assigneeName)
+                val destinations = defaultDestinationDetectorService.findDestinations(event)
+
+                destinations shouldBe expectedNames
+            }
+        }
+
         When("ISSUE_CREATED issue Event and event author and issue creator are same") {
             val authorUser = UserGen.generateDefault()
             val event = EventGen().generateOne(

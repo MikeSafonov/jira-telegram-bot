@@ -15,8 +15,8 @@ class DefaultParametersBuilderServiceSpec : BehaviorSpec({
     val parametersBuilderService = DefaultParametersBuilderService(applicationProperties)
 
     Given("DefaultParametersBuilderService with not empty jiraUrl") {
-        every { applicationProperties.notification.jiraUrl } returns "http://someurl.com"
         When("Issue is null") {
+            every { applicationProperties.notification.jiraUrl } returns "http://someurl.com"
             val event = EventGen().generateOne(issue = null)
             Then("Return issueLink without key") {
                 parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
@@ -27,7 +27,7 @@ class DefaultParametersBuilderServiceSpec : BehaviorSpec({
         }
         When("Issue is not null") {
             val event = EventGen.generateDefault()
-
+            every { applicationProperties.notification.jiraUrl } returns "http://someurl.com/"
             Then("Return issueLink without key") {
                 parametersBuilderService.buildTemplateParameters(event) shouldBe mapOf(
                     "event" to event,

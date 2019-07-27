@@ -41,9 +41,23 @@ You can build application using following command:
 
 JDK >= 1.8
 
+### Unit tests
+
+You can run unit tests using following command:
+
+    ./grdlew test
+
+### Mutation tests
+
+You can run mutation tests using following command:
+
+    ./grdlew pitest
+
+You will be able to find pitest report in `build/reports/pitest/` folder.
+
 ### Running jira-telegram-bot
 
-After the build you get [fully executable jar archive](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/#packaging-executable-configuring-launch-script)
+After the build you will get [fully executable jar archive](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/#packaging-executable-configuring-launch-script)
  
 You can run application using following commands:
 
@@ -86,7 +100,7 @@ locations:
   <dd>type of template processing engine (default FREEMARKER)</dd>
   
   <dt>jira.bot.notification.sendToMe</dt>
-  <dd>is need to notify user about self-created events</dd>
+  <dd>whether the user should receive their self-created events</dd>
     
   <dt>jira.bot.notification.jiraUrl</dt>
   <dd>jira instance url for building browse link in notification message</dd>
@@ -174,9 +188,9 @@ Jira oauth commands:
 ## Jira OAuth 
 
 Please read [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/) to understand how to configure Jira
-before using Jira OAuth in Jira-telegram-bot.
+before using Jira OAuth in jira-telegram-bot.
 
-To use Jira OAuth in Jira-telegram-bot you must provide next properties:
+You must provide next properties to use Jira OAuth in jira-telegram-bot :
 
 <dl>
   <dt>jira.oauth.baseUrl</dt>
@@ -202,7 +216,7 @@ To use Jira OAuth in Jira-telegram-bot you must provide next properties:
 </dl>
 
 
-After all properties configured properly `/auth` telegram command will be allowed.
+`/auth` telegram command will be allowed after all properties configured properly .
 
 ## Monitoring using [Prometheus](https://prometheus.io)
 

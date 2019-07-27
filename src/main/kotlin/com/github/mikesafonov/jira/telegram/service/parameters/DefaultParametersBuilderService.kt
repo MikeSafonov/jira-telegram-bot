@@ -1,15 +1,14 @@
 package com.github.mikesafonov.jira.telegram.service.parameters
 
-import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
-import com.github.mikesafonov.jira.telegram.config.NotificationProperties
 import com.github.mikesafonov.jira.telegram.dto.Event
+import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
 
 /**
  * Default implementation of [ParametersBuilderService]
  * @author Mike Safonov
  */
 
-class DefaultParametersBuilderService(private val applicationProperties: ApplicationProperties) : ParametersBuilderService {
+class DefaultParametersBuilderService(private val jiraIssueBrowseLinkService: JiraIssueBrowseLinkService) : ParametersBuilderService {
 
     /**
      * Create map from [event] and concatenated issue browse link
@@ -19,23 +18,8 @@ class DefaultParametersBuilderService(private val applicationProperties: Applica
         return mapOf("event" to event, "issueLink" to buildIssueLink(event))
     }
 
-    /**
-     * Build issue link by concatenation of [NotificationProperties.jiraUrl] and [event.issue.key]. Returning
-     * [event.issue.self] if [NotificationProperties.jiraUrl] is `null`
-     * @param event jira issues event
-     * @return link to browse issue
-     */
     private fun buildIssueLink(event: Event): String {
-        val notificationProperties = applicationProperties.notification
-        if (notificationProperties.jiraUrl.isNotBlank()) {
-            val issueKey = event.issue?.key ?: ""
-            return if (notificationProperties.jiraUrl.endsWith("/")) {
-                "${notificationProperties.jiraUrl}browse/$issueKey"
-            } else {
-                "${notificationProperties.jiraUrl}/browse/$issueKey"
-            }
-        }
-        return event.issue?.self ?: ""
+        return jiraIssueBrowseLinkService.createBrowseLink(event.issue?.key, event.issue?.self)
     }
 
 }

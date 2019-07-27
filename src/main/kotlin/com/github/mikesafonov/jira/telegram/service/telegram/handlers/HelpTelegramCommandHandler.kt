@@ -61,6 +61,7 @@ $helpMessage
 
 Jira commands:
 /auth - start jira OAuth
+/my\_issues - show list of unresolved issues assigned to you
                 """.trimMargin()
         } else {
             """This is [jira-telegram-bot](https://github.com/MikeSafonov/jira-telegram-bot) version *${buildInfo.version}*

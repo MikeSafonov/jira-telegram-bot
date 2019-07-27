@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 
 /**
+ * Storage for temporary jira oauth token based on [ConcurrentHashMap]
  * @author Mike Safonov
  */
 @Service

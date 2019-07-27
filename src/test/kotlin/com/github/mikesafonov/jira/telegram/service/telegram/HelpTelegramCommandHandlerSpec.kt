@@ -117,6 +117,7 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}
 
 Jira commands:
 /auth - start jira OAuth
+/my\_issues - show list of unresolved issues assigned to you
             """.trimIndent()
             val id = message.chatId
             Then("Should return expected help message") {
@@ -175,6 +176,7 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}
 
 Jira commands:
 /auth - start jira OAuth
+/my\_issues - show list of unresolved issues assigned to you
             """.trimIndent()
             val id = message.chatId
             Then("Should return expected help message") {

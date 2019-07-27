@@ -51,7 +51,7 @@ class JiraAuthService(
     }
 
     /**
-     * Create oauth request parameters for telegra id
+     * Create oauth request parameters for telegram id
      * @param id telegram id
      */
     fun getOAuthParameters(id: Long): OAuthParameters {

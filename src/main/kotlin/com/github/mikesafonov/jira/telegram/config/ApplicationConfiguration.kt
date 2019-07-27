@@ -1,7 +1,10 @@
 package com.github.mikesafonov.jira.telegram.config
 
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory
+import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import com.github.mikesafonov.jira.telegram.service.destination.DefaultDestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
+import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
 import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramUpdateManager
@@ -80,8 +83,14 @@ class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ParametersBuilderService::class)
-    fun defaultParametersBuilderService(applicationProperties: ApplicationProperties): DefaultParametersBuilderService {
-        return DefaultParametersBuilderService(applicationProperties)
+    fun defaultParametersBuilderService(jiraIssueBrowseLinkService: JiraIssueBrowseLinkService): DefaultParametersBuilderService {
+        return DefaultParametersBuilderService(jiraIssueBrowseLinkService)
+    }
+
+    @Bean
+    @ConditionalOnJiraOAuth
+    fun asynchronousJiraRestClientFactory () : AsynchronousJiraRestClientFactory{
+        return AsynchronousJiraRestClientFactory()
     }
 
     @Bean

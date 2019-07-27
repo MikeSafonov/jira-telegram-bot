@@ -11,17 +11,17 @@ buildscript {
     configurations.maybeCreate("pitest")
     dependencies {
         classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.0")
-        "pitest"("io.kotlintest:kotlintest-plugins-pitest:3.3.3")
+        "pitest"("io.kotlintest:kotlintest-plugins-pitest:3.4.0")
     }
 }
 
 
 plugins {
-    kotlin("jvm") version "1.3.40"
+    kotlin("jvm") version "1.3.41"
     idea
     jacoco
-    id("org.jetbrains.kotlin.plugin.spring") version "1.3.40"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.40"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.3.41"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.41"
     id("org.springframework.boot") version "2.1.6.RELEASE"
     `build-scan` version "2.2"
 }
@@ -93,7 +93,7 @@ dependencies {
     implementation("org.freemarker:freemarker:2.3.28")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")
 
-    implementation("io.github.microutils:kotlin-logging:1.6.26")
+    implementation("io.github.microutils:kotlin-logging:1.7.2")
     implementation("org.apache.logging.log4j:log4j-web")
 
     implementation("io.micrometer:micrometer-core")
@@ -110,7 +110,7 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.3")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.0")
     testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 }

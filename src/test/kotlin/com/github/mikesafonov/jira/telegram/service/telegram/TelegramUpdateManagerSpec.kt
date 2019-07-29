@@ -1,9 +1,9 @@
 package com.github.mikesafonov.jira.telegram.service.telegram
 
-import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.Called
@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.telegram.telegrambots.meta.api.objects.Update
-import java.util.*
 
 /**
  * @author Mike Safonov
@@ -20,10 +19,10 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
 
     val chatRepository = mockk<ChatRepository>()
     val holder = mockk<TelegramHandlersHolder>()
-    val authorizationRepository = mockk<AuthorizationRepository>()
+    val authorizationService = mockk<AuthorizationService>()
 
     Given("telegram update manager") {
-        val manager = TelegramUpdateManager(chatRepository, authorizationRepository, holder)
+        val manager = TelegramUpdateManager(chatRepository, authorizationService, holder)
 
         When("handler exist and no need to change chat state") {
             val telegramChatId = 1L
@@ -38,7 +37,7 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
             every { chatRepository.findByTelegramId(telegramChatId) } returns mockk {
                 every { state } returns State.INIT
             }
-            every { authorizationRepository.findById(any()) } returns Optional.empty()
+            every { authorizationService.get(any()) } returns null
             val commandHandler = mockk<TelegramCommandHandler> {
                 every { isHandle(ofType(TelegramCommand::class)) } returns true
                 every { handle(ofType(TelegramCommand::class)) } returns State.INIT
@@ -69,7 +68,7 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
             }
 
             every { chatRepository.findByTelegramId(telegramChatId) } returns null
-            every { authorizationRepository.findById(any()) } returns Optional.empty()
+            every { authorizationService.get(any()) } returns null
             val commandHandler = mockk<TelegramCommandHandler> {
                 every { isHandle(ofType(TelegramCommand::class)) } returns true
                 every { handle(ofType(TelegramCommand::class)) } returns State.INIT
@@ -107,7 +106,7 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
                 every { handle(ofType(TelegramCommand::class)) } returns State.WAIT_APPROVE
             }
             every { chatRepository.findByTelegramId(telegramChatId) } returns oldChat
-            every { authorizationRepository.findById(any()) } returns Optional.empty()
+            every { authorizationService.get(any()) } returns null
             every { holder.findHandler(ofType(TelegramCommand::class)) } returns commandHandler
             every { chatRepository.save(expectedChat) } returns expectedChat
 

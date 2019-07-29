@@ -58,15 +58,16 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             }
 
             every { jiraAuthService.createTemporaryToken(telegramChatId) } throws RuntimeException()
-            every { telegramClient.sendReplaceMessage(any(), any(), any()) } just Runs
+            every { telegramClient.sendDeleteMessage(any(), any()) } just Runs
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("return wrong command syntax") {
 
                 handler.handle(command) shouldBe State.INIT
 
                 verify {
-                    telegramClient.sendReplaceMessage(
+                    telegramClient.sendDeleteMessage(telegramChatId, messageIdValue)
+                    telegramClient.sendTextMessage(
                         telegramChatId,
-                        messageIdValue,
                         "Wrong command syntax\n Should be: <verification code>"
                     )
                 }
@@ -90,15 +91,16 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             }
 
             every { jiraAuthService.createAccessToken(telegramChatId, code) } throws RuntimeException()
-            every { telegramClient.sendReplaceMessage(any(), any(), any()) } just Runs
+            every { telegramClient.sendDeleteMessage(any(), any()) } just Runs
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("return unexpected error") {
 
                 handler.handle(command) shouldBe State.INIT
 
                 verify {
-                    telegramClient.sendReplaceMessage(
+                    telegramClient.sendDeleteMessage(telegramChatId, messageIdValue)
+                    telegramClient.sendTextMessage(
                         telegramChatId,
-                        messageIdValue,
                         "Unexpected error"
                     )
                 }
@@ -125,15 +127,16 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             val exception = HttpResponseException.Builder(401, message, HttpHeaders()).setContent(message).build()
 
             every { jiraAuthService.createAccessToken(telegramChatId, code) } throws exception
-            every { telegramClient.sendReplaceMessage(any(), any(), any()) } just Runs
+            every { telegramClient.sendDeleteMessage(any(), any()) } just Runs
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("return unexpected error") {
 
                 handler.handle(command) shouldBe State.INIT
 
                 verify {
-                    telegramClient.sendReplaceMessage(
+                    telegramClient.sendDeleteMessage(telegramChatId, messageIdValue)
+                    telegramClient.sendTextMessage(
                         telegramChatId,
-                        messageIdValue,
                         "401 $message"
                     )
                 }
@@ -157,14 +160,15 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             }
 
             every { jiraAuthService.createAccessToken(telegramChatId, code) } returns Unit
-            every { telegramClient.sendReplaceMessage(any(), any(), any()) } just Runs
+            every { telegramClient.sendDeleteMessage(any(), any()) } just Runs
+            every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("return authorization success") {
                 handler.handle(command) shouldBe State.INIT
 
                 verify {
-                    telegramClient.sendReplaceMessage(
+                    telegramClient.sendDeleteMessage(telegramChatId, messageIdValue)
+                    telegramClient.sendTextMessage(
                         telegramChatId,
-                        messageIdValue,
                         "Authorization success!"
                     )
                 }

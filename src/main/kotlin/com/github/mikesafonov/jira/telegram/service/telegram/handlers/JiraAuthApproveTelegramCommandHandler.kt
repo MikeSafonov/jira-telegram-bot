@@ -29,22 +29,27 @@ class JiraAuthApproveTelegramCommandHandler(
         val id = command.chatId
         val messageId = command.message.messageId
         if (command.text.isNullOrBlank()) {
-            telegramClient.sendReplaceMessage(id, messageId, "Wrong command syntax\n Should be: <verification code>")
+            replaceUserMessage(id, messageId, "Wrong command syntax\n Should be: <verification code>")
         } else {
             try {
                 jiraAuthService.createAccessToken(id, command.text!!)
-                telegramClient.sendReplaceMessage(id, messageId,  "Authorization success!")
+                replaceUserMessage(id, messageId, "Authorization success!")
             } catch (e: HttpResponseException) {
                 logger.error(e.message, e)
                 val message = "${e.statusCode} ${e.content}"
-                telegramClient.sendReplaceMessage(id, messageId,   message)
+                replaceUserMessage(id, messageId, message)
             } catch (e: Exception) {
                 logger.error(e.message, e)
-                telegramClient.sendReplaceMessage(id, messageId,   "Unexpected error")
+                replaceUserMessage(id, messageId, "Unexpected error")
             }
         }
 
         return State.INIT
+    }
+
+    private fun replaceUserMessage(id : Long, messageId : Int, text : String ){
+        telegramClient.sendDeleteMessage(id, messageId)
+        telegramClient.sendTextMessage(id, text)
     }
 
 }

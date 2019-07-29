@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.telegram.telegrambots.bots.DefaultAbsSender
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 
 class TelegramClientSpec : BehaviorSpec({
@@ -54,6 +55,19 @@ class TelegramClientSpec : BehaviorSpec({
             every { absSender.execute(any<EditMessageText>()) } returns mockk()
             Then("call abs sender") {
                 client.sendReplaceMessage(id, idMessage, message)
+                verify {
+                    absSender.execute(replaceMessage)
+                }
+            }
+        }
+
+        When("delete message") {
+            val replaceMessage = mockk<DeleteMessage>()
+
+            every { telegramMessageBuilder.createDeleteMessage(id.toString(), idMessage) } returns replaceMessage
+            every { absSender.execute(any<DeleteMessage>()) } returns mockk()
+            Then("call abs sender") {
+                client.sendDeleteMessage(id, idMessage)
                 verify {
                     absSender.execute(replaceMessage)
                 }

@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service.telegram
 
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 
 /**
@@ -42,6 +43,13 @@ class TelegramMessageBuilder {
             enableMarkdown(true)
             chatId = id
             text = message
+            messageId = idMessage
+        }
+    }
+
+    fun createDeleteMessage(id: String, idMessage: Int) : DeleteMessage{
+        return DeleteMessage().apply {
+            chatId = id
             messageId = idMessage
         }
     }

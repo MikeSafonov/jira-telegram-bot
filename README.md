@@ -184,6 +184,7 @@ Admin commands:
 Jira oauth commands:
 
 - **_/auth_** - starts jira authorization
+- **_/my_issues_** - shows list of unresolved issues assigned to user
 
 ## Jira OAuth 
 

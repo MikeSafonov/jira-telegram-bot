@@ -1,4 +1,4 @@
-package com.github.mikesafonov.jira.telegram.service.jira
+package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository

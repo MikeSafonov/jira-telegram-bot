@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository
+import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every
@@ -14,7 +15,8 @@ import java.util.*
  */
 class AuthorizationServiceSpec : BehaviorSpec({
     val authorizationRepository = mockk<AuthorizationRepository>()
-    val authorizationService = AuthorizationService(authorizationRepository)
+    val authorizationService =
+        AuthorizationService(authorizationRepository)
 
     Given("Authorization service") {
         When("No authorization in database") {

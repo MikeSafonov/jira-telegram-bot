@@ -15,7 +15,7 @@ import io.mockk.*
  */
 
 class HelpTelegramCommandHandlerSpec : BehaviorSpec({
-
+    val currentVersion = "1.2.0"
     val botProperties = mockk<BotProperties>()
     val jiraOAuthProperties = mockk<JiraOAuthProperties>()
     val telegramClient = mockk<TelegramClient>()
@@ -75,7 +75,6 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("Message processing and user not admin") {
-            val currentVersion = "1.1.0"
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns null
             every { jiraOAuthProperties.isNotEmpty } returns false
@@ -102,7 +101,6 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
         }
 
         When("Message processing and user not admin and jira allowed") {
-            val currentVersion = "1.1.0"
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns null
             every { jiraOAuthProperties.isNotEmpty } returns true
@@ -135,7 +133,6 @@ Jira commands:
 
         When("Message processing and user admin") {
             val admin = Gen.long().random().first()
-            val currentVersion = "1.1.0"
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns admin
             every { jiraOAuthProperties.isNotEmpty } returns false
@@ -162,7 +159,6 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
 
         When("Message processing and user admin and jira allowed") {
             val admin = Gen.long().random().first()
-            val currentVersion = "1.1.0"
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns admin
             every { jiraOAuthProperties.isNotEmpty } returns true

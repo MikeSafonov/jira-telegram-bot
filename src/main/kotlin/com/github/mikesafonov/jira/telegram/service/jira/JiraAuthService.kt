@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
+import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthClient
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraTempTokenAndAuthorizeUrl
 import com.google.api.client.auth.oauth.OAuthParameters

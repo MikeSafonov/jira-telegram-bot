@@ -1,1 +1,1 @@
-alter table chats add column "state" INT NOT NULL default 0
+alter table chats add column state INT NOT NULL default 0

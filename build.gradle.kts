@@ -67,6 +67,13 @@ configure<DependencyManagementExtension> {
     })
 }
 
+sourceSets.create("testIntegration") {
+    java.srcDir("src/testIntegration/kotlin")
+    resources.srcDir("src/testIntegration/resources")
+    compileClasspath += sourceSets.getByName("main").output + sourceSets.getByName("test").output
+    runtimeClasspath += sourceSets.getByName("main").output + sourceSets.getByName("test").output
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -75,6 +82,10 @@ configurations {
     compile {
         exclude(module = "spring-boot-starter-logging")
     }
+}
+
+val testIntegrationImplementation by configurations.existing {
+    extendsFrom(configurations["testImplementation"], configurations["implementation"])
 }
 
 dependencies {
@@ -101,7 +112,7 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("mysql:mysql-connector-java")
+    runtimeOnly("mysql:mysql-connector-java:5.1.47")
 
     implementation("org.flywaydb:flyway-core")
     implementation("com.atlassian.jira:jira-rest-java-client-core:5.1.2-2bd0a62e")
@@ -114,6 +125,14 @@ dependencies {
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.0")
     testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
+
+    "testIntegrationImplementation"("org.springframework.boot:spring-boot-starter-test")
+    "testIntegrationImplementation"("org.springframework.boot:spring-boot-starter-data-jpa")
+    "testIntegrationImplementation"("com.h2database:h2:1.4.199")
+    "testIntegrationImplementation"("org.postgresql:postgresql")
+    "testIntegrationImplementation"("mysql:mysql-connector-java:5.1.47")
+    "testIntegrationImplementation"("org.testcontainers:postgresql:1.12.0")
+    "testIntegrationImplementation"("org.testcontainers:mysql:1.12.0")
 }
 
 jacoco {
@@ -127,9 +146,16 @@ tasks.jacocoTestReport {
     }
 }
 
+tasks.register("testIntegration", Test::class.java){
+    testClassesDirs = sourceSets.getByName("testIntegration").output.classesDirs
+    classpath = sourceSets.getByName("testIntegration").runtimeClasspath
+    dependsOn(tasks.named("test"))
+}
+
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
     finalizedBy(tasks.getByName("pitest"))
+    finalizedBy(tasks.getByName("testIntegration"))
 }
 
 

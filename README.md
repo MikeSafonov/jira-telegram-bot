@@ -47,6 +47,8 @@ You can run unit tests using following command:
 
     ./grdlew test
 
+> gradle task `test` finalized by `pitest` and `testIntegration`
+
 ### Mutation tests
 
 You can run mutation tests using following command:
@@ -54,6 +56,12 @@ You can run mutation tests using following command:
     ./grdlew pitest
 
 You will be able to find pitest report in `build/reports/pitest/` folder.
+
+### Integration tests
+
+You can run integration tests using following command:
+
+    ./grdlew testIntegration
 
 ### Running jira-telegram-bot
 

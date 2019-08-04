@@ -116,7 +116,7 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
                 verify {
                     telegramClient.sendMarkdownMessage(
                         telegramChatId,
-                        "Please allow access [Jira Access](${tempToken.url})"
+                        "Please allow access [Jira Access](${tempToken.url}) and pass verification code:"
                     )
                 }
             }

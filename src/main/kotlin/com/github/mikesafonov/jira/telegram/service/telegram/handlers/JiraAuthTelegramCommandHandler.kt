@@ -27,7 +27,7 @@ class JiraAuthTelegramCommandHandler(
         val id = command.chatId
         return try {
             val temporaryToken = jiraAuthService.createTemporaryToken(id)
-            val text = """Please allow access [Jira Access](${temporaryToken.url})"""
+            val text = """Please allow access [Jira Access](${temporaryToken.url}) and pass verification code:"""
             telegramClient.sendMarkdownMessage(id, text)
             State.WAIT_APPROVE
         } catch (e: Exception) {

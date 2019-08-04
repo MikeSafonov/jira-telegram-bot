@@ -50,22 +50,6 @@ class MyIssuesTelegramCommandHandlerSpec : BehaviorSpec({
             }
         }
 
-        When("incoming message has no authorization") {
-            val command: TelegramCommand = mockk {
-                every { text } returns "/my_issues"
-                every { hasText } returns true
-                every { chat } returns mockk {
-                    every { state } returns State.INIT
-                }
-                every { isInState(State.INIT) } returns false
-                every { isMatchText("/my_issues") } returns true
-                every { authorization } returns null
-            }
-            Then("isHandle returns false") {
-                handler.isHandle(command) shouldBe false
-            }
-        }
-
         When("incoming message contain right command") {
             val command: TelegramCommand = mockk {
                 every { text } returns "/my_issues"
@@ -79,6 +63,33 @@ class MyIssuesTelegramCommandHandlerSpec : BehaviorSpec({
             }
             Then("isHandle returns true") {
                 handler.isHandle(command) shouldBe true
+            }
+        }
+
+
+        When("incoming message has no authorization") {
+            val telegramChatId = 1L
+            val jiraLogin = "jira_login"
+            val command: TelegramCommand = mockk {
+                every { text } returns "/my_issues"
+                every { hasText } returns true
+                every { chat } returns mockk {
+                    every { state } returns State.INIT
+                    every { telegramId } returns telegramChatId
+                    every { jiraId } returns jiraLogin
+                }
+                every { isInState(State.INIT) } returns true
+                every { isMatchText("/my_issues") } returns true
+                every { authorization } returns null
+            }
+            Then("return no authorized request message") {
+                every { telegramClient.sendTextMessage(any(), any()) } just Runs
+
+                handler.handle(command) shouldBe State.INIT
+
+                verify {
+                    telegramClient.sendTextMessage(telegramChatId, "You must be logged in to use this command. Use the /auth to log in to JIRA")
+                }
             }
         }
 

@@ -19,14 +19,17 @@ class MyIssuesTelegramCommandHandler(
 
     override fun isHandle(command: TelegramCommand): Boolean {
         return command.isInState(State.INIT) && command.isMatchText("/my_issues")
-                && command.authorization != null
     }
 
     override fun handle(command: TelegramCommand): State {
         val jiraId = command.chat!!.jiraId
         val telegramId = command.chat.telegramId
-        val myIssues = jiraApiService.getMyIssues(telegramId, jiraId)
-        telegramClient.sendMarkdownMessage(telegramId, buildMessage(myIssues))
+        if(command.authorization == null){
+            telegramClient.sendTextMessage(telegramId, "You must be logged in to use this command. Use the /auth to log in to JIRA")
+        } else {
+            val myIssues = jiraApiService.getMyIssues(telegramId, jiraId)
+            telegramClient.sendMarkdownMessage(telegramId, buildMessage(myIssues))
+        }
         return State.INIT
     }
 

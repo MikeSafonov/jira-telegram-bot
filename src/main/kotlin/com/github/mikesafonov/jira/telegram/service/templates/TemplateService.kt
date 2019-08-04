@@ -10,11 +10,10 @@ import com.github.mikesafonov.jira.telegram.dto.Event
 interface TemplateService {
 
     /**
-     * Find template for [event], compile and process with input parameters [parameters]
+     * Compile [RawTemplate]
      *
-     * @param event jira event
-     * @param parameters input parameters for template
-     * @return processed message or null if template for type [issueEventTypeName] not exist
+     * @param rawTemplate raw template
+     * @return compiled [RawTemplate]
      */
-    fun buildMessage(event: Event, parameters: Map<String, Any>): CompiledTemplate?
+    fun buildMessage(rawTemplate: RawTemplate): CompiledTemplate
 }

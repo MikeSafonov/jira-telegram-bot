@@ -10,6 +10,8 @@ import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetec
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
+import com.github.mikesafonov.jira.telegram.service.templates.RawTemplate
+import com.github.mikesafonov.jira.telegram.service.templates.TemplateResolverService
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import io.kotlintest.IsolationMode
 import io.kotlintest.properties.Gen
@@ -32,8 +34,10 @@ class EventServiceSpec : BehaviorSpec() {
         val destinationDetectorService = mockk<DestinationDetectorService>()
         val parametersBuilderService = mockk<ParametersBuilderService>()
         val chatRepository = mockk<ChatRepository>()
+        val templateResolverService = mockk<TemplateResolverService>()
         val eventService =
             EventService(
+                templateResolverService,
                 templateService,
                 destinationDetectorService,
                 parametersBuilderService,
@@ -122,7 +126,7 @@ class EventServiceSpec : BehaviorSpec() {
                     randomIssueEvents().forEach {
                         val parameters = mapOf("event" to it)
                         every { destinationDetectorService.findDestinations(it) } returns listOf(Gen.string().random().first())
-                        every { templateService.buildMessage(it, parameters) } returns null
+                        every { templateResolverService.resolve(it, parameters) } returns null
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
 
                         eventService.handle(it)
@@ -134,7 +138,7 @@ class EventServiceSpec : BehaviorSpec() {
                             ) wasNot Called
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
-                            templateService.buildMessage(it, parameters)
+                            templateResolverService.resolve(it, parameters)
                         }
                     }
 
@@ -146,13 +150,16 @@ class EventServiceSpec : BehaviorSpec() {
                     randomIssueEvents().forEach {
                         val destinationLogin = Gen.string().random().first()
                         val parameters = mapOf("event" to it)
+                        val rawTemplate =
+                            RawTemplate(Gen.string().random().first(), Gen.string().random().first(), emptyMap())
                         val template = CompiledTemplate(
                             Gen.string().random().first(),
                             true
                         )
                         every { destinationDetectorService.findDestinations(it) } returns listOf(destinationLogin)
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
-                        every { templateService.buildMessage(it, parameters) } returns template
+                        every { templateResolverService.resolve(it, parameters) } returns rawTemplate
+                        every { templateService.buildMessage(rawTemplate) } returns template
                         every { chatRepository.findByJiraId(destinationLogin) } returns null
 
                         eventService.handle(it)
@@ -164,7 +171,8 @@ class EventServiceSpec : BehaviorSpec() {
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
                             chatRepository.findByJiraId(destinationLogin)
-                            templateService.buildMessage(it, parameters)
+                            templateResolverService.resolve(it, parameters)
+                            templateService.buildMessage(rawTemplate)
                         }
                     }
                 }
@@ -176,10 +184,13 @@ class EventServiceSpec : BehaviorSpec() {
                         val destinationLogin = Gen.string().random().first()
                         val telegramId = Gen.long().random().first()
                         val parameters = mapOf("event" to it)
+                        val rawTemplate =
+                            RawTemplate(Gen.string().random().first(), Gen.string().random().first(), emptyMap())
                         val template = CompiledTemplate(Gen.string().random().first(), true)
                         every { destinationDetectorService.findDestinations(it) } returns listOf(destinationLogin)
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
-                        every { templateService.buildMessage(it, parameters) } returns template
+                        every { templateResolverService.resolve(it, parameters) } returns rawTemplate
+                        every { templateService.buildMessage(rawTemplate) } returns template
                         every { chatRepository.findByJiraId(destinationLogin) } returns Chat(
                             Gen.int().random().first(),
                             destinationLogin,
@@ -195,7 +206,8 @@ class EventServiceSpec : BehaviorSpec() {
                             destinationDetectorService.findDestinations(it)
                             telegramClient.sendMarkdownMessage(telegramId, template.message)
                             chatRepository.findByJiraId(destinationLogin)
-                            templateService.buildMessage(it, parameters)
+                            templateResolverService.resolve(it, parameters)
+                            templateService.buildMessage(rawTemplate)
                         }
                     }
                 }

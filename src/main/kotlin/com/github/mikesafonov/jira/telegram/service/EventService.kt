@@ -6,6 +6,7 @@ import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetec
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
+import com.github.mikesafonov.jira.telegram.service.templates.TemplateResolverService
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
@@ -18,6 +19,7 @@ private val logger = KotlinLogging.logger {}
  */
 @Service
 class EventService(
+    private val templateResolverService: TemplateResolverService,
     private val templateService: TemplateService,
     private val destinationDetectorService: DestinationDetectorService,
     private val parametersBuilderService: ParametersBuilderService,
@@ -44,8 +46,13 @@ class EventService(
         if (event.issueEventTypeName != null) {
             val destinationLogins = destinationDetectorService.findDestinations(event)
             if (destinationLogins.isNotEmpty()) {
-                templateService.buildMessage(event, parametersBuilderService.buildTemplateParameters(event))?.let {
-                    sendMessagesToTelegram(destinationLogins, it)
+                val rawTemplate =
+                    templateResolverService.resolve(event, parametersBuilderService.buildTemplateParameters(event))
+                if(rawTemplate == null){
+                    logger.debug{"No template for event $event was found"}
+                } else{
+                    val compiledTemplate = templateService.buildMessage(rawTemplate)
+                    sendMessagesToTelegram(destinationLogins, compiledTemplate)
                 }
             }
         } else {

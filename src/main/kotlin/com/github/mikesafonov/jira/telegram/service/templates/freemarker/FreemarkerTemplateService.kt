@@ -1,9 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.templates.freemarker
 
-import com.github.mikesafonov.jira.telegram.dao.TemplateRepository
-import com.github.mikesafonov.jira.telegram.dto.Event
-import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
 import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
+import com.github.mikesafonov.jira.telegram.service.templates.RawTemplate
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import freemarker.template.Configuration
 import freemarker.template.Template
@@ -25,7 +23,7 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 @ConditionalOnProperty(prefix = "jira.bot.template", name = arrayOf("type"), havingValue = "FREEMARKER")
-class FreemarkerTemplateService(private val templateRepository: TemplateRepository) : TemplateService {
+class FreemarkerTemplateService : TemplateService {
 
     private val version = Version(2, 3, 20)
     private val cfg = Configuration(version)
@@ -37,37 +35,14 @@ class FreemarkerTemplateService(private val templateRepository: TemplateReposito
     }
 
     /**
-     * Builds telegram message for issue type [event] and freemarker template from database
-     * @param event jira event
-     * @param parameters input parameters for template
-     * @return builded *markdown* message or null if template for event [event] not exist
+     * Builds telegram message for raw freemarker template [rawTemplate]
+     * @param rawTemplate raw freemarker template
+     * @return builded *markdown* message
      */
-    override fun buildMessage(event: Event, parameters: Map<String, Any>): CompiledTemplate? {
-        val issueEventTypeName = event.issueEventTypeName
-        if (issueEventTypeName != null) {
-            val eventTemplate = getByIssueType(issueEventTypeName)
-            if (eventTemplate != null) {
-                val sw = StringWriter()
-                eventTemplate.process(parameters, sw)
-                return CompiledTemplate(sw.toString(), true)
-            }
-
-            logger.debug { "template for type $issueEventTypeName not found" }
-        }
-        return null
+    override fun buildMessage(rawTemplate: RawTemplate): CompiledTemplate {
+        val template = Template(rawTemplate.templateKey, StringReader(rawTemplate.template), cfg)
+        val sw = StringWriter()
+        template.process(rawTemplate.parameters, sw)
+        return CompiledTemplate(sw.toString(), true)
     }
-
-    /**
-     * Finds template in database
-     * @param issueEventTypeName type of issue
-     * @return freemarker [Template]
-     */
-    private fun getByIssueType(issueEventTypeName: IssueEventTypeName): Template? {
-        val templateKey = issueEventTypeName.name.toLowerCase()
-        return templateRepository.findByKey(templateKey)?.let {
-            Template(templateKey, StringReader(it.template), cfg)
-        }
-    }
-
-
 }

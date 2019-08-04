@@ -6,3 +6,5 @@ package com.github.mikesafonov.jira.telegram.service.templates
  * @author Mike Safonov
  */
 data class CompiledTemplate(val message: String, val markdown: Boolean)
+
+data class RawTemplate(val templateKey: String, val template: String, val parameters: Map<String, Any>)

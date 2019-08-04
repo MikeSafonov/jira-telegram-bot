@@ -7,9 +7,7 @@ import freemarker.template.Configuration
 import freemarker.template.Template
 import freemarker.template.TemplateExceptionHandler
 import freemarker.template.Version
-import mu.KotlinLogging
 import no.api.freemarker.java8.Java8ObjectWrapper
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.io.StringWriter
@@ -19,10 +17,7 @@ import java.io.StringWriter
  *
  * @author Mike Safonov
  */
-private val logger = KotlinLogging.logger {}
-
 @Service
-@ConditionalOnProperty(prefix = "jira.bot.template", name = arrayOf("type"), havingValue = "FREEMARKER")
 class FreemarkerTemplateService : TemplateService {
 
     private val version = Version(2, 3, 20)

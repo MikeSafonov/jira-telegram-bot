@@ -23,7 +23,7 @@ Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-b
 ## Key features
 
 - processing Jira webhook issue events
-- notification templating (using [Apache FreeMarker](https://freemarker.apache.org) template engine by default)
+- notification templating (using [Apache FreeMarker](https://freemarker.apache.org) template engine)
 - support several databases (PostgreSQL (v 9+), MySQL (v 5), H2)
 - [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/)
 - monitoring using [Prometheus](https://prometheus.io)
@@ -95,10 +95,7 @@ locations:
 
 #### Custom properties
 
-<dl>
-  <dt>jira.bot.template.type</dt>
-  <dd>type of template processing engine (default FREEMARKER)</dd>
-  
+<dl> 
   <dt>jira.bot.notification.sendToMe</dt>
   <dd>whether the user should receive their self-created events</dd>
     
@@ -151,13 +148,11 @@ database table called **templates**.
 
 ### Templating
 
-Jira-telegram-bot using [Apache FreeMarker](https://freemarker.apache.org) template engine by default. All templates by default
+Jira-telegram-bot using [Apache FreeMarker](https://freemarker.apache.org) template engine. All templates by default
 stored in jira-telegram-bot database table called **templates**.
 Each template must be a message in properly [telegram markdown style](https://core.telegram.org/bots/api#markdown-style).
 
 In [example/templates](examples/templates) folder you can find default jira event templates.
-
-If you want to add another templating logic, you can implement **TemplateService** interface.
 
 ### Jira user registration
 

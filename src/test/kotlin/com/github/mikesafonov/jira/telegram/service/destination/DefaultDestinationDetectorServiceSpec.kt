@@ -17,25 +17,25 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
     val applicationProperties = mockk<ApplicationProperties>()
     val defaultDestinationDetectorService = DefaultDestinationDetectorService(applicationProperties)
 
-    Given("Destination service with flag sendToMe = true") {
+    Given("destination service with flag sendToMe = true") {
         every { applicationProperties.notification.sendToMe } returns true
 
-        When("Event without issue field") {
+        When("event without issue field") {
             val event = EventGen().generateOne(issue = null)
-            Then("Return empty list") {
+            Then("return empty list") {
                 defaultDestinationDetectorService.findDestinations(event) shouldHaveSize 0
             }
         }
 
-        When("Event without issueEventTypeName field") {
+        When("event without issueEventTypeName field") {
             val event = EventGen().generateOne(issueEventTypeName = null)
-            Then("Return empty list") {
+            Then("return empty list") {
                 defaultDestinationDetectorService.findDestinations(event) shouldHaveSize 0
             }
         }
 
-        When("Any issue Event") {
-            Then("Return list of creator, reporter and assignee names") {
+        When("any issue Event") {
+            Then("return list of creator, reporter and assignee names") {
                 IssueEventTypeName.values().forEach {
                     val event = EventGen().generateOne(issueEventTypeName = it)
                     val expectedNames =
@@ -46,33 +46,50 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
                 }
             }
         }
+
+        When("any issue Event with comment with mention") {
+            Then("return list of creator, reporter, assignee and mention names") {
+                val mentionName = "mention_login"
+                IssueEventTypeName.values().forEach {
+                    val event = EventGen().generateOne(
+                        issueEventTypeName = it,
+                        comment = CommentGen().generateOne(body = "[~$mentionName]")
+                    )
+                    val expectedNames =
+                        listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName, mentionName)
+                    val destinations = defaultDestinationDetectorService.findDestinations(event)
+
+                    destinations shouldBe expectedNames
+                }
+            }
+        }
     }
 
-    Given("Destination service with flag sendToMe = false") {
+    Given("destination service with flag sendToMe = false") {
         every { applicationProperties.notification.sendToMe } returns false
 
-        When("Event without issue field") {
+        When("event without issue field") {
             val event = EventGen().generateOne(issue = null)
-            Then("Return empty list") {
+            Then("return empty list") {
                 defaultDestinationDetectorService.findDestinations(event) shouldHaveSize 0
             }
         }
 
-        When("Event without issueEventTypeName field") {
+        When("event without issueEventTypeName field") {
             val event = EventGen().generateOne(issueEventTypeName = null)
-            Then("Return empty list") {
+            Then("return empty list") {
                 defaultDestinationDetectorService.findDestinations(event) shouldHaveSize 0
             }
         }
 
-        When("ISSUE_COMMENTED issue Event and comment author and issue creator are same") {
+        When("ISSUE_COMMENTED issue event and comment author and issue creator are same") {
             val authorUser = UserGen.generateDefault()
             val event = EventGen().generateOne(
                 issueEventTypeName = IssueEventTypeName.ISSUE_COMMENTED,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser)),
                 comment = CommentGen().generateOne(author = authorUser)
             )
-            Then("Return list of reporter and assignee names") {
+            Then("return list of reporter and assignee names") {
                 val expectedNames =
                     listOfNotNull(event.issue?.reporterName, event.issue?.assigneeName)
                 val destinations = defaultDestinationDetectorService.findDestinations(event)
@@ -81,14 +98,14 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
-        When("ISSUE_COMMENTED issue Event and comment author is null and issue creator exist") {
+        When("ISSUE_COMMENTED issue event and comment author is null and issue creator exist") {
             val authorUser = UserGen.generateDefault()
             val event = EventGen().generateOne(
                 issueEventTypeName = IssueEventTypeName.ISSUE_COMMENTED,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser)),
                 comment = CommentGen().generateOne(author = null)
             )
-            Then("Return list of reporter and assignee names") {
+            Then("return list of reporter and assignee names") {
                 val expectedNames =
                     listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName)
                 val destinations = defaultDestinationDetectorService.findDestinations(event)
@@ -97,14 +114,14 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
-        When("ISSUE_CREATED issue Event and event author and issue creator are same") {
+        When("ISSUE_CREATED issue event and event author and issue creator are same") {
             val authorUser = UserGen.generateDefault()
             val event = EventGen().generateOne(
                 issueEventTypeName = IssueEventTypeName.ISSUE_CREATED,
                 user = authorUser,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser))
             )
-            Then("Return list of reporter and assignee names") {
+            Then("return list of reporter and assignee names") {
                 val expectedNames =
                     listOfNotNull(event.issue?.reporterName, event.issue?.assigneeName)
                 val destinations = defaultDestinationDetectorService.findDestinations(event)
@@ -113,14 +130,14 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
-        When("ISSUE_UPDATED issue Event and event author and issue creator are same") {
+        When("ISSUE_UPDATED issue event and event author and issue creator are same") {
             val authorUser = UserGen.generateDefault()
             val event = EventGen().generateOne(
                 issueEventTypeName = IssueEventTypeName.ISSUE_UPDATED,
                 user = authorUser,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser))
             )
-            Then("Return list of reporter and assignee names") {
+            Then("return list of reporter and assignee names") {
                 val expectedNames =
                     listOfNotNull(event.issue?.reporterName, event.issue?.assigneeName)
                 val destinations = defaultDestinationDetectorService.findDestinations(event)
@@ -129,7 +146,7 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
-        When("ISSUE_ASSIGNED issue Event and event author and issue creator are same") {
+        When("ISSUE_ASSIGNED issue event and event author and issue creator are same") {
             val authorUser = UserGen.generateDefault()
             val event = EventGen().generateOne(
                 issueEventTypeName = IssueEventTypeName.ISSUE_ASSIGNED,
@@ -145,11 +162,44 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
             }
         }
 
-        When("Issue Event") {
-            Then("Return list of creator, reporter and assignee names") {
+        When("issue event") {
+            Then("return list of creator, reporter and assignee names") {
                 IssueEventTypeName.values().forEach {
                     val event = EventGen().generateOne(issueEventTypeName = it)
 
+                    val expectedNames =
+                        listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName)
+                    val destinations = defaultDestinationDetectorService.findDestinations(event)
+
+                    destinations shouldBe expectedNames
+                }
+            }
+        }
+
+        When("any issue event with comment with mention") {
+            Then("return list of creator, reporter, assignee and mention names") {
+                val mentionName = "mention_login"
+                IssueEventTypeName.values().forEach {
+                    val event = EventGen().generateOne(
+                        issueEventTypeName = it,
+                        comment = CommentGen().generateOne(body = "[~$mentionName]")
+                    )
+                    val expectedNames =
+                        listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName, mentionName)
+                    val destinations = defaultDestinationDetectorService.findDestinations(event)
+
+                    destinations shouldBe expectedNames
+                }
+            }
+        }
+
+        When("any issue event without comment") {
+            Then("return list of creator, reporter, assignee and mention names") {
+                IssueEventTypeName.values().forEach {
+                    val event = EventGen().generateOne(
+                        issueEventTypeName = it,
+                        comment = null
+                    )
                     val expectedNames =
                         listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName)
                     val destinations = defaultDestinationDetectorService.findDestinations(event)

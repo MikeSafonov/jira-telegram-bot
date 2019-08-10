@@ -1,10 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.destination
 
 import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
-import com.github.mikesafonov.jira.telegram.dto.Event
-import com.github.mikesafonov.jira.telegram.dto.Issue
-import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
-import com.github.mikesafonov.jira.telegram.dto.User
+import com.github.mikesafonov.jira.telegram.dto.*
 
 /**
  * Default implementation of [DestinationDetectorService]
@@ -20,7 +17,8 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
         val notificationProperties = applicationProperties.notification
         return if (notificationProperties.sendToMe) {
             if (event.issue != null && event.issueEventTypeName != null) {
-                allIssueUsers(event.issue)
+                allIssueUsers(event.issue).plus(getMentionsFromComment(event.comment))
+                    .distinct()
             } else {
                 emptyList()
             }
@@ -33,12 +31,12 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
         if (event.issue != null && event.issueEventTypeName != null) {
             return when (event.issueEventTypeName) {
                 IssueEventTypeName.ISSUE_COMMENTED -> {
-                    allIssueUsersWithoutInitiator(event.issue, event.comment?.author)
+                    allIssueUsersWithoutInitiator(event.issue, event.comment?.author, event.comment)
                 }
                 IssueEventTypeName.ISSUE_CREATED, IssueEventTypeName.ISSUE_GENERIC,
                 IssueEventTypeName.ISSUE_UPDATED, IssueEventTypeName.ISSUE_COMMENT_EDITED,
                 IssueEventTypeName.ISSUE_COMMENT_DELETED, IssueEventTypeName.ISSUE_ASSIGNED -> {
-                    allIssueUsersWithoutInitiator(event.issue, event.user)
+                    allIssueUsersWithoutInitiator(event.issue, event.user, event.comment)
                 }
             }
         }
@@ -53,7 +51,6 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
      */
     private fun allIssueUsers(issue: Issue): List<String> {
         return listOfNotNull(issue.creatorName, issue.reporterName, issue.assigneeName)
-            .distinct()
     }
 
     /**
@@ -63,12 +60,27 @@ class DefaultDestinationDetectorService(private val applicationProperties: Appli
      * @param initiator user who fired this issues event
      * @return list of logins
      */
-    private fun allIssueUsersWithoutInitiator(issue: Issue, initiator: User?): List<String> {
+    private fun allIssueUsersWithoutInitiator(issue: Issue, initiator: User?, comment : Comment?): List<String> {
         return if (initiator == null) {
-            allIssueUsers(issue)
+            allIssueUsers(issue).plus(getMentionsFromComment(comment))
+                .distinct()
         } else {
-            allIssueUsers(issue)
+            allIssueUsers(issue).plus(getMentionsFromComment(comment))
                 .filter { it != initiator.name }
+                .distinct()
         }
+    }
+
+
+    private fun getMentionsFromComment(comment: Comment?): List<String> {
+        if (comment == null) {
+            return emptyList()
+        }
+        val regex = "(?<=\\[~)(.*?)(?=\\])".toRegex()
+        val mentions = ArrayList<String>()
+        regex.findAll(comment.body).iterator().forEach {
+            mentions.add(it.value)
+        }
+        return mentions
     }
 }

@@ -137,7 +137,7 @@ data class IssueFields(
     /**
      * issue description
      */
-    val description: String,
+    val description: String?,
     /**
      * issue project
      */

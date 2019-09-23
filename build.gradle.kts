@@ -104,7 +104,7 @@ dependencies {
     implementation("org.freemarker:freemarker:2.3.28")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")
 
-    implementation("io.github.microutils:kotlin-logging:1.7.2")
+    implementation("io.github.microutils:kotlin-logging:1.7.6")
     implementation("org.apache.logging.log4j:log4j-web")
 
     implementation("io.micrometer:micrometer-core")

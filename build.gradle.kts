@@ -63,7 +63,7 @@ tasks.withType<KotlinCompile> {
 
 configure<DependencyManagementExtension> {
     imports(delegateClosureOf<ImportsHandler> {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3")
     })
 }
 

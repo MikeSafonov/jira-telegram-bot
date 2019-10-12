@@ -54,6 +54,7 @@ class TelegramCommandSpec : BehaviorSpec({
                 command.text shouldBe null
                 command.hasText shouldBe false
                 command.chatId shouldBe idChat
+                command.isAnonymous() shouldBe true
                 command.isMatchText("some text") shouldBe false
                 command.isStartsWithText("some text") shouldBe false
             }
@@ -75,6 +76,7 @@ class TelegramCommandSpec : BehaviorSpec({
                 command.text shouldBe textValue
                 command.hasText shouldBe true
                 command.chatId shouldBe idChat
+                command.isAnonymous() shouldBe true
                 command.isMatchText("some text") shouldBe false
                 command.isMatchText(textValue) shouldBe true
                 command.isStartsWithText("some text") shouldBe false

@@ -24,6 +24,7 @@ class MeTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isAnonymous() } returns false
                 every { isInState(State.INIT) } returns true
                 every { isMatchText(any()) } returns false
             }
@@ -39,11 +40,26 @@ class MeTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.WAIT_APPROVE
                 }
+                every { isAnonymous() } returns false
                 every { isInState(State.INIT) } returns false
                 every { isMatchText("/me") } returns true
             }
             Then("isHandle returns false") {
                 handler.isHandle(command) shouldBe false
+            }
+        }
+
+        When("incoming message contain right command and anonymous") {
+            val command: TelegramCommand = mockk {
+                every { text } returns "/me"
+                every { hasText } returns true
+                every { chat } returns null
+                every { isAnonymous() } returns true
+                every { isInState(State.INIT) } returns false
+                every { isMatchText("/me") } returns true
+            }
+            Then("isHandle returns false") {
+                handler.isHandle(command) shouldBe true
             }
         }
 
@@ -54,6 +70,7 @@ class MeTelegramCommandHandlerSpec : BehaviorSpec({
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
+                every { isAnonymous() } returns false
                 every { isInState(State.INIT) } returns true
                 every { isMatchText("/me") } returns true
             }

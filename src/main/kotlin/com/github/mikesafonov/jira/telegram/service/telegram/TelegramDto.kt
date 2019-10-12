@@ -44,4 +44,8 @@ data class TelegramCommand(
     fun isStartsWithText(textValue : String) : Boolean {
         return hasText && text!!.startsWith(textValue)
     }
+
+    fun isAnonymous() : Boolean{
+        return chat == null
+    }
 }

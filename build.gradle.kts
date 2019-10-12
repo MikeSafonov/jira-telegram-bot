@@ -11,7 +11,7 @@ buildscript {
     configurations.maybeCreate("pitest")
     dependencies {
         classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.0")
-        "pitest"("io.kotlintest:kotlintest-plugins-pitest:3.4.0")
+        "pitest"("io.kotlintest:kotlintest-plugins-pitest:3.4.2")
     }
 }
 
@@ -172,7 +172,7 @@ configure<PitestPluginExtension> {
     avoidCallsTo = setOf("kotlin.jvm.internal")
     targetClasses = setOf("com.github.mikesafonov.jira.telegram.service.*")
     targetTests = setOf("com.github.mikesafonov.jira.telegram.service.*")
-    threads = 4
+    threads = 2
     outputFormats = setOf("HTML", "XML")
     timestampedReports = false
     useClasspathFile = true

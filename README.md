@@ -1,6 +1,6 @@
 # Jira Telegram Bot
 [![codecov](https://codecov.io/gh/MikeSafonov/jira-telegram-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/MikeSafonov/jira-telegram-bot)
-![Travis-CI](https://travis-ci.com/MikeSafonov/jira-telegram-bot.svg?branch=master)
+[![Build Status](https://travis-ci.com/MikeSafonov/jira-telegram-bot.svg?branch=master)](https://travis-ci.com/MikeSafonov/jira-telegram-bot)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MikeSafonov_jira-telegram-bot&metric=alert_status)](https://sonarcloud.io/dashboard?id=MikeSafonov_jira-telegram-bot)

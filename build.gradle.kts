@@ -112,7 +112,7 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("mysql:mysql-connector-java:5.1.47")
+    runtimeOnly("mysql:mysql-connector-java:5.1.48")
 
     implementation("org.flywaydb:flyway-core")
     implementation("com.atlassian.jira:jira-rest-java-client-core:5.1.2-2bd0a62e")
@@ -130,7 +130,7 @@ dependencies {
     "testIntegrationImplementation"("org.springframework.boot:spring-boot-starter-data-jpa")
     "testIntegrationImplementation"("com.h2database:h2:1.4.199")
     "testIntegrationImplementation"("org.postgresql:postgresql")
-    "testIntegrationImplementation"("mysql:mysql-connector-java:5.1.47")
+    "testIntegrationImplementation"("mysql:mysql-connector-java:5.1.48")
     "testIntegrationImplementation"("org.testcontainers:postgresql:1.12.1")
     "testIntegrationImplementation"("org.testcontainers:mysql:1.12.1")
 }

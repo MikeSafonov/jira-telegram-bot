@@ -115,7 +115,7 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java:5.1.48")
 
     implementation("org.flywaydb:flyway-core")
-    implementation("com.atlassian.jira:jira-rest-java-client-core:5.1.2-2bd0a62e")
+    implementation("com.atlassian.jira:jira-rest-java-client-core:5.1.6")
     implementation("io.atlassian.fugue:fugue:4.7.2")
     implementation("com.google.oauth-client:google-oauth-client:1.30.4")
     implementation("com.google.http-client:google-http-client-jackson2:1.33.0")

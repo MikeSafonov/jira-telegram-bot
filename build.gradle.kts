@@ -131,8 +131,8 @@ dependencies {
     "testIntegrationImplementation"("com.h2database:h2:1.4.199")
     "testIntegrationImplementation"("org.postgresql:postgresql")
     "testIntegrationImplementation"("mysql:mysql-connector-java:5.1.48")
-    "testIntegrationImplementation"("org.testcontainers:postgresql:1.12.1")
-    "testIntegrationImplementation"("org.testcontainers:mysql:1.12.1")
+    "testIntegrationImplementation"("org.testcontainers:postgresql:1.12.3")
+    "testIntegrationImplementation"("org.testcontainers:mysql:1.12.3")
 }
 
 jacoco {

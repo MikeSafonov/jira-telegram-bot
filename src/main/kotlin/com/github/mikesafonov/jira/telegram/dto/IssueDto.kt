@@ -188,7 +188,12 @@ data class IssueFields(
     /**
      * label to which issue belongs
      */
-    val labels: Array<String> = emptyArray()
+    val labels: Array<String> = emptyArray(),
+
+    /**
+     * watchers
+     */
+    val watches: Watchers?
 )
 
 /**
@@ -204,4 +209,15 @@ data class IssueType(
      * type description
      */
     val description: String
+)
+
+data class Watchers(
+    /**
+     * watchers link to rest api
+     */
+    val self: String,
+
+    val watchCount: Int,
+
+    val isWatching: Boolean
 )

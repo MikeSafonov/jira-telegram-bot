@@ -47,7 +47,8 @@ class IssueFieldsGen : Gen<IssueFields> {
         status: Status = StatusGen.generateDefault(),
         priority: Priority = PriorityGen.generateDefault(),
         components: Array<JiraComponent> = emptyArray(),
-        labels: Array<String> = emptyArray()
+        labels: Array<String> = emptyArray(),
+        watchers: Watchers = WatchersGen.generateDefault()
     ): IssueFields {
         return IssueFields(
             summary,
@@ -64,7 +65,8 @@ class IssueFieldsGen : Gen<IssueFields> {
             status,
             priority,
             components,
-            labels
+            labels,
+            watchers
         )
     }
 }

@@ -1,13 +1,15 @@
 package com.github.mikesafonov.jira.telegram.config
 
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory
-import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import com.github.mikesafonov.jira.telegram.service.destination.DefaultDestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
+import com.github.mikesafonov.jira.telegram.service.destination.WatchersDestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
+import com.github.mikesafonov.jira.telegram.service.jira.JiraWatchersLoader
 import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramUpdateManager
+import mu.KotlinLogging
 import org.apache.http.HttpHost
 import org.apache.http.client.config.RequestConfig
 import org.springframework.beans.factory.annotation.Value
@@ -19,6 +21,8 @@ import org.telegram.telegrambots.bots.DefaultAbsSender
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.objects.Update
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * @author Mike Safonov
@@ -74,11 +78,17 @@ class ApplicationConfiguration {
         }
     }
 
-
     @Bean
-    @ConditionalOnMissingBean(DestinationDetectorService::class)
-    fun defaultDestinationDetectorService(applicationProperties: ApplicationProperties): DefaultDestinationDetectorService {
-        return DefaultDestinationDetectorService(applicationProperties)
+    fun destinationDetectorService(
+        applicationProperties: ApplicationProperties,
+        watchersLoader: JiraWatchersLoader?
+    ): DestinationDetectorService {
+        if (watchersLoader == null) {
+            logger.info("created DefaultDestinationDetectorService")
+            return DefaultDestinationDetectorService(applicationProperties)
+        }
+        logger.info("created WatchersDestinationDetectorService")
+        return WatchersDestinationDetectorService(applicationProperties, watchersLoader)
     }
 
     @Bean
@@ -88,8 +98,7 @@ class ApplicationConfiguration {
     }
 
     @Bean
-    @ConditionalOnJiraOAuth
-    fun asynchronousJiraRestClientFactory () : AsynchronousJiraRestClientFactory{
+    fun asynchronousJiraRestClientFactory(): AsynchronousJiraRestClientFactory {
         return AsynchronousJiraRestClientFactory()
     }
 

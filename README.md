@@ -219,8 +219,24 @@ You must provide next properties to use Jira OAuth in jira-telegram-bot :
   <dd>client RSA private key</dd>
 </dl>
 
-
 `/auth` telegram command will be allowed after all properties configured properly .
+
+## Notify issues watchers
+
+To notify issues watchers about events jira-telegram-bot must get watchers list via Jira REST API.
+
+You must provide next properties to use Jira REST API in jira-telegram-bot :
+
+<dl>
+  <dt>jira.watchers.username</dt>
+  <dd>your jira user login</dd>
+  
+  <dt>jira.watchers.password</dt>
+  <dd>your jira user password</dd>    
+  
+  <dt>jira.bot.notification.jiraUrl</dt>
+  <dd>jira url for calling REST API</dd>   
+</dl>
 
 ## Monitoring using [Prometheus](https://prometheus.io)
 

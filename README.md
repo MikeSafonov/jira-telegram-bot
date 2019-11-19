@@ -24,7 +24,7 @@ Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-b
 
 - processing Jira webhook issue events
 - notification templating (using [Apache FreeMarker](https://freemarker.apache.org) template engine)
-- support several databases (PostgreSQL (v 9+), MySQL (v 5), H2)
+- support several databases (PostgreSQL (v 9+), MySQL (v 5.7+), H2)
 - [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/)
 - monitoring using [Prometheus](https://prometheus.io)
 

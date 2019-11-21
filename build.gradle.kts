@@ -31,7 +31,7 @@ apply(plugin = "info.solidsoft.pitest")
 
 
 group = "com.github.mikesafonov"
-version = "1.3.0"
+version = "1.4.0"
 
 repositories {
     mavenCentral()

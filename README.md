@@ -67,10 +67,10 @@ After the build you will get [fully executable jar archive](https://docs.spring.
  
 You can run application using following commands:
 
-    java -jar jira-telegram-bot
+    java -jar jira-telegram-bot.jar
 or
 
-    ./jira-telegram-bot
+    ./jira-telegram-bot.jar
 
 ### Building and running app with Docker and docker-compose
 
@@ -236,7 +236,9 @@ You must provide next properties to use Jira REST API in jira-telegram-bot :
   <dd>jira url for calling REST API</dd>   
 </dl>
 
-## Monitoring using [Prometheus](https://prometheus.io)
+## INTEGRATIONS 
+
+### Monitoring using [Prometheus](https://prometheus.io)
 
 You can access prometheus metrics by url: 
 
@@ -251,6 +253,18 @@ Jira bot comes with next custom counter metrics:
   <dt>jira_bot_event_error_counter</dt>
   <dd>number of incoming events with an error</dd>
  </dl>
+
+### Holding secrets with [HashiCorp Vault](https://www.vaultproject.io/)
+
+Integration with `Vault` was made using [spring-cloud-vault](https://cloud.spring.io/spring-cloud-vault/reference/html/).
+
+By default `jira-telegram-bot` integration with `Vault` disabled. 
+
+To enable integration with `Vault` pass following arguments to `jira-telegram-bot` run command:
+
+    java -jar jira-telegram-bot.jar --spring.cloud.vault.enabled=true --spring.cloud.vault.uri=<your vault uri> 
+    --spring.cloud.vault.token=<your vault token> --spring.cloud.vault.kv.application-name=<vault application name>
+
  
 ## Contributing
 

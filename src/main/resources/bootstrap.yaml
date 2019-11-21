@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    vault:
+      token:
+      uri:
+      kv:
+        enabled: true
+        backend-version: 1
+        application-name:
+        default-context:
+      fail-fast: true
+      generic:
+        enabled: false
+      config:
+        lifecycle:
+          enabled: false
+      enabled: false

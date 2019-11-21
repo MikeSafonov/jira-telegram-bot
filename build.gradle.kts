@@ -149,13 +149,10 @@ tasks.jacocoTestReport {
 tasks.register("testIntegration", Test::class.java){
     testClassesDirs = sourceSets.getByName("testIntegration").output.classesDirs
     classpath = sourceSets.getByName("testIntegration").runtimeClasspath
-    dependsOn(tasks.named("test"))
 }
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
-    finalizedBy(tasks.getByName("pitest"))
-    finalizedBy(tasks.getByName("testIntegration"))
 }
 
 

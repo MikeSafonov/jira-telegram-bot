@@ -47,8 +47,6 @@ You can run unit tests using following command:
 
     ./grdlew test
 
-> gradle task `test` finalized by `pitest` and `testIntegration`
-
 ### Mutation tests
 
 You can run mutation tests using following command:

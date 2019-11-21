@@ -27,6 +27,7 @@ Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-b
 - support several databases (PostgreSQL (v 9+), MySQL (v 5.7+), H2)
 - [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/)
 - monitoring using [Prometheus](https://prometheus.io)
+- holding secrets with [HashiCorp Vault](https://www.vaultproject.io/)
 
 
 ## Build

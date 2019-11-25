@@ -20,10 +20,6 @@ class TelegramClient(
         telegramMessageBuilder.createMarkdownMessage(user, message).also { sender.execute(it) }
     }
 
-    fun sendReplaceMessage(user: Long, idMessage : Int, message : String){
-        telegramMessageBuilder.createEditMarkdownMessage(user, idMessage, message).also { sender.execute(it) }
-    }
-
     fun sendDeleteMessage(user : Long, idMessage: Int){
         telegramMessageBuilder.createDeleteMessage(user.toString(), idMessage).also { sender.execute(it) }
     }

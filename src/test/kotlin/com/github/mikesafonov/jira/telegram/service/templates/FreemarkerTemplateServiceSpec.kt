@@ -1,8 +1,11 @@
 package com.github.mikesafonov.jira.telegram.service.templates
 
 import com.github.mikesafonov.jira.telegram.service.templates.freemarker.FreemarkerTemplateService
+import freemarker.core.InvalidReferenceException
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.BehaviorSpec
+import java.time.LocalDate
 
 class FreemarkerTemplateServiceSpec : BehaviorSpec({
     Given("freemarker template service") {
@@ -18,6 +21,30 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
                 val buildMessage = freemarkerTemplateService.buildMessage(rawTemplate)
                 buildMessage.markdown shouldBe true
                 buildMessage.message shouldBe "*Hello:*world"
+            }
+        }
+
+        When("error in template") {
+            val rawTemplate = RawTemplate(
+                "my key",
+                "*Hello:*\${name2}",
+                mapOf("name" to "world")
+            )
+            Then("throw exception") {
+                shouldThrow<InvalidReferenceException> { freemarkerTemplateService.buildMessage(rawTemplate) }
+            }
+        }
+
+        When("java 8 feature") {
+            val rawTemplate = RawTemplate(
+                "my key",
+                "*Hello:*\${date.format('yyyy MM dd')}",
+                mapOf("date" to LocalDate.of(2000, 2, 3))
+            )
+            Then("return compiled template") {
+                val buildMessage = freemarkerTemplateService.buildMessage(rawTemplate)
+                buildMessage.markdown shouldBe true
+                buildMessage.message shouldBe "*Hello:*2000 02 03"
             }
         }
     }

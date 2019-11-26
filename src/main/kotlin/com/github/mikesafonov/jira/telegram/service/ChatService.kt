@@ -54,7 +54,7 @@ class ChatService(private val chatRepository: ChatRepository){
      * @throws AddChatException
      */
     private fun validateTelegramId(telegramId: Long): Long {
-        if (telegramId < 0) {
+        if (telegramId <= 0) {
             throw AddChatException("Wrong command args: telegramId must be a positive number")
         }
 

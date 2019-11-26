@@ -44,9 +44,21 @@ class ChatServiceSpec : BehaviorSpec({
             }
         }
 
-        When("telegramId is invalid") {
+        When("telegramId is negative") {
             val jiraLogin = Gen.string().notBlank()
             val telegramId = Random.negative()
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+            Then("throw exception") {
+
+                val exception =
+                    shouldThrowExactly<AddChatException> { chatService.addNewChat(jiraLogin, telegramId) }
+                exception.message shouldBe "Wrong command args: telegramId must be a positive number"
+            }
+        }
+
+        When("telegramId is zero") {
+            val jiraLogin = Gen.string().notBlank()
+            val telegramId = 0L
             every { chatRepository.findByJiraId(jiraLogin) } returns null
             Then("throw exception") {
 

@@ -13,14 +13,14 @@ class TelegramClient(
 ) {
 
     fun sendTextMessage(user: Long, message: String) {
-        telegramMessageBuilder.createMessage(user, message).also { sender.execute(it) }
+        telegramMessageBuilder.createMessages(user, message).forEach { sender.execute(it) }
     }
 
     fun sendMarkdownMessage(user: Long, message: String) {
-        telegramMessageBuilder.createMarkdownMessage(user, message).also { sender.execute(it) }
+        telegramMessageBuilder.createMarkdownMessages(user, message).forEach { sender.execute(it) }
     }
 
     fun sendDeleteMessage(user : Long, idMessage: Int){
-        telegramMessageBuilder.createDeleteMessage(user.toString(), idMessage).also { sender.execute(it) }
+        telegramMessageBuilder.createDeleteMessage(user, idMessage).also { sender.execute(it) }
     }
 }

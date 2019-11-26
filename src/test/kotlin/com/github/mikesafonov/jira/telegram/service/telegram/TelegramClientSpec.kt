@@ -8,7 +8,6 @@ import io.mockk.verify
 import org.telegram.telegrambots.bots.DefaultAbsSender
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 
 class TelegramClientSpec : BehaviorSpec({
 
@@ -22,28 +21,30 @@ class TelegramClientSpec : BehaviorSpec({
         val message = Gen.string().random().first()
         val idMessage = Gen.int().random().first()
 
-        When("simple message") {
-            val sendMessage = mockk<SendMessage>()
+        When("simple messages") {
+            val messages = listOf<SendMessage>(mockk(), mockk())
 
-            every { telegramMessageBuilder.createMessage(id, message) } returns sendMessage
+            every { telegramMessageBuilder.createMessages(id, message) } returns messages
             every { absSender.execute(any<SendMessage>()) } returns mockk()
             Then("call abs sender") {
                 client.sendTextMessage(id, message)
                 verify {
-                    absSender.execute(sendMessage)
+                    absSender.execute(messages[0])
+                    absSender.execute(messages[1])
                 }
             }
         }
 
         When("markdown message") {
-            val sendMessage = mockk<SendMessage>()
+            val messages = listOf<SendMessage>(mockk(), mockk())
 
-            every { telegramMessageBuilder.createMarkdownMessage(id, message) } returns sendMessage
+            every { telegramMessageBuilder.createMarkdownMessages(id, message) } returns messages
             every { absSender.execute(any<SendMessage>()) } returns mockk()
             Then("call abs sender") {
                 client.sendMarkdownMessage(id, message)
                 verify {
-                    absSender.execute(sendMessage)
+                    absSender.execute(messages[0])
+                    absSender.execute(messages[1])
                 }
             }
         }
@@ -51,7 +52,7 @@ class TelegramClientSpec : BehaviorSpec({
         When("delete message") {
             val replaceMessage = mockk<DeleteMessage>()
 
-            every { telegramMessageBuilder.createDeleteMessage(id.toString(), idMessage) } returns replaceMessage
+            every { telegramMessageBuilder.createDeleteMessage(id, idMessage) } returns replaceMessage
             every { absSender.execute(any<DeleteMessage>()) } returns mockk()
             Then("call abs sender") {
                 client.sendDeleteMessage(id, idMessage)

@@ -14,11 +14,11 @@ import io.mockk.mockk
  */
 class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
 
-    val applicationProperties = mockk<ApplicationProperties>()
-    val defaultDestinationDetectorService = DefaultDestinationDetectorService(applicationProperties)
 
     Given("destination service with flag sendToMe = true") {
+        val applicationProperties = mockk<ApplicationProperties>()
         every { applicationProperties.notification.sendToMe } returns true
+        val defaultDestinationDetectorService = DefaultDestinationDetectorService(applicationProperties)
 
         When("event without issue field") {
             val event = EventGen().generateOne(issue = null)
@@ -66,7 +66,9 @@ class DefaultDestinationDetectorServiceSpec : BehaviorSpec({
     }
 
     Given("destination service with flag sendToMe = false") {
+        val applicationProperties = mockk<ApplicationProperties>()
         every { applicationProperties.notification.sendToMe } returns false
+        val defaultDestinationDetectorService = DefaultDestinationDetectorService(applicationProperties)
 
         When("event without issue field") {
             val event = EventGen().generateOne(issue = null)

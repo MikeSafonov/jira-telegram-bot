@@ -15,7 +15,7 @@ import io.mockk.*
  */
 
 class HelpTelegramCommandHandlerSpec : BehaviorSpec({
-    val currentVersion = "1.4.0"
+    val currentVersion = "1.5.0"
     val botProperties = mockk<BotProperties>()
     val jiraOAuthProperties = mockk<JiraOAuthProperties>()
     val telegramClient = mockk<TelegramClient>()

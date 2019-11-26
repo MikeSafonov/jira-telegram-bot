@@ -1,7 +1,10 @@
 package com.github.mikesafonov.jira.telegram.service.destination
 
 import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
-import com.github.mikesafonov.jira.telegram.dto.*
+import com.github.mikesafonov.jira.telegram.dto.Comment
+import com.github.mikesafonov.jira.telegram.dto.Event
+import com.github.mikesafonov.jira.telegram.dto.Issue
+import com.github.mikesafonov.jira.telegram.dto.User
 import com.github.mikesafonov.jira.telegram.service.jira.JiraWatchersLoader
 
 /**
@@ -40,13 +43,15 @@ class WatchersDestinationDetectorService(
      * @return list of logins
      */
     override fun allIssueUsersWithoutInitiator(issue: Issue, initiator: User?, comment: Comment?): List<String> {
+        val users = allIssueUsers(issue)
+            .plus(getMentionsFromComment(comment))
+            .plus(getWatchers(issue.fields.watches?.self))
+
         return if (initiator == null) {
-            allIssueUsers(issue).plus(getMentionsFromComment(comment))
-                .plus(getWatchers(issue.fields.watches?.self))
+            users
                 .distinct()
         } else {
-            allIssueUsers(issue).plus(getMentionsFromComment(comment))
-                .plus(getWatchers(issue.fields.watches?.self))
+            users
                 .filter { it != initiator.name }
                 .distinct()
         }

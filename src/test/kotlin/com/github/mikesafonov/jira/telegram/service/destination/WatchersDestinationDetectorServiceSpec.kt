@@ -129,7 +129,12 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
             every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
             Then("return list of reporter and assignee names") {
                 val expectedNames =
-                    listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName, generatedWatcher)
+                    listOfNotNull(
+                        event.issue?.creatorName,
+                        event.issue?.reporterName,
+                        event.issue?.assigneeName,
+                        generatedWatcher
+                    )
                 val destinations = destinationDetectorService.findDestinations(event)
 
                 destinations shouldBe expectedNames
@@ -198,7 +203,12 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
 
                     val expectedNames =
-                        listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName, generatedWatcher)
+                        listOfNotNull(
+                            event.issue?.creatorName,
+                            event.issue?.reporterName,
+                            event.issue?.assigneeName,
+                            generatedWatcher
+                        )
                     val destinations = destinationDetectorService.findDestinations(event)
 
                     destinations shouldBe expectedNames
@@ -241,7 +251,39 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                     val generatedWatcher = Gen.string().random().first()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
                     val expectedNames =
-                        listOfNotNull(event.issue?.creatorName, event.issue?.reporterName, event.issue?.assigneeName, generatedWatcher)
+                        listOfNotNull(
+                            event.issue?.creatorName,
+                            event.issue?.reporterName,
+                            event.issue?.assigneeName,
+                            generatedWatcher
+                        )
+                    val destinations = destinationDetectorService.findDestinations(event)
+
+                    destinations shouldBe expectedNames
+                }
+            }
+        }
+
+        When("any issue event without comment without watchers") {
+            Then("return list of creator, reporter, assignee and mention names") {
+                IssueEventTypeName.values().forEach {
+                    val event = EventGen().generateOne(
+                        issueEventTypeName = it,
+                        comment = null,
+                        issue = IssueGen().generateOne(
+                            issueFields = IssueFieldsGen().generateOne(
+                                watchers = null
+                            )
+                        )
+                    )
+                    val generatedWatcher = Gen.string().random().first()
+                    every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
+                    val expectedNames =
+                        listOfNotNull(
+                            event.issue?.creatorName,
+                            event.issue?.reporterName,
+                            event.issue?.assigneeName
+                        )
                     val destinations = destinationDetectorService.findDestinations(event)
 
                     destinations shouldBe expectedNames

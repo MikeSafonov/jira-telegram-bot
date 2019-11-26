@@ -3,6 +3,7 @@ package com.github.mikesafonov.jira.telegram.service.jira
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository
 import com.github.mikesafonov.jira.telegram.service.AuthorizationService
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.BehaviorSpec
 import io.mockk.every
@@ -29,8 +30,9 @@ class AuthorizationServiceSpec : BehaviorSpec({
 
             Then("Create new entity") {
 
-                authorizationService.saveSecret(id, secret)
+                val savedAuthorization = authorizationService.saveSecret(id, secret)
 
+                savedAuthorization shouldBeSameInstanceAs expectedAuthorization
                 verify {
                     authorizationRepository.save(expectedAuthorization)
                 }

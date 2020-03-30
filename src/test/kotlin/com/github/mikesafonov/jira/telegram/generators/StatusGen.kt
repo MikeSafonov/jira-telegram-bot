@@ -1,7 +1,8 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Status
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov
@@ -21,7 +22,7 @@ class StatusGen : Gen<Status> {
         return emptyList()
     }
 
-    override fun random(): Sequence<Status> {
+    fun random(): Sequence<Status> {
         return generateSequence {
             generateOne()
         }
@@ -33,6 +34,10 @@ class StatusGen : Gen<Status> {
         name: String = Gen.string().random().first()
     ): Status {
         return Status(id, description, name)
+    }
+
+    override fun random(seed: Long?): Sequence<Status> {
+        return random()
     }
 
 }

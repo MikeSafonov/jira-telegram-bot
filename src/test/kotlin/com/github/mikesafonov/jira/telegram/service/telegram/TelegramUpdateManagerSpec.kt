@@ -5,7 +5,7 @@ import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk

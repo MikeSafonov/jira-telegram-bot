@@ -4,8 +4,8 @@ import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthAuthenticationHandler
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

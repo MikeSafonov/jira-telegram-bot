@@ -1,7 +1,8 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.*
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 import java.time.LocalDateTime
 
 /**
@@ -25,7 +26,7 @@ class IssueFieldsGen : Gen<IssueFields> {
         return emptyList()
     }
 
-    override fun random(): Sequence<IssueFields> {
+    fun random(): Sequence<IssueFields> {
         return generateSequence {
             generateOne()
         }
@@ -68,5 +69,9 @@ class IssueFieldsGen : Gen<IssueFields> {
             labels,
             watchers
         )
+    }
+
+    override fun random(seed: Long?): Sequence<IssueFields> {
+        return random()
     }
 }

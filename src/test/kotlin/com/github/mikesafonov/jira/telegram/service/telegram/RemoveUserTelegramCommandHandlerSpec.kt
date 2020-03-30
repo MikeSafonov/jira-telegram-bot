@@ -4,9 +4,11 @@ import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.RemoveUserTelegramCommandHandler
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.properties.Gen
+import io.kotest.properties.long
+import io.kotest.properties.string
 import io.mockk.*
 
 /**

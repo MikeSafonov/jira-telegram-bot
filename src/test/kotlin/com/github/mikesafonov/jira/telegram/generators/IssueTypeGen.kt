@@ -1,7 +1,8 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.IssueType
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov
@@ -22,7 +23,7 @@ class IssueTypeGen : Gen<IssueType> {
         return emptyList()
     }
 
-    override fun random(): Sequence<IssueType> {
+    fun random(): Sequence<IssueType> {
         return generateSequence {
             generateOne()
         }
@@ -33,6 +34,10 @@ class IssueTypeGen : Gen<IssueType> {
         description: String = Gen.string().random().first()
     ): IssueType {
         return IssueType(name, description)
+    }
+
+    override fun random(seed: Long?): Sequence<IssueType> {
+        return random()
     }
 
 }

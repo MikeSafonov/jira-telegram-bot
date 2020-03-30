@@ -1,7 +1,10 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Version
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.bool
+import io.kotest.properties.long
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov
@@ -22,7 +25,7 @@ class VersionGen : Gen<Version> {
         return emptyList()
     }
 
-    override fun random(): Sequence<Version> {
+    fun random(): Sequence<Version> {
         return generateSequence {
             generateOne()
         }
@@ -43,6 +46,10 @@ class VersionGen : Gen<Version> {
 
     private fun randomString(): String {
         return Gen.string().random().first()
+    }
+
+    override fun random(seed: Long?): Sequence<Version> {
+        return random()
     }
 
 }

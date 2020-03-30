@@ -13,9 +13,12 @@ import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
 import com.github.mikesafonov.jira.telegram.service.templates.RawTemplate
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateResolverService
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
-import io.kotlintest.IsolationMode
-import io.kotlintest.properties.Gen
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.properties.Gen
+import io.kotest.properties.int
+import io.kotest.properties.long
+import io.kotest.properties.string
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk

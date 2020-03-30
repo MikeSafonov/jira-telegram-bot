@@ -5,10 +5,11 @@ import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthTokenFac
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.KeyReader
 import com.google.api.client.auth.oauth.OAuthRsaSigner
 import com.google.api.client.http.GenericUrl
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 import io.mockk.every
 import io.mockk.mockk
 import java.net.URL

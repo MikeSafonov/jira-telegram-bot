@@ -1,7 +1,8 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Attachment
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov
@@ -21,10 +22,14 @@ class AttachmentGen : Gen<Attachment> {
         return emptyList()
     }
 
-    override fun random(): Sequence<Attachment> {
+    fun random(): Sequence<Attachment> {
         return generateSequence {
             generateOne()
         }
+    }
+
+    override fun random(seed: Long?): Sequence<Attachment> {
+        return random()
     }
 
     fun generateOne(

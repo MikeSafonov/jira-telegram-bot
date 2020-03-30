@@ -5,8 +5,8 @@ import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthApproveTelegramCommandHandler
 import com.google.api.client.http.HttpHeaders
 import com.google.api.client.http.HttpResponseException
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.*
 
 /**

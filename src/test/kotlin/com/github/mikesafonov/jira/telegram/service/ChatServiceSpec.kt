@@ -7,10 +7,12 @@ import com.github.mikesafonov.jira.telegram.empty
 import com.github.mikesafonov.jira.telegram.negative
 import com.github.mikesafonov.jira.telegram.notBlank
 import com.github.mikesafonov.jira.telegram.positive
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrowExactly
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.properties.Gen
+import io.kotest.properties.long
+import io.kotest.properties.string
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

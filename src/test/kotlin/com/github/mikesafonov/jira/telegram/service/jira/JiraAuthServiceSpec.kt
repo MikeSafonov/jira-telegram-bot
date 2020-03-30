@@ -5,10 +5,12 @@ import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthClient
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraTempTokenAndAuthorizeUrl
 import com.google.api.client.auth.oauth.OAuthParameters
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrowExactly
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.properties.Gen
+import io.kotest.properties.long
+import io.kotest.properties.string
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

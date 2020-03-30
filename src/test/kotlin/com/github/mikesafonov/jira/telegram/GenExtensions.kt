@@ -1,6 +1,6 @@
 package com.github.mikesafonov.jira.telegram
 
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
 import kotlin.random.Random
 
 internal fun Gen<String>.empty(): String {

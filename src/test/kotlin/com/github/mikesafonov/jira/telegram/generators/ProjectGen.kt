@@ -1,7 +1,9 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Project
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.long
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov
@@ -21,7 +23,7 @@ class ProjectGen : Gen<Project> {
         return emptyList()
     }
 
-    override fun random(): Sequence<Project> {
+    fun random(): Sequence<Project> {
         return generateSequence {
             generateOne()
         }
@@ -36,6 +38,10 @@ class ProjectGen : Gen<Project> {
         return Project(
             id, self, description, name
         )
+    }
+
+    override fun random(seed: Long?): Sequence<Project> {
+        return random()
     }
 
 }

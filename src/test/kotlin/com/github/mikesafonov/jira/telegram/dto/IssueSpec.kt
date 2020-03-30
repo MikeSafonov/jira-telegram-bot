@@ -1,10 +1,11 @@
 package com.github.mikesafonov.jira.telegram.dto
 
 import com.github.mikesafonov.jira.telegram.generators.*
-import io.kotlintest.matchers.string.shouldHaveLength
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldHaveLength
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov

@@ -1,10 +1,11 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.KeyReader
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrowAny
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldNotBe
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov

@@ -6,9 +6,9 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import com.github.mikesafonov.jira.telegram.config.JiraWatchersProperties
 import com.github.mikesafonov.jira.telegram.config.NotificationProperties
 import io.atlassian.util.concurrent.Promise
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 

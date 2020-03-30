@@ -1,8 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 

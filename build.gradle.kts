@@ -11,7 +11,7 @@ buildscript {
     configurations.maybeCreate("pitest")
     dependencies {
         classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.0")
-        "pitest"("io.kotlintest:kotlintest-plugins-pitest:3.4.2")
+        "pitest"("io.kotest:kotest-plugins-pitest:4.0.1")
     }
 }
 
@@ -123,7 +123,8 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.0.1")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:4.0.1")
     testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 

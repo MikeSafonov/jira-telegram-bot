@@ -4,7 +4,7 @@ import com.atlassian.httpclient.api.Request
 import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraOAuthAuthenticationHandler
 import com.google.api.client.auth.oauth.OAuthParameters
 import com.google.api.client.http.GenericUrl
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.*
 import java.net.URI
 

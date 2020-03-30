@@ -2,9 +2,9 @@ package com.github.mikesafonov.jira.telegram.service.templates
 
 import com.github.mikesafonov.jira.telegram.service.templates.freemarker.FreemarkerTemplateService
 import freemarker.core.InvalidReferenceException
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import java.time.LocalDate
 
 class FreemarkerTemplateServiceSpec : BehaviorSpec({

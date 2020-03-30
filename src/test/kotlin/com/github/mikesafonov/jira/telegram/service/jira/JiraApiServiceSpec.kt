@@ -5,8 +5,8 @@ import com.atlassian.jira.rest.client.api.SearchRestClient
 import com.atlassian.jira.rest.client.api.domain.Issue
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.State
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.*
 
 class JiraApiServiceSpec : BehaviorSpec({

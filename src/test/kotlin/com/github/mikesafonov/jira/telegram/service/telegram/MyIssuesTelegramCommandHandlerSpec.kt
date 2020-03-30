@@ -4,9 +4,10 @@ import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.jira.JiraApiService
 import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.MyIssuesTelegramCommandHandler
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 import io.mockk.*
 import java.net.URI
 

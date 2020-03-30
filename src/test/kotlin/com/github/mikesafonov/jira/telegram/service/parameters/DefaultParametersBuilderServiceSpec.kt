@@ -2,8 +2,8 @@ package com.github.mikesafonov.jira.telegram.service.parameters
 
 import com.github.mikesafonov.jira.telegram.generators.EventGen
 import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 

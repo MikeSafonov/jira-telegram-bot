@@ -1,8 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
-import io.kotlintest.matchers.string.beEmpty
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.beEmpty
 
 class JQLBuilderSpec : BehaviorSpec({
     Given("JQL builder"){

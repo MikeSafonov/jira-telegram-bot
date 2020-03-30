@@ -3,8 +3,8 @@ package com.github.mikesafonov.jira.telegram.service.templates
 import com.github.mikesafonov.jira.telegram.dao.TemplateRepository
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 

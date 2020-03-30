@@ -1,8 +1,10 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.properties.Gen
+import io.kotest.properties.long
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov

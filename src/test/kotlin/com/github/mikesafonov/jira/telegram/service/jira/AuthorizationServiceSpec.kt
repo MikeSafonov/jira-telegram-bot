@@ -3,9 +3,11 @@ package com.github.mikesafonov.jira.telegram.service.jira
 import com.github.mikesafonov.jira.telegram.dao.Authorization
 import com.github.mikesafonov.jira.telegram.dao.AuthorizationRepository
 import com.github.mikesafonov.jira.telegram.service.AuthorizationService
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.properties.Gen
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.kotest.properties.Gen
+import io.kotest.properties.long
+import io.kotest.properties.string
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

@@ -1,7 +1,8 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.ChangelogItem
-import io.kotlintest.properties.Gen
+import io.kotest.properties.Gen
+import io.kotest.properties.string
 
 /**
  * @author Mike Safonov
@@ -24,7 +25,7 @@ class ChangelogItemGen : Gen<ChangelogItem> {
         return emptyList()
     }
 
-    override fun random(): Sequence<ChangelogItem> {
+    fun random(): Sequence<ChangelogItem> {
         return generateSequence {
             generateOne()
         }
@@ -36,6 +37,10 @@ class ChangelogItemGen : Gen<ChangelogItem> {
         newString: String? = Gen.string().random().first()
     ): ChangelogItem {
         return ChangelogItem(field, fromString, newString)
+    }
+
+    override fun random(seed: Long?): Sequence<ChangelogItem> {
+        return random()
     }
 
 }

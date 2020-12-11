@@ -102,7 +102,7 @@ dependencies {
 
     implementation("org.telegram:telegrambots-spring-boot-starter:4.3.1")
 
-    implementation("org.freemarker:freemarker:2.3.29")
+    implementation("org.freemarker:freemarker:2.3.30")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")
 
     implementation("io.github.microutils:kotlin-logging:1.7.9")

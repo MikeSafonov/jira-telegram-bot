@@ -2,10 +2,11 @@ package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Changelog
 import com.github.mikesafonov.jira.telegram.dto.ChangelogItem
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
-class ChangelogGen : Gen<Changelog> {
+class ChangelogGen {
 
     companion object {
         fun generateDefault(): Changelog {
@@ -17,7 +18,7 @@ class ChangelogGen : Gen<Changelog> {
         }
     }
 
-    override fun constants(): Iterable<Changelog> {
+    fun constants(): Iterable<Changelog> {
         return emptyList()
     }
 
@@ -26,13 +27,13 @@ class ChangelogGen : Gen<Changelog> {
     }
 
     fun generateOne(
-        id: String = Gen.string().random().first(),
+        id: String = Arb.string().next(),
         items: Array<ChangelogItem> = emptyArray()
     ): Changelog {
         return Changelog(id, items)
     }
 
-    override fun random(seed: Long?): Sequence<Changelog> {
+    fun random(seed: Long?): Sequence<Changelog> {
         return random()
     }
 }

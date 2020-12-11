@@ -4,9 +4,10 @@ import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.MeTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 
 /**
@@ -21,7 +22,7 @@ class MeTelegramCommandHandlerSpec : BehaviorSpec({
         val handler = MeTelegramCommandHandler(telegramClient)
         When("incoming message contain wrong command") {
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
@@ -82,7 +83,7 @@ class MeTelegramCommandHandlerSpec : BehaviorSpec({
         }
         every { telegramClient.sendTextMessage(any(), any()) } just Runs
         When("Message processing") {
-            val randomId = Gen.long().random().first()
+            val randomId = Arb.long().next()
             val command: TelegramCommand = mockk {
                 every { chatId } returns randomId
             }

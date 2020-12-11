@@ -15,10 +15,11 @@ import com.github.mikesafonov.jira.telegram.service.templates.TemplateResolverSe
 import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.properties.Gen
-import io.kotest.properties.int
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
@@ -128,7 +129,7 @@ class EventServiceSpec : BehaviorSpec() {
                 Then("Ignore event") {
                     randomIssueEvents().forEach {
                         val parameters = mapOf("event" to it)
-                        every { destinationDetectorService.findDestinations(it) } returns listOf(Gen.string().random().first())
+                        every { destinationDetectorService.findDestinations(it) } returns listOf(Arb.string().next())
                         every { templateResolverService.resolve(it, parameters) } returns null
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
 
@@ -151,12 +152,12 @@ class EventServiceSpec : BehaviorSpec() {
             When("No chat for incoming issue event") {
                 Then("Ignore event") {
                     randomIssueEvents().forEach {
-                        val destinationLogin = Gen.string().random().first()
+                        val destinationLogin = Arb.string().next()
                         val parameters = mapOf("event" to it)
                         val rawTemplate =
-                            RawTemplate(Gen.string().random().first(), Gen.string().random().first(), emptyMap())
+                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap())
                         val template = CompiledTemplate(
-                            Gen.string().random().first(),
+                            Arb.string().next(),
                             true
                         )
                         every { destinationDetectorService.findDestinations(it) } returns listOf(destinationLogin)
@@ -181,21 +182,21 @@ class EventServiceSpec : BehaviorSpec() {
                 }
             }
 
-            When("") {
+            When("Events is ok") {
                 Then("Send telegram event") {
                     randomIssueEvents().forEach {
-                        val destinationLogin = Gen.string().random().first()
-                        val telegramId = Gen.long().random().first()
+                        val destinationLogin = Arb.string().next()
+                        val telegramId = Arb.long().next()
                         val parameters = mapOf("event" to it)
                         val rawTemplate =
-                            RawTemplate(Gen.string().random().first(), Gen.string().random().first(), emptyMap())
-                        val template = CompiledTemplate(Gen.string().random().first(), true)
+                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap())
+                        val template = CompiledTemplate(Arb.string().next(), true)
                         every { destinationDetectorService.findDestinations(it) } returns listOf(destinationLogin)
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
                         every { templateResolverService.resolve(it, parameters) } returns rawTemplate
                         every { templateService.buildMessage(rawTemplate) } returns template
                         every { chatRepository.findByJiraId(destinationLogin) } returns Chat(
-                            Gen.int().random().first(),
+                            Arb.int().next(),
                             destinationLogin,
                             telegramId,
                             State.INIT

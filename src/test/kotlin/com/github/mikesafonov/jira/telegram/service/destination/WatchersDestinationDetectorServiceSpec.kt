@@ -7,8 +7,9 @@ import com.github.mikesafonov.jira.telegram.service.jira.JiraWatchersLoader
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.every
 import io.mockk.mockk
 
@@ -42,7 +43,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
             Then("return list of creator, reporter and assignee names") {
                 IssueEventTypeName.values().forEach {
                     val event = EventGen().generateOne(issueEventTypeName = it)
-                    val generatedWatcher = Gen.string().random().first()
+                    val generatedWatcher = Arb.string().next()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
                     val expectedNames =
                         listOfNotNull(
@@ -66,7 +67,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                         issueEventTypeName = it,
                         comment = CommentGen().generateOne(body = "[~$mentionName]")
                     )
-                    val generatedWatcher = Gen.string().random().first()
+                    val generatedWatcher = Arb.string().next()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
                     val expectedNames =
                         listOfNotNull(
@@ -108,7 +109,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser)),
                 comment = CommentGen().generateOne(author = authorUser)
             )
-            val generatedWatcher = Gen.string().random().first()
+            val generatedWatcher = Arb.string().next()
             every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
             Then("return list of reporter and assignee names") {
                 val expectedNames =
@@ -126,7 +127,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser)),
                 comment = CommentGen().generateOne(author = null)
             )
-            val generatedWatcher = Gen.string().random().first()
+            val generatedWatcher = Arb.string().next()
             every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
             Then("return list of reporter and assignee names") {
                 val expectedNames =
@@ -149,7 +150,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                 user = authorUser,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser))
             )
-            val generatedWatcher = Gen.string().random().first()
+            val generatedWatcher = Arb.string().next()
             every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
             Then("return list of reporter and assignee names") {
                 val expectedNames =
@@ -167,7 +168,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                 user = authorUser,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser))
             )
-            val generatedWatcher = Gen.string().random().first()
+            val generatedWatcher = Arb.string().next()
             every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
             Then("return list of reporter and assignee names") {
                 val expectedNames =
@@ -185,7 +186,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                 user = authorUser,
                 issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(creator = authorUser))
             )
-            val generatedWatcher = Gen.string().random().first()
+            val generatedWatcher = Arb.string().next()
             every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
             Then("Return list of reporter and assignee names") {
                 val expectedNames =
@@ -200,7 +201,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
             Then("return list of creator, reporter and assignee names") {
                 IssueEventTypeName.values().forEach {
                     val event = EventGen().generateOne(issueEventTypeName = it)
-                    val generatedWatcher = Gen.string().random().first()
+                    val generatedWatcher = Arb.string().next()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
 
                     val expectedNames =
@@ -225,7 +226,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                         issueEventTypeName = it,
                         comment = CommentGen().generateOne(body = "[~$mentionName]")
                     )
-                    val generatedWatcher = Gen.string().random().first()
+                    val generatedWatcher = Arb.string().next()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
                     val expectedNames =
                         listOfNotNull(
@@ -249,7 +250,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                         issueEventTypeName = it,
                         comment = null
                     )
-                    val generatedWatcher = Gen.string().random().first()
+                    val generatedWatcher = Arb.string().next()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
                     val expectedNames =
                         listOfNotNull(
@@ -277,7 +278,7 @@ class WatchersDestinationDetectorServiceSpec : BehaviorSpec({
                             )
                         )
                     )
-                    val generatedWatcher = Gen.string().random().first()
+                    val generatedWatcher = Arb.string().next()
                     every { jiraWatchersLoader.getWatchers(any()) } returns listOf(generatedWatcher)
                     val expectedNames =
                         listOfNotNull(

@@ -6,9 +6,10 @@ import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.RemoveUserTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 
 /**
@@ -24,7 +25,7 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         When("incoming message contain wrong command and user not admin") {
             every { botProperties.adminId } returns null
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
@@ -51,10 +52,10 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain wrong command and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { hasText } returns true
                 every { chatId } returns admin
                 every { chat } returns mockk {
@@ -69,7 +70,7 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and user admin and wrong state") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
                 every { text } returns "/remove_user"
@@ -89,7 +90,7 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
                 every { text } returns "/remove_user"
@@ -110,7 +111,7 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message not contain expected arguments") {
-            val messageChatId = Gen.long().random().first()
+            val messageChatId = Arb.long().next()
             val command: TelegramCommand = mockk {
                 every { text } returns "/remove_user"
                 every { chatId } returns messageChatId
@@ -135,8 +136,8 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("exception fired when deleting chat from database") {
-            val jiraLogin = Gen.string().random().first().replace(" ", "_")
-            val messageChatId = Gen.long().random().first()
+            val jiraLogin = Arb.string().next().replace(" ", "_")
+            val messageChatId = Arb.long().next()
             val command: TelegramCommand = mockk {
                 every { text } returns "/remove_user $jiraLogin"
                 every { chatId } returns messageChatId
@@ -159,8 +160,8 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("successfully saved in database") {
-            val jiraLogin = Gen.string().random().first().replace(" ", "_")
-            val messageChatId = Gen.long().random().first()
+            val jiraLogin = Arb.string().next().replace(" ", "_")
+            val messageChatId = Arb.long().next()
             val command: TelegramCommand = mockk {
                 every { text } returns "/remove_user $jiraLogin"
                 every { chatId } returns messageChatId

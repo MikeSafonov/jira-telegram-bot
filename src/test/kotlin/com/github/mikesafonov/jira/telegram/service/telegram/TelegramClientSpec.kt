@@ -1,10 +1,11 @@
 package com.github.mikesafonov.jira.telegram.service.telegram
 
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.properties.Gen
-import io.kotest.properties.int
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -20,9 +21,9 @@ class TelegramClientSpec : BehaviorSpec({
     val client = TelegramClient(absSender, telegramMessageBuilder)
 
     Given("telegram client") {
-        val id = Gen.long().random().first()
-        val message = Gen.string().random().first()
-        val idMessage = Gen.int().random().first()
+        val id = Arb.long().next()
+        val message = Arb.string().next()
+        val idMessage = Arb.int().next()
 
         When("simple messages") {
             val messages = listOf<SendMessage>(mockk(), mockk())

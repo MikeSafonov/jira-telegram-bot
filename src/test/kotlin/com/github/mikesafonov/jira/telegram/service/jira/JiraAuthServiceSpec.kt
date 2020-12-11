@@ -8,9 +8,10 @@ import com.google.api.client.auth.oauth.OAuthParameters
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -26,7 +27,7 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
     Given("Jira auth service") {
         When("isAuthorized called and no authorization in database") {
-            val id = Gen.long().random().first()
+            val id = Arb.long().next()
             every { authorizationService.get(id) } returns null
             Then("Return false") {
                 jiraAuthService.isAuthorized(id) shouldBe false
@@ -34,7 +35,7 @@ class JiraAuthServiceSpec : BehaviorSpec({
         }
 
         When("isAuthorized called and authorization exist in database") {
-            val id = Gen.long().random().first()
+            val id = Arb.long().next()
             every { authorizationService.get(id) } returns Authorization(id, null, null)
             Then("Return true") {
                 jiraAuthService.isAuthorized(id) shouldBe true
@@ -43,10 +44,10 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("Create temporary token called") {
             Then("Save secret to database and put temp token to storage") {
-                val id = Gen.long().random().first()
-                val tempToken = Gen.string().random().first()
-                val secretToken = Gen.string().random().first()
-                val url = Gen.string().random().first()
+                val id = Arb.long().next()
+                val tempToken = Arb.string().next()
+                val secretToken = Arb.string().next()
+                val url = Arb.string().next()
                 val token = JiraTempTokenAndAuthorizeUrl(tempToken, secretToken, url)
 
 
@@ -68,8 +69,8 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("Create access token called and no authorization in database") {
             Then("Throw JiraAuthorizationException") {
-                val id = Gen.long().random().first()
-                val verificationCode = Gen.string().random().first()
+                val id = Arb.long().next()
+                val verificationCode = Arb.string().next()
                 every { authorizationService.get(id) } returns null
 
                 shouldThrowExactly<JiraAuthorizationException> { jiraAuthService.createAccessToken(id, verificationCode) }
@@ -78,8 +79,8 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("Create access token called and no temporary token") {
             Then("Throw JiraAuthorizationException") {
-                val id = Gen.long().random().first()
-                val verificationCode = Gen.string().random().first()
+                val id = Arb.long().next()
+                val verificationCode = Arb.string().next()
                 every { authorizationService.get(id) } returns Authorization(id, null, null)
                 every { tempTokenStorageService.get(id) } returns null
 
@@ -89,10 +90,10 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("Create access token called") {
             Then("Save access token") {
-                val id = Gen.long().random().first()
-                val verificationCode = Gen.string().random().first()
-                val accessToken = Gen.string().random().first()
-                val tempToken = Gen.string().random().first()
+                val id = Arb.long().next()
+                val verificationCode = Arb.string().next()
+                val accessToken = Arb.string().next()
+                val tempToken = Arb.string().next()
                 val authorization = Authorization(id, null, null)
                 val expectedAuthorization = Authorization(id, accessToken, null)
 
@@ -113,7 +114,7 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("getOAuthParameters called and no authorization") {
             Then("Throw JiraAuthorizationException") {
-                val id = Gen.long().random().first()
+                val id = Arb.long().next()
 
                 every { authorizationService.get(id) } returns null
 
@@ -123,8 +124,8 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("getOAuthParameters called and no secretToken") {
             Then("Throw JiraAuthorizationException") {
-                val id = Gen.long().random().first()
-                val accessToken = Gen.string().random().first()
+                val id = Arb.long().next()
+                val accessToken = Arb.string().next()
                 every { authorizationService.get(id) } returns Authorization(id, accessToken, null)
 
                 shouldThrowExactly<JiraAuthorizationException> { jiraAuthService.getOAuthParameters(id) }
@@ -133,8 +134,8 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("getOAuthParameters called and no accessToken") {
             Then("Throw JiraAuthorizationException") {
-                val id = Gen.long().random().first()
-                val secretToken = Gen.string().random().first()
+                val id = Arb.long().next()
+                val secretToken = Arb.string().next()
                 every { authorizationService.get(id) } returns Authorization(id, null, secretToken)
 
                 shouldThrowExactly<JiraAuthorizationException> { jiraAuthService.getOAuthParameters(id) }
@@ -143,9 +144,9 @@ class JiraAuthServiceSpec : BehaviorSpec({
 
         When("getOAuthParameters called ") {
             Then("Return parameters") {
-                val id = Gen.long().random().first()
-                val secretToken = Gen.string().random().first()
-                val accessToken = Gen.string().random().first()
+                val id = Arb.long().next()
+                val secretToken = Arb.string().next()
+                val accessToken = Arb.string().next()
                 val parameters = mockk<OAuthParameters>()
 
                 every { authorizationService.get(id) } returns Authorization(id, accessToken, secretToken)

@@ -4,8 +4,9 @@ import com.github.mikesafonov.jira.telegram.generators.*
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
@@ -45,8 +46,8 @@ class IssueSpec : BehaviorSpec({
         When("Contain labels") {
             Then("labelsAsString should return expected string") {
                 val labels = arrayOf(
-                    Gen.string().random().first(),
-                    Gen.string().random().first()
+                    Arb.string().next(),
+                    Arb.string().next(),
                 )
                 val issue = IssueGen().generateOne(issueFields = IssueFieldsGen().generateOne(labels = labels))
                 issue.containsLabels shouldBe true

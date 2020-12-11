@@ -1,12 +1,13 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.*
-import io.kotest.properties.Gen
-import io.kotest.properties.enum
-import io.kotest.properties.long
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
 
 
-class EventGen : Gen<Event> {
+class EventGen {
 
     companion object {
         fun generateDefault(): Event {
@@ -19,7 +20,7 @@ class EventGen : Gen<Event> {
     }
 
 
-    override fun constants(): Iterable<Event> {
+    fun constants(): Iterable<Event> {
         return emptyList()
     }
 
@@ -28,9 +29,9 @@ class EventGen : Gen<Event> {
     }
 
     fun generateOne(
-        webHookEvent: WebHookEvent = Gen.enum<WebHookEvent>().random().first(),
-        issueEventTypeName: IssueEventTypeName? = Gen.enum<IssueEventTypeName>().random().first(),
-        timestamp: Long = Gen.long().random().first(),
+        webHookEvent: WebHookEvent = Arb.enum<WebHookEvent>().next(),
+        issueEventTypeName: IssueEventTypeName? = Arb.enum<IssueEventTypeName>().next(),
+        timestamp: Long = Arb.long().next(),
         user: User? = UserGen.generateDefault(),
         issue: Issue? = IssueGen.generateDefault(),
         comment: Comment? = CommentGen.generateDefault(),
@@ -39,7 +40,7 @@ class EventGen : Gen<Event> {
         return Event(webHookEvent, issueEventTypeName, timestamp, user, issue, comment, changelog)
     }
 
-    override fun random(seed: Long?): Sequence<Event> {
+    fun random(seed: Long?): Sequence<Event> {
         return random()
     }
 

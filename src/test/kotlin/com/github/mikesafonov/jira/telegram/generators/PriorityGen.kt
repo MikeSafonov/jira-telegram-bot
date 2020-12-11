@@ -1,13 +1,15 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Priority
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
+
 
 /**
  * @author Mike Safonov
  */
-class PriorityGen : Gen<Priority> {
+class PriorityGen {
     companion object {
         fun generateDefault(): Priority {
             return PriorityGen().generateOne()
@@ -18,7 +20,7 @@ class PriorityGen : Gen<Priority> {
         }
     }
 
-    override fun constants(): Iterable<Priority> {
+    fun constants(): Iterable<Priority> {
         return emptyList()
     }
 
@@ -28,12 +30,12 @@ class PriorityGen : Gen<Priority> {
         }
     }
 
-    fun generateOne(name : String = Gen.string().random().first(),
-                    iconUrl : String = Gen.string().random().first()) : Priority{
+    fun generateOne(name : String = Arb.string().next(),
+                    iconUrl : String = Arb.string().next()) : Priority{
         return Priority(name, iconUrl)
     }
 
-    override fun random(seed: Long?): Sequence<Priority> {
+    fun random(seed: Long?): Sequence<Priority> {
         return random()
     }
 

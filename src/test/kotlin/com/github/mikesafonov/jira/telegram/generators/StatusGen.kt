@@ -1,13 +1,14 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Status
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
-class StatusGen : Gen<Status> {
+class StatusGen {
     companion object {
         fun generateDefault(): Status {
             return StatusGen().generateOne()
@@ -18,7 +19,7 @@ class StatusGen : Gen<Status> {
         }
     }
 
-    override fun constants(): Iterable<Status> {
+    fun constants(): Iterable<Status> {
         return emptyList()
     }
 
@@ -29,14 +30,14 @@ class StatusGen : Gen<Status> {
     }
 
     fun generateOne(
-        id: String = Gen.string().random().first(),
-        description: String = Gen.string().random().first(),
-        name: String = Gen.string().random().first()
+        id: String = Arb.string().next(),
+        description: String = Arb.string().next(),
+        name: String = Arb.string().next()
     ): Status {
         return Status(id, description, name)
     }
 
-    override fun random(seed: Long?): Sequence<Status> {
+    fun random(seed: Long?): Sequence<Status> {
         return random()
     }
 

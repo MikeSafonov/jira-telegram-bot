@@ -7,9 +7,10 @@ import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.HelpTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 
 /**
@@ -29,7 +30,7 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
 
         When("incoming message contain wrong command") {
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
@@ -80,7 +81,7 @@ class HelpTelegramCommandHandlerSpec : BehaviorSpec({
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns null
             every { jiraOAuthProperties.isNotEmpty } returns false
-            val randomChatId = Gen.long().random().first()
+            val randomChatId = Arb.long().next()
             val message: TelegramCommand = mockk {
                 every { chatId } returns randomChatId
             }
@@ -106,7 +107,7 @@ ${HelpTelegramCommandHandler.DEFAULT_HELP_MESSAGE}"""
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns null
             every { jiraOAuthProperties.isNotEmpty } returns true
-            val randomChatId = Gen.long().random().first()
+            val randomChatId = Arb.long().next()
             val message: TelegramCommand = mockk {
                 every { chatId } returns randomChatId
             }
@@ -134,7 +135,7 @@ Jira commands:
         }
 
         When("Message processing and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns admin
             every { jiraOAuthProperties.isNotEmpty } returns false
@@ -160,7 +161,7 @@ ${HelpTelegramCommandHandler.ADMIN_HELP_MESSAGE}"""
         }
 
         When("Message processing and user admin and jira allowed") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { buildInfo.version } returns currentVersion
             every { botProperties.adminId } returns admin
             every { jiraOAuthProperties.isNotEmpty } returns true

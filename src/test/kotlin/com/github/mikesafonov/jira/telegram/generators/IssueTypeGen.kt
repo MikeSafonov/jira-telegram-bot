@@ -1,14 +1,15 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.IssueType
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
 
-class IssueTypeGen : Gen<IssueType> {
+class IssueTypeGen {
     companion object {
         fun generateDefault(): IssueType {
             return IssueTypeGen().generateOne()
@@ -19,7 +20,7 @@ class IssueTypeGen : Gen<IssueType> {
         }
     }
 
-    override fun constants(): Iterable<IssueType> {
+    fun constants(): Iterable<IssueType> {
         return emptyList()
     }
 
@@ -30,13 +31,13 @@ class IssueTypeGen : Gen<IssueType> {
     }
 
     fun generateOne(
-        name: String = Gen.string().random().first(),
-        description: String = Gen.string().random().first()
+        name: String = Arb.string().next(),
+        description: String = Arb.string().next()
     ): IssueType {
         return IssueType(name, description)
     }
 
-    override fun random(seed: Long?): Sequence<IssueType> {
+    fun random(seed: Long?): Sequence<IssueType> {
         return random()
     }
 

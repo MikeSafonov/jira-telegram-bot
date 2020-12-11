@@ -10,9 +10,10 @@ import com.github.mikesafonov.jira.telegram.positive
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,8 +25,8 @@ class ChatServiceSpec : BehaviorSpec({
         val chatService = ChatService(chatRepository)
 
         When("jiraLogin is empty") {
-            val jiraLogin = Gen.string().empty()
-            val telegramId = Gen.long().random().first()
+            val jiraLogin = Arb.string().empty()
+            val telegramId = Arb.long().next()
             Then("throw exception") {
                 val exception =
                     shouldThrowExactly<AddChatException> { chatService.addNewChat(jiraLogin, telegramId) }
@@ -34,8 +35,8 @@ class ChatServiceSpec : BehaviorSpec({
         }
 
         When("jiraLogin exists in database") {
-            val jiraLogin = Gen.string().notBlank()
-            val telegramId = Gen.long().random().first()
+            val jiraLogin = Arb.string().notBlank()
+            val telegramId = Arb.long().next()
             val chat = Chat(null, jiraLogin, telegramId, State.INIT)
             every { chatRepository.findByJiraId(jiraLogin) } returns chat
 
@@ -47,7 +48,7 @@ class ChatServiceSpec : BehaviorSpec({
         }
 
         When("telegramId is negative") {
-            val jiraLogin = Gen.string().notBlank()
+            val jiraLogin = Arb.string().notBlank()
             val telegramId = Random.negative()
             every { chatRepository.findByJiraId(jiraLogin) } returns null
             Then("throw exception") {
@@ -59,7 +60,7 @@ class ChatServiceSpec : BehaviorSpec({
         }
 
         When("telegramId is zero") {
-            val jiraLogin = Gen.string().notBlank()
+            val jiraLogin = Arb.string().notBlank()
             val telegramId = 0L
             every { chatRepository.findByJiraId(jiraLogin) } returns null
             Then("throw exception") {
@@ -71,7 +72,7 @@ class ChatServiceSpec : BehaviorSpec({
         }
 
         When("telegramId exists in database") {
-            val jiraLogin = Gen.string().notBlank()
+            val jiraLogin = Arb.string().notBlank()
             val telegramId = Random.positive()
             val chat = Chat(null, jiraLogin, telegramId, State.INIT)
             every { chatRepository.findByJiraId(jiraLogin) } returns null
@@ -85,7 +86,7 @@ class ChatServiceSpec : BehaviorSpec({
         }
 
         When("jiraLogin and telegramId is ok") {
-            val jiraLogin = Gen.string().notBlank()
+            val jiraLogin = Arb.string().notBlank()
             val telegramId = Random.positive()
             val chat = Chat(null, jiraLogin, telegramId, State.INIT)
             every { chatRepository.findByJiraId(jiraLogin) } returns null

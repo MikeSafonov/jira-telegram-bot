@@ -1,16 +1,17 @@
 package com.github.mikesafonov.jira.telegram
 
-import io.kotest.properties.Gen
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
 import kotlin.random.Random
 
-internal fun Gen<String>.empty(): String {
+internal fun Arb<String>.empty(): String {
     return ""
 }
 
-internal fun Gen<String>.notBlank(): String {
-    var value = random().first()
+internal fun Arb<String>.notBlank(): String {
+    var value = next()
     while (value.isBlank()) {
-        value = random().first()
+        value = next()
     }
     return value
 }

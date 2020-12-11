@@ -7,8 +7,9 @@ import com.google.api.client.auth.oauth.OAuthCredentialsResponse
 import com.google.api.client.auth.oauth.OAuthParameters
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.every
 import io.mockk.mockk
 
@@ -24,7 +25,7 @@ class JiraOAuthClientSpec : BehaviorSpec({
         When("Call create and authorize temp token") {
             Then("Generate expected token, secret and url") {
                 val tokenValue = "aasdsHasdmnnqweqhQWHh"
-                val tokenSecretValue = Gen.string().random().first()
+                val tokenSecretValue = Arb.string().next()
                 val requestUrl = "http://example.jira/auth"
                 val expectedUrl = "$requestUrl?oauth_token=$tokenValue"
 
@@ -48,9 +49,9 @@ class JiraOAuthClientSpec : BehaviorSpec({
 
         When("Get access token") {
             Then("Generate access token") {
-                val tokenValue = Gen.string().random().first()
-                val tokenSecretValue = Gen.string().random().first()
-                val accessToken = Gen.string().random().first()
+                val tokenValue = Arb.string().next()
+                val tokenSecretValue = Arb.string().next()
+                val accessToken = Arb.string().next()
                 val response = OAuthCredentialsResponse().apply {
                     token = accessToken
                     tokenSecret = tokenSecretValue
@@ -66,8 +67,8 @@ class JiraOAuthClientSpec : BehaviorSpec({
 
         When("Get oauth parameters") {
             Then("Generate oauth parameters") {
-                val tokenValue = Gen.string().random().first()
-                val tokenSecretValue = Gen.string().random().first()
+                val tokenValue = Arb.string().next()
+                val tokenSecretValue = Arb.string().next()
                 val parameters = mockk<OAuthParameters>()
 
                 every { factory.getAccessToken(tokenSecretValue, tokenValue) } returns mockk {

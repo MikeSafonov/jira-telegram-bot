@@ -2,14 +2,15 @@ package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Comment
 import com.github.mikesafonov.jira.telegram.dto.User
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import java.time.LocalDateTime
 
 /**
  * @author Mike Safonov
  */
-class CommentGen : Gen<Comment> {
+class CommentGen {
 
     companion object {
         fun generateDefault(): Comment {
@@ -21,7 +22,7 @@ class CommentGen : Gen<Comment> {
         }
     }
 
-    override fun constants(): Iterable<Comment> {
+    fun constants(): Iterable<Comment> {
         return emptyList()
     }
 
@@ -32,17 +33,17 @@ class CommentGen : Gen<Comment> {
     }
 
     fun generateOne(
-        body: String = Gen.string().random().first(),
+        body: String = Arb.string().next(),
         author: User? = UserGen.generateDefault(),
         created: LocalDateTime = LocalDateTime.now(),
         updateAuthor: User? = UserGen.generateDefault(),
-        self: String = Gen.string().random().first(),
+        self: String = Arb.string().next(),
         updated: LocalDateTime? = LocalDateTime.now()
     ): Comment {
         return Comment(body, author, created, updateAuthor, self, updated)
     }
 
-    override fun random(seed: Long?): Sequence<Comment> {
+    fun random(seed: Long?): Sequence<Comment> {
         return random()
     }
 

@@ -6,8 +6,9 @@ import com.github.mikesafonov.jira.telegram.service.jira.oauth.JiraTempTokenAndA
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 
 /**
@@ -23,7 +24,7 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
         When("incoming message contain wrong command") {
 
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
@@ -104,9 +105,9 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
             }
 
             val tempToken = JiraTempTokenAndAuthorizeUrl(
-                Gen.string().random().first(),
-                Gen.string().random().first(),
-                Gen.string().random().first()
+                Arb.string().next(),
+                Arb.string().next(),
+                Arb.string().next()
             )
             every { jiraAuthService.createTemporaryToken(telegramChatId) } returns tempToken
             every { telegramClient.sendMarkdownMessage(any(), any()) } just Runs

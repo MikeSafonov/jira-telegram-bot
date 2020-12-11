@@ -2,15 +2,16 @@ package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Attachment
 import com.github.mikesafonov.jira.telegram.dto.Watchers
-import io.kotest.properties.Gen
-import io.kotest.properties.bool
-import io.kotest.properties.int
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.bool
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
-class WatchersGen : Gen<Watchers> {
+class WatchersGen {
     companion object {
         fun generateDefault(): Watchers {
             return WatchersGen().generateOne()
@@ -21,7 +22,7 @@ class WatchersGen : Gen<Watchers> {
         }
     }
 
-    override fun constants(): Iterable<Watchers> {
+    fun constants(): Iterable<Watchers> {
         return emptyList()
     }
 
@@ -32,14 +33,14 @@ class WatchersGen : Gen<Watchers> {
     }
 
     fun generateOne(
-        self: String = Gen.string().random().first(),
-        watchCount: Int = Gen.int().random().first(),
-        isWatching: Boolean = Gen.bool().random().first()
+        self: String = Arb.string().next(),
+        watchCount: Int = Arb.int().next(),
+        isWatching: Boolean = Arb.bool().next()
     ): Watchers {
         return Watchers(self, watchCount, isWatching)
     }
 
-    override fun random(seed: Long?): Sequence<Watchers> {
+    fun random(seed: Long?): Sequence<Watchers> {
         return random()
     }
 }

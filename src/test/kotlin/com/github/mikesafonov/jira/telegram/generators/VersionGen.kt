@@ -1,15 +1,16 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Version
-import io.kotest.properties.Gen
-import io.kotest.properties.bool
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.bool
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
-class VersionGen : Gen<Version> {
+class VersionGen {
 
     companion object {
         fun generateDefault(): Version {
@@ -21,7 +22,7 @@ class VersionGen : Gen<Version> {
         }
     }
 
-    override fun constants(): Iterable<Version> {
+    fun constants(): Iterable<Version> {
         return emptyList()
     }
 
@@ -32,12 +33,12 @@ class VersionGen : Gen<Version> {
     }
 
     fun generateOne(
-        id: Long = Gen.long().random().first(),
+        id: Long = Arb.long().next(),
         self: String = randomString(),
         description: String = randomString(),
         name: String = randomString(),
-        archived: Boolean = Gen.bool().random().first(),
-        released: Boolean = Gen.bool().random().first()
+        archived: Boolean = Arb.bool().next(),
+        released: Boolean = Arb.bool().next()
     ): Version {
         return Version(
             id, self, description, name, archived, released
@@ -45,10 +46,10 @@ class VersionGen : Gen<Version> {
     }
 
     private fun randomString(): String {
-        return Gen.string().random().first()
+        return Arb.string().next()
     }
 
-    override fun random(seed: Long?): Sequence<Version> {
+    fun random(seed: Long?): Sequence<Version> {
         return random()
     }
 

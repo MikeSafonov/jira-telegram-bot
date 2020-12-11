@@ -17,7 +17,7 @@ class TelegramCommandSpec : BehaviorSpec({
                 message, null, null
             )
 
-            Then("") {
+            Then("should be false") {
                 command.isChatExist() shouldBe false
                 State.values().forEach {
                     command.isInState(it) shouldBe false
@@ -32,7 +32,7 @@ class TelegramCommandSpec : BehaviorSpec({
                 message, chat, null
             )
 
-            Then("") {
+            Then("--") {
                 command.isChatExist() shouldBe true
                 command.isInState(State.WAIT_APPROVE) shouldBe false
                 command.isInState(State.INIT) shouldBe true
@@ -50,7 +50,7 @@ class TelegramCommandSpec : BehaviorSpec({
                 message, null, null
             )
 
-            Then("") {
+            Then("--") {
                 command.text shouldBe null
                 command.hasText shouldBe false
                 command.chatId shouldBe idChat
@@ -72,7 +72,7 @@ class TelegramCommandSpec : BehaviorSpec({
                 message, null, null
             )
 
-            Then("") {
+            Then("--") {
                 command.text shouldBe textValue
                 command.hasText shouldBe true
                 command.chatId shouldBe idChat

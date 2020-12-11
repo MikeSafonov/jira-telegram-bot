@@ -1,13 +1,14 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Attachment
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
-class AttachmentGen : Gen<Attachment> {
+class AttachmentGen {
     companion object {
         fun generateDefault(): Attachment {
             return AttachmentGen().generateOne()
@@ -18,7 +19,7 @@ class AttachmentGen : Gen<Attachment> {
         }
     }
 
-    override fun constants(): Iterable<Attachment> {
+    fun constants(): Iterable<Attachment> {
         return emptyList()
     }
 
@@ -28,13 +29,13 @@ class AttachmentGen : Gen<Attachment> {
         }
     }
 
-    override fun random(seed: Long?): Sequence<Attachment> {
+    fun random(seed: Long?): Sequence<Attachment> {
         return random()
     }
 
     fun generateOne(
-        filename: String = Gen.string().random().first(),
-        content: String = Gen.string().random().first()
+        filename: String = Arb.string().next(),
+        content: String = Arb.string().next()
     ): Attachment {
         return Attachment(filename, content)
     }

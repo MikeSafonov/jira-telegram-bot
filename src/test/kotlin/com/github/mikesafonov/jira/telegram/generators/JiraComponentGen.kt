@@ -1,13 +1,14 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.JiraComponent
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
-class JiraComponentGen : Gen<JiraComponent> {
+class JiraComponentGen  {
     companion object {
         fun generateDefault(): JiraComponent {
             return JiraComponentGen().generateOne()
@@ -18,7 +19,7 @@ class JiraComponentGen : Gen<JiraComponent> {
         }
     }
 
-    override fun constants(): Iterable<JiraComponent> {
+    fun constants(): Iterable<JiraComponent> {
         return emptyList()
     }
 
@@ -29,13 +30,13 @@ class JiraComponentGen : Gen<JiraComponent> {
     }
 
     fun generateOne(
-        self: String = Gen.string().random().first(),
-        name: String = Gen.string().random().first()
+        self: String = Arb.string().next(),
+        name: String = Arb.string().next()
     ): JiraComponent {
         return JiraComponent(self, name)
     }
 
-    override fun random(seed: Long?): Sequence<JiraComponent> {
+    fun random(seed: Long?): Sequence<JiraComponent> {
         return random()
     }
 

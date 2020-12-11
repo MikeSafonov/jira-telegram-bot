@@ -8,8 +8,9 @@ import com.google.api.client.http.GenericUrl
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.every
 import io.mockk.mockk
 import java.net.URL
@@ -21,14 +22,14 @@ class JiraOAuthTokenFactorySpec : BehaviorSpec({
 
     val jiraOAuthProperties = mockk<JiraOAuthProperties>()
     val keyReader = mockk<KeyReader>()
-    every { jiraOAuthProperties.privateKey } returns Gen.string().random().first()
+    every { jiraOAuthProperties.privateKey } returns Arb.string().next()
     every { keyReader.readPrivateRsa(any()) } returns mockk()
     val jiraOAuthTokenFactory = JiraOAuthTokenFactory(jiraOAuthProperties, keyReader)
 
     Given("Jira oauth token factory") {
         When("Call get temp token") {
             val requestUrl = "http://example.jira/request"
-            val consumerKey = Gen.string().random().first()
+            val consumerKey = Arb.string().next()
             every { jiraOAuthProperties.requestTokenUrl } returns requestUrl
             every { jiraOAuthProperties.consumerKey } returns consumerKey
             Then("Create token request with expected parameters") {
@@ -47,9 +48,9 @@ class JiraOAuthTokenFactorySpec : BehaviorSpec({
 
         When("Call get access token") {
             val requestUrl = "http://example.jira/access"
-            val consumerKey = Gen.string().random().first()
-            val secretToken = Gen.string().random().first()
-            val tempToken = Gen.string().random().first()
+            val consumerKey = Arb.string().next()
+            val secretToken = Arb.string().next()
+            val tempToken = Arb.string().next()
             every { jiraOAuthProperties.accessTokenUrl } returns requestUrl
             every { jiraOAuthProperties.consumerKey } returns consumerKey
             Then("Create token request with expected parameters") {

@@ -7,9 +7,10 @@ import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.AddUserTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 
 /**
@@ -27,7 +28,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
             every { botProperties.adminId } returns null
             val command: TelegramCommand = mockk {
                 every { message } returns mockk {
-                    every { text } returns Gen.string().random().first()
+                    every { text } returns Arb.string().next()
                 }
             }
 
@@ -52,10 +53,10 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain wrong command and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { chatId } returns admin
                 every { hasText } returns true
                 every { chat } returns mockk {
@@ -71,7 +72,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and user admin, but not INIT state") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
                 every { text } returns "/add_user"
@@ -91,7 +92,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
                 every { text } returns "/add_user"
@@ -113,7 +114,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
 
 
         When("incoming message not contain expected arguments") {
-            val messageChatId = Gen.long().random().first()
+            val messageChatId = Arb.long().next()
             val command: TelegramCommand = mockk {
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user"
@@ -143,7 +144,7 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         When("telegramId in incoming message is not a number") {
             val jiraLogin = "jira_login"
             val telegramId = "asY4"
-            val messageChatId = Gen.long().random().first()
+            val messageChatId = Arb.long().next()
             val command: TelegramCommand = mockk {
                 every { chatId } returns messageChatId
                 every { text } returns "/add_user $jiraLogin $telegramId"
@@ -166,9 +167,9 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("chat exists in database") {
-            val jiraLogin = Gen.string().random().first().replace(" ", "_")
-            val telegramId = Gen.long().random().first()
-            val messageChatId = Gen.long().random().first()
+            val jiraLogin = Arb.string().next().replace(" ", "_")
+            val telegramId = Arb.long().next()
+            val messageChatId = Arb.long().next()
 
             every { chatService.addNewChat(jiraLogin, telegramId) } throws AddChatException("Jira login $jiraLogin already exist")
 
@@ -194,9 +195,9 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
 
 
         When("exception fired when saving new chat to database") {
-            val jiraLogin = Gen.string().random().first().replace(" ", "_")
-            val telegramId = Gen.long().random().first()
-            val messageChatId = Gen.long().random().first()
+            val jiraLogin = Arb.string().next().replace(" ", "_")
+            val telegramId = Arb.long().next()
+            val messageChatId = Arb.long().next()
 
             every { chatService.addNewChat(jiraLogin, telegramId) } throws Exception("Error")
 
@@ -221,9 +222,9 @@ class AddUserTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("successfully saved in database") {
-            val jiraLogin = Gen.string().random().first().replace(" ", "_")
-            val telegramId = Gen.long().random().first()
-            val messageChatId = Gen.long().random().first()
+            val jiraLogin = Arb.string().next().replace(" ", "_")
+            val telegramId = Arb.long().next()
+            val messageChatId = Arb.long().next()
 
             every { chatService.addNewChat(jiraLogin, telegramId) } just Runs
 

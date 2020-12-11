@@ -1,15 +1,16 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.*
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import java.time.LocalDateTime
 
 /**
  * @author Mike Safonov
  */
 
-class IssueFieldsGen : Gen<IssueFields> {
+class IssueFieldsGen {
 
     companion object {
         fun generateDefault(): IssueFields {
@@ -22,7 +23,7 @@ class IssueFieldsGen : Gen<IssueFields> {
     }
 
 
-    override fun constants(): Iterable<IssueFields> {
+    fun constants(): Iterable<IssueFields> {
         return emptyList()
     }
 
@@ -34,8 +35,8 @@ class IssueFieldsGen : Gen<IssueFields> {
 
 
     fun generateOne(
-        summary: String = Gen.string().random().first(),
-        description: String = Gen.string().random().first(),
+        summary: String = Arb.string().next(),
+        description: String = Arb.string().next(),
         project: Project? = ProjectGen.generateDefault(),
         creator: User = UserGen.generateDefault(),
         issuetype: IssueType = IssueTypeGen.generateDefault(),
@@ -71,7 +72,7 @@ class IssueFieldsGen : Gen<IssueFields> {
         )
     }
 
-    override fun random(seed: Long?): Sequence<IssueFields> {
+    fun random(seed: Long?): Sequence<IssueFields> {
         return random()
     }
 }

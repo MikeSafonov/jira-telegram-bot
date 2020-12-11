@@ -4,8 +4,9 @@ import com.github.mikesafonov.jira.telegram.service.jira.oauth.KeyReader
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldNotBe
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
@@ -22,7 +23,7 @@ class KeyReaderSpec : BehaviorSpec({
 
         When("Invalid private key") {
             Then("Throw exception") {
-                shouldThrowAny { keyReader.readPrivateRsa(Gen.string().random().first()) }
+                shouldThrowAny { keyReader.readPrivateRsa(Arb.string().next()) }
             }
         }
     }

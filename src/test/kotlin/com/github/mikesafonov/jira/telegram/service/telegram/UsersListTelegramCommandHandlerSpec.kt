@@ -7,10 +7,11 @@ import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.UsersListTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.int
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 
 /**
@@ -27,7 +28,7 @@ class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
         When("incoming message contain wrong command and user not admin") {
             every { botProperties.adminId } returns null
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
@@ -39,10 +40,10 @@ class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain wrong command and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { chatId } returns admin
                 every { hasText } returns true
                 every { chat } returns mockk {
@@ -72,7 +73,7 @@ class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and user admin and wrong state") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
                 every { text } returns "/users_list"
@@ -91,7 +92,7 @@ class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("incoming message contain right command and user admin") {
-            val admin = Gen.long().random().first()
+            val admin = Arb.long().next()
             every { botProperties.adminId } returns admin
             val command: TelegramCommand = mockk {
                 every { text } returns "/users_list"
@@ -110,21 +111,21 @@ class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
         }
 
         When("Message processing") {
-            val id = Gen.long().random().first()
+            val id = Arb.long().next()
             val allChats = listOf(
                 Chat(
-                    Gen.int().random().first(),
-                    Gen.string().random().first(),
-                    Gen.long().random().first(),
+                    Arb.int().next(),
+                    Arb.string().next(),
+                    Arb.long().next(),
                     State.INIT
                 ),
                 Chat(
-                    Gen.int().random().first(),
-                    Gen.string().random().first(),
-                    Gen.long().random().first(),
+                    Arb.int().next(),
+                    Arb.string().next(),
+                    Arb.long().next(),
                     State.INIT
                 ),
-                Chat(Gen.int().random().first(), Gen.string().random().first(), Gen.long().random().first(), State.INIT)
+                Chat(Arb.int().next(), Arb.string().next(), Arb.long().next(), State.INIT)
             )
             every { chatRepository.findAll() } returns allChats
             val command: TelegramCommand = mockk {

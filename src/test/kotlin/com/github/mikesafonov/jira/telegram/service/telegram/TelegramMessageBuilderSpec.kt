@@ -4,9 +4,10 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 
@@ -18,8 +19,8 @@ class TelegramMessageBuilderSpec : BehaviorSpec({
 
     Given("Builder") {
         When("Simple text message") {
-            val id = Gen.long().random().first()
-            val message = Gen.string().random().first()
+            val id = Arb.long().next()
+            val message = Arb.string().next()
 
 
             val expectedMessage = SendMessage().apply {
@@ -33,7 +34,7 @@ class TelegramMessageBuilderSpec : BehaviorSpec({
         }
 
         When("Big simple text message") {
-            val id = Gen.long().random().first()
+            val id = Arb.long().next()
             val message = (0 until 2 * TelegramMessageBuilder.maxSize).joinToString("") { "a" }
 
             Then("Expected messages count") {
@@ -42,8 +43,8 @@ class TelegramMessageBuilderSpec : BehaviorSpec({
         }
 
         When("Markdown text message") {
-            val id = Gen.long().random().first()
-            val message = Gen.string().random().first()
+            val id = Arb.long().next()
+            val message = Arb.string().next()
 
 
             val expectedMessage = SendMessage().apply {
@@ -58,7 +59,7 @@ class TelegramMessageBuilderSpec : BehaviorSpec({
         }
 
         When("Big markdown text message") {
-            val id = Gen.long().random().first()
+            val id = Arb.long().next()
             val message = (0 until 2 * TelegramMessageBuilder.maxSize).joinToString("") { "a" }
 
             Then("Expected messages count") {

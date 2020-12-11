@@ -1,14 +1,15 @@
 package com.github.mikesafonov.jira.telegram.generators
 
 import com.github.mikesafonov.jira.telegram.dto.Project
-import io.kotest.properties.Gen
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 
 /**
  * @author Mike Safonov
  */
-class ProjectGen : Gen<Project> {
+class ProjectGen {
     companion object {
         fun generateDefault(): Project {
             return ProjectGen().generateOne()
@@ -19,7 +20,7 @@ class ProjectGen : Gen<Project> {
         }
     }
 
-    override fun constants(): Iterable<Project> {
+    fun constants(): Iterable<Project> {
         return emptyList()
     }
 
@@ -30,17 +31,17 @@ class ProjectGen : Gen<Project> {
     }
 
     fun generateOne(
-        id: Long = Gen.long().random().first(),
-        self: String = Gen.string().random().first(),
-        description: String = Gen.string().random().first(),
-        name: String = Gen.string().random().first()
+        id: Long = Arb.long().next(),
+        self: String = Arb.string().next(),
+        description: String = Arb.string().next(),
+        name: String = Arb.string().next()
     ): Project {
         return Project(
             id, self, description, name
         )
     }
 
-    override fun random(seed: Long?): Sequence<Project> {
+    fun random(seed: Long?): Sequence<Project> {
         return random()
     }
 

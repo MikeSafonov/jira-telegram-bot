@@ -6,8 +6,9 @@ import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkServ
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.MyIssuesTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.string
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.string
 import io.mockk.*
 import java.net.URI
 
@@ -23,7 +24,7 @@ class MyIssuesTelegramCommandHandlerSpec : BehaviorSpec({
         val handler = MyIssuesTelegramCommandHandler(jiraApiService, telegramClient, jiraIssueBrowseLinkService)
         When("incoming message contain wrong command") {
             val command: TelegramCommand = mockk {
-                every { text } returns Gen.string().random().first()
+                every { text } returns Arb.string().next()
                 every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT

@@ -23,3 +23,7 @@ interface TemplateRepository : JpaRepository<Template, Int> {
 interface AuthorizationRepository : JpaRepository<Authorization, Long>{
 
 }
+
+interface TagRepository : JpaRepository<Tag, Long>{
+
+}

@@ -20,7 +20,15 @@ data class Chat(
 
     @Column(name = "state", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    var state : State
+    var state: State,
+
+    @ManyToMany(cascade = [CascadeType.ALL])
+    @JoinTable(
+        name = "chats_tags",
+        joinColumns = [JoinColumn(name = "id_chat", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "id_tag", referencedColumnName = "id")]
+    )
+    var tags: List<Tag> = mutableListOf(),
 )
 
 /**
@@ -57,3 +65,17 @@ enum class State {
     INIT,
     WAIT_APPROVE
 }
+
+@Entity
+@Table(name = "tags")
+data class Tag (
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long?,
+
+    @Column(name = "tag", nullable = false)
+    val key: String,
+
+    @ManyToMany(mappedBy = "tags")
+    var chats: List<Chat> = mutableListOf()
+)

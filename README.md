@@ -28,6 +28,7 @@ Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-b
 - [Jira OAuth](https://developer.atlassian.com/server/jira/platform/oauth/)
 - monitoring using [Prometheus](https://prometheus.io)
 - holding secrets with [HashiCorp Vault](https://www.vaultproject.io/)
+- sending notifications by tags
 
 
 ## Build
@@ -266,6 +267,15 @@ To enable integration with `Vault` pass following arguments to `jira-telegram-bo
     java -jar jira-telegram-bot.jar --spring.cloud.vault.enabled=true --spring.cloud.vault.uri=<your vault uri> 
     --spring.cloud.vault.token=<your vault token> --spring.cloud.vault.kv.application-name=<vault application name>
 
+### Sending notifications by tags
+
+You can add any tag to table `tags`.
+
+Any tag can be linked to any user via `chats_tags` table. 
+
+Issue commented with message `hello @devs` will be recieved to all users with tag `devs`.
+
+There are only one tag exist by default - `@everyone`. Using `@everyone` you can send notification to all users.
  
 ## Contributing
 

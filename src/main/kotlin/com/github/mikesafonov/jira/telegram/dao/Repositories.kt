@@ -20,10 +20,10 @@ interface TemplateRepository : JpaRepository<Template, Int> {
     fun findByKey(key: String): Template?
 }
 
-interface AuthorizationRepository : JpaRepository<Authorization, Long>{
+interface AuthorizationRepository : JpaRepository<Authorization, Long> {
 
 }
 
-interface TagRepository : JpaRepository<Tag, Long>{
-
+interface TagRepository : JpaRepository<Tag, Long> {
+    fun findByKey(key: String): Tag?
 }

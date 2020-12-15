@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
  */
 
 @Service
-class ChatService(private val chatRepository: ChatRepository){
+class ChatService(private val chatRepository: ChatRepository) {
 
     fun addNewChat(jiraLogin: String, telegramId: Long) {
         val validatedJiraLogin = validateJiraLogin(jiraLogin)
@@ -18,6 +18,10 @@ class ChatService(private val chatRepository: ChatRepository){
 
         val chat = Chat(null, validatedJiraLogin, validatedTelegramId, State.INIT)
         chatRepository.save(chat)
+    }
+
+    fun getAllLogins() : List<String> {
+        return chatRepository.findAll().map { it.jiraId }
     }
 
     /**

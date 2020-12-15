@@ -36,9 +36,4 @@ class IssueTypeGen {
     ): IssueType {
         return IssueType(name, description)
     }
-
-    fun random(seed: Long?): Sequence<IssueType> {
-        return random()
-    }
-
 }

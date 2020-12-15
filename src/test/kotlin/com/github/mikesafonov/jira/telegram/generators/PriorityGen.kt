@@ -35,8 +35,4 @@ class PriorityGen {
         return Priority(name, iconUrl)
     }
 
-    fun random(seed: Long?): Sequence<Priority> {
-        return random()
-    }
-
 }

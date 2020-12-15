@@ -40,9 +40,4 @@ class ProjectGen {
             id, self, description, name
         )
     }
-
-    fun random(seed: Long?): Sequence<Project> {
-        return random()
-    }
-
 }

@@ -36,9 +36,4 @@ class StatusGen {
     ): Status {
         return Status(id, description, name)
     }
-
-    fun random(seed: Long?): Sequence<Status> {
-        return random()
-    }
-
 }

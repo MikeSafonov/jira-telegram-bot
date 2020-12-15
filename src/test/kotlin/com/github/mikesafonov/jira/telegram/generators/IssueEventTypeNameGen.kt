@@ -13,8 +13,4 @@ class IssueEventTypeNameGen {
     fun random(): Sequence<IssueEventTypeName> {
         return Arb.enum<IssueEventTypeName>().take(20)
     }
-
-    fun random(seed: Long?): Sequence<IssueEventTypeName> {
-        return random()
-    }
 }

@@ -32,8 +32,4 @@ class ChangelogGen {
     ): Changelog {
         return Changelog(id, items)
     }
-
-    fun random(seed: Long?): Sequence<Changelog> {
-        return random()
-    }
 }

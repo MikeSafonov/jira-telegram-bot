@@ -39,9 +39,4 @@ class EventGen {
     ): Event {
         return Event(webHookEvent, issueEventTypeName, timestamp, user, issue, comment, changelog)
     }
-
-    fun random(seed: Long?): Sequence<Event> {
-        return random()
-    }
-
 }

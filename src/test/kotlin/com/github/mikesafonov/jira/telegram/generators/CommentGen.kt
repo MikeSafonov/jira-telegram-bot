@@ -42,9 +42,4 @@ class CommentGen {
     ): Comment {
         return Comment(body, author, created, updateAuthor, self, updated)
     }
-
-    fun random(seed: Long?): Sequence<Comment> {
-        return random()
-    }
-
 }

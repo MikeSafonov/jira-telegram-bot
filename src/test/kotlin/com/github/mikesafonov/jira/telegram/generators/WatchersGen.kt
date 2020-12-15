@@ -39,8 +39,4 @@ class WatchersGen {
     ): Watchers {
         return Watchers(self, watchCount, isWatching)
     }
-
-    fun random(seed: Long?): Sequence<Watchers> {
-        return random()
-    }
 }

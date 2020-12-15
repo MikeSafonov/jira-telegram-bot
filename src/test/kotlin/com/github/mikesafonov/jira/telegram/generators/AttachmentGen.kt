@@ -29,10 +29,6 @@ class AttachmentGen {
         }
     }
 
-    fun random(seed: Long?): Sequence<Attachment> {
-        return random()
-    }
-
     fun generateOne(
         filename: String = Arb.string().next(),
         content: String = Arb.string().next()

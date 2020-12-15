@@ -71,8 +71,4 @@ class IssueFieldsGen {
             watchers
         )
     }
-
-    fun random(seed: Long?): Sequence<IssueFields> {
-        return random()
-    }
 }

@@ -48,9 +48,4 @@ class VersionGen {
     private fun randomString(): String {
         return Arb.string().next()
     }
-
-    fun random(seed: Long?): Sequence<Version> {
-        return random()
-    }
-
 }

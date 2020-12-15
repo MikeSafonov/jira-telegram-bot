@@ -44,9 +44,4 @@ class IssueGen {
     private fun randomString(): String {
         return Arb.string().next()
     }
-
-    fun random(seed: Long?): Sequence<Issue> {
-        return random()
-    }
-
 }

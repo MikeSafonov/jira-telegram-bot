@@ -35,9 +35,4 @@ class JiraComponentGen  {
     ): JiraComponent {
         return JiraComponent(self, name)
     }
-
-    fun random(seed: Long?): Sequence<JiraComponent> {
-        return random()
-    }
-
 }

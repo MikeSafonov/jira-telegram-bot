@@ -39,9 +39,4 @@ class ChangelogItemGen {
     ): ChangelogItem {
         return ChangelogItem(field, fromString, newString)
     }
-
-    fun random(seed: Long?): Sequence<ChangelogItem> {
-        return random()
-    }
-
 }

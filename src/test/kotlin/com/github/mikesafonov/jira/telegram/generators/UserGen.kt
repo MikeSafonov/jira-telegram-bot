@@ -35,9 +35,4 @@ class UserGen {
     ): User {
         return User(name, displayName)
     }
-
-    fun random(seed: Long?): Sequence<User> {
-        return random()
-    }
-
 }

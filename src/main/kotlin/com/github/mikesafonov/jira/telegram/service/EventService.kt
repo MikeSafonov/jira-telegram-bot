@@ -2,7 +2,7 @@ package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dto.Event
-import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
+import com.github.mikesafonov.jira.telegram.service.destination.EventDestinationService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.templates.CompiledTemplate
@@ -21,7 +21,7 @@ private val logger = KotlinLogging.logger {}
 class EventService(
     private val templateResolverService: TemplateResolverService,
     private val templateService: TemplateService,
-    private val destinationDetectorService: DestinationDetectorService,
+    private val destinationDetectorService: EventDestinationService,
     private val parametersBuilderService: ParametersBuilderService,
     private val telegramClient: TelegramClient,
     private val chatRepository: ChatRepository
@@ -66,7 +66,7 @@ class EventService(
      * @param destinationLogins list of jira users login
      * @param template message markdown text
      */
-    private fun sendMessagesToTelegram(destinationLogins: List<String>, template: CompiledTemplate) {
+    private fun sendMessagesToTelegram(destinationLogins: Set<String>, template: CompiledTemplate) {
         destinationLogins.forEach {
             val login = it
             chatRepository.findByJiraId(it)?.let {

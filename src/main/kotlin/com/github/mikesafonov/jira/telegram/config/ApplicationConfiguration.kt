@@ -1,11 +1,7 @@
 package com.github.mikesafonov.jira.telegram.config
 
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory
-import com.github.mikesafonov.jira.telegram.service.destination.DefaultDestinationDetectorService
-import com.github.mikesafonov.jira.telegram.service.destination.DestinationDetectorService
-import com.github.mikesafonov.jira.telegram.service.destination.WatchersDestinationDetectorService
 import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
-import com.github.mikesafonov.jira.telegram.service.jira.JiraWatchersLoader
 import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramUpdateManager
@@ -76,19 +72,6 @@ class ApplicationConfiguration {
                 }
             }
         }
-    }
-
-    @Bean
-    fun destinationDetectorService(
-        applicationProperties: ApplicationProperties,
-        watchersLoader: JiraWatchersLoader?
-    ): DestinationDetectorService {
-        if (watchersLoader == null) {
-            logger.info("created DefaultDestinationDetectorService")
-            return DefaultDestinationDetectorService(applicationProperties)
-        }
-        logger.info("created WatchersDestinationDetectorService")
-        return WatchersDestinationDetectorService(applicationProperties, watchersLoader)
     }
 
     @Bean

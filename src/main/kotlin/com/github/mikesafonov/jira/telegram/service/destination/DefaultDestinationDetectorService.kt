@@ -1,48 +1,33 @@
 package com.github.mikesafonov.jira.telegram.service.destination
 
-import com.github.mikesafonov.jira.telegram.config.ApplicationProperties
-import com.github.mikesafonov.jira.telegram.dto.*
+import com.github.mikesafonov.jira.telegram.dto.Event
+import com.github.mikesafonov.jira.telegram.dto.Issue
+import org.springframework.stereotype.Service
 
 /**
- * Default implementation of [DestinationDetectorService]
+ * Default implementation of [DestinationDetectorService]. Collects issue creator, reporter and assignee names
  * @author Mike Safonov
  */
-class DefaultDestinationDetectorService(private val applicationProperties: ApplicationProperties) :
-    BaseDestinationDetectorService() {
+@Service
+class DefaultDestinationDetectorService : DestinationDetectorService {
 
     /**
      * Find jira logins from [event] to send a telegram message
      */
     override fun findDestinations(event: Event): List<String> {
-        val notificationProperties = applicationProperties.notification
-        return if (notificationProperties.sendToMe) {
-            if (event.issue != null && event.issueEventTypeName != null) {
-                allIssueUsers(event.issue).plus(getMentionsFromComment(event.comment))
-                    .distinct()
-            } else {
-                emptyList()
-            }
+        return if (event.issue != null && event.issueEventTypeName != null) {
+            allIssueUsers(event.issue)
         } else {
-            requiredDestinations(event)
+            emptyList()
         }
     }
 
-
     /**
-     * Collect **creator**, **reporter** and **assignee** logins from [issue] to list, ignoring *null* values and filtered
-     * by [initiator] login if present.
+     * Collect **creator**, **reporter** and **assignee** logins from [issue] to list, ignoring *null* values
      * @param issue jira issue
-     * @param initiator user who fired this issues event
      * @return list of logins
      */
-    override fun allIssueUsersWithoutInitiator(issue: Issue, initiator: User?, comment: Comment?): List<String> {
-        return if (initiator == null) {
-            allIssueUsers(issue).plus(getMentionsFromComment(comment))
-                .distinct()
-        } else {
-            allIssueUsers(issue).plus(getMentionsFromComment(comment))
-                .filter { it != initiator.name }
-                .distinct()
-        }
+    protected fun allIssueUsers(issue: Issue): List<String> {
+        return listOfNotNull(issue.creatorName, issue.reporterName, issue.assigneeName)
     }
 }

@@ -20,6 +20,10 @@ class ChatService(private val chatRepository: ChatRepository) {
         chatRepository.save(chat)
     }
 
+    fun getAll() : List<Chat> {
+        return chatRepository.findAll()
+    }
+
     fun getAllLogins() : List<String> {
         return chatRepository.findAll().map { it.jiraId }
     }

@@ -29,6 +29,7 @@ Jira-telegram-bot is a [Spring Boot](https://github.com/spring-projects/spring-b
 - monitoring using [Prometheus](https://prometheus.io)
 - holding secrets with [HashiCorp Vault](https://www.vaultproject.io/)
 - sending notifications by tags
+- REST API
 
 
 ## Build
@@ -276,7 +277,20 @@ Any tag can be linked to any user via `chats_tags` table.
 Issue commented with message `hello @devs` will be recieved to all users with tag `devs`.
 
 There are only one tag exist by default - `@everyone`. Using `@everyone` you can send notification to all users.
- 
+
+### REST API
+
+`jira-telegram-bot` bot provides simple REST API under `/api` mapping.
+
+Supported requests:
+- `POST /api/send/all` - sends message to all users.
+
+Body:
+```
+   {
+   "message" : "any supported telegram markdown message"
+   }
+ ```
 ## Contributing
 
 Feel free to contribute. 

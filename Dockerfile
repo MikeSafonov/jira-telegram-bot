@@ -1,9 +1,9 @@
 FROM openjdk:8-jdk-alpine AS builder
 
 WORKDIR /src
-COPY . . 
-RUN chmod +x gradlew 
-RUN ./gradlew clean build
+COPY . .
+RUN chmod +x gradlew
+RUN ./gradlew clean build -x test
 
 FROM openjdk:8-jdk-alpine AS runner
 

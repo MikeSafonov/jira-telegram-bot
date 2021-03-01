@@ -7,7 +7,6 @@ import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 private val logger = KotlinLogging.logger {}
 
@@ -27,7 +26,6 @@ class RemoveUserTelegramCommandHandler(
         return super.isHandle(command) && command.isInState(State.INIT) && command.isStartsWithText(commandPrefix)
     }
 
-    @Transactional
     override fun handle(command: TelegramCommand): State {
         val id = command.chatId
         val commandArgs = getCommandArgs(command.text!!)

@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.dao.ChatTagRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 
 @Service
-class ChatService(private val chatRepository: ChatRepository) {
+class ChatService(private val chatRepository: ChatRepository, private val chatTagRepository: ChatTagRepository) {
 
     fun addNewChat(jiraLogin: String, telegramId: Long) {
         val validatedJiraLogin = validateJiraLogin(jiraLogin)
@@ -39,7 +40,11 @@ class ChatService(private val chatRepository: ChatRepository) {
 
     @Transactional
     fun deleteByJiraId(jiraId: String) {
-        chatRepository.deleteByJiraId(jiraId)
+        val chat = findByJiraId(jiraId)
+        chat?.let {
+            chatTagRepository.deleteByIdChat(it.id!!)
+            chatRepository.deleteById(it.id)
+        }
     }
 
     fun save(chat: Chat): Chat {

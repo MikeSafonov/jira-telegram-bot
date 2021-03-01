@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
+import com.github.mikesafonov.jira.telegram.dao.ChatTagRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.empty
 import com.github.mikesafonov.jira.telegram.negative
@@ -20,9 +21,10 @@ import io.mockk.verify
 import kotlin.random.Random
 
 class ChatServiceSpec : BehaviorSpec({
-    val chatRepository = mockk<ChatRepository>()
+    val chatRepository = mockk<ChatRepository>(relaxed = true)
+    val chatTagRepository = mockk<ChatTagRepository>(relaxed = true)
     Given("chat service") {
-        val chatService = ChatService(chatRepository)
+        val chatService = ChatService(chatRepository, chatTagRepository)
 
         When("jiraLogin is empty") {
             val jiraLogin = Arb.string().empty()
@@ -99,6 +101,30 @@ class ChatServiceSpec : BehaviorSpec({
                 verify {
                     chatRepository.save(chat)
                 }
+            }
+        }
+
+        When("delete and chat not exist") {
+            val jiraLogin = Arb.string().notBlank()
+            every { chatRepository.findByJiraId(jiraLogin) } returns null
+
+            Then("should do nothing") {
+                chatService.deleteByJiraId(jiraLogin)
+                verify(exactly = 0) {chatRepository.deleteById(any())}
+                verify(exactly = 0) {chatTagRepository.deleteByIdChat(any())}
+            }
+        }
+        When("delete and chat exist") {
+            val jiraLogin = Arb.string().notBlank()
+            val telegramId = Random.positive()
+            val id = 10
+            val chat = Chat(id, jiraLogin, telegramId, State.INIT)
+            every { chatRepository.findByJiraId(jiraLogin) } returns chat
+
+            Then("should delete chat and chats tags") {
+                chatService.deleteByJiraId(jiraLogin)
+                verify(exactly = 1) {chatRepository.deleteById(id)}
+                verify(exactly = 1) {chatTagRepository.deleteByIdChat(id)}
             }
         }
     }

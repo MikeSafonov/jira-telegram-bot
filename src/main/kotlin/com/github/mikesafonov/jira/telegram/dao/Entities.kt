@@ -1,5 +1,6 @@
 package com.github.mikesafonov.jira.telegram.dao
 
+import java.io.Serializable
 import javax.persistence.*
 
 /**
@@ -22,7 +23,7 @@ data class Chat(
     @Enumerated(EnumType.ORDINAL)
     var state: State,
 
-    @ManyToMany(cascade = [CascadeType.ALL])
+    @ManyToMany
     @JoinTable(
         name = "chats_tags",
         joinColumns = [JoinColumn(name = "id_chat", referencedColumnName = "id")],
@@ -68,7 +69,7 @@ enum class State {
 
 @Entity
 @Table(name = "tags")
-data class Tag (
+data class Tag(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
@@ -79,3 +80,18 @@ data class Tag (
     @ManyToMany(mappedBy = "tags")
     var chats: List<Chat> = mutableListOf()
 )
+
+@Entity
+@Table(name = "chats_tags")
+data class ChatTag(
+    @EmbeddedId
+    val id: ChatTagId
+)
+
+@Embeddable
+data class ChatTagId (
+    @Column(name = "id_tag")
+    val idTag: Long?,
+    @Column(name = "id_chat")
+    val idChat: Int?
+) : Serializable

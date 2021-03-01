@@ -5,7 +5,6 @@ import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkServ
 import com.github.mikesafonov.jira.telegram.service.parameters.DefaultParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramUpdateManager
-import mu.KotlinLogging
 import org.apache.http.HttpHost
 import org.apache.http.client.config.RequestConfig
 import org.springframework.beans.factory.annotation.Value
@@ -17,8 +16,6 @@ import org.telegram.telegrambots.bots.DefaultAbsSender
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.objects.Update
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * @author Mike Safonov

@@ -1,8 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.telegram
 
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.service.AuthorizationService
+import com.github.mikesafonov.jira.telegram.service.ChatService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -15,7 +15,7 @@ private val logger = KotlinLogging.logger {}
  */
 @Service
 class TelegramUpdateManager(
-    private val chatRepository: ChatRepository,
+    private val chatService: ChatService,
     private val authorizationService: AuthorizationService,
     private val holder: TelegramHandlersHolder
 ) {
@@ -33,7 +33,7 @@ class TelegramUpdateManager(
 
     private fun toCommand(message: Message): TelegramCommand {
         val telegramId = message.chatId
-        val chat = chatRepository.findByTelegramId(telegramId)
+        val chat = chatService.findByTelegramId(telegramId)
         val authorization = authorizationService.get(telegramId)
         return TelegramCommand(message, chat, authorization)
     }
@@ -47,7 +47,7 @@ class TelegramUpdateManager(
     ) {
         if (command.chat != null && command.chat.state != nextState) {
             command.chat.state = nextState
-            chatRepository.save(command.chat)
+            chatService.save(command.chat)
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.WebHookEvent
@@ -37,7 +36,7 @@ class EventServiceSpec : BehaviorSpec() {
         val templateService = mockk<TemplateService>()
         val destinationDetectorService = mockk<EventDestinationService>()
         val parametersBuilderService = mockk<ParametersBuilderService>()
-        val chatRepository = mockk<ChatRepository>()
+        val chatService = mockk<ChatService>()
         val templateResolverService = mockk<TemplateResolverService>()
         val eventService =
             EventService(
@@ -46,7 +45,7 @@ class EventServiceSpec : BehaviorSpec() {
                 destinationDetectorService,
                 parametersBuilderService,
                 telegramClient,
-                chatRepository
+                chatService
             )
 
         Given("Event service") {
@@ -69,7 +68,7 @@ class EventServiceSpec : BehaviorSpec() {
                                 templateService,
                                 destinationDetectorService,
                                 parametersBuilderService,
-                                chatRepository
+                                chatService
                             ) wasNot Called
                         }
                     }
@@ -100,7 +99,7 @@ class EventServiceSpec : BehaviorSpec() {
                                 templateService,
                                 destinationDetectorService,
                                 parametersBuilderService,
-                                chatRepository
+                                chatService
                             ) wasNot Called
                         }
                     }
@@ -118,7 +117,7 @@ class EventServiceSpec : BehaviorSpec() {
                                 telegramClient,
                                 templateService,
                                 parametersBuilderService,
-                                chatRepository
+                                chatService
                             ) wasNot Called
                         }
                     }
@@ -138,7 +137,7 @@ class EventServiceSpec : BehaviorSpec() {
                         verify {
                             listOf(
                                 telegramClient,
-                                chatRepository
+                                chatService
                             ) wasNot Called
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
@@ -164,7 +163,7 @@ class EventServiceSpec : BehaviorSpec() {
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
                         every { templateResolverService.resolve(it, parameters) } returns rawTemplate
                         every { templateService.buildMessage(rawTemplate) } returns template
-                        every { chatRepository.findByJiraId(destinationLogin) } returns null
+                        every { chatService.findByJiraId(destinationLogin) } returns null
 
                         eventService.handle(it)
 
@@ -174,7 +173,7 @@ class EventServiceSpec : BehaviorSpec() {
                             ) wasNot Called
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
-                            chatRepository.findByJiraId(destinationLogin)
+                            chatService.findByJiraId(destinationLogin)
                             templateResolverService.resolve(it, parameters)
                             templateService.buildMessage(rawTemplate)
                         }
@@ -195,7 +194,7 @@ class EventServiceSpec : BehaviorSpec() {
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
                         every { templateResolverService.resolve(it, parameters) } returns rawTemplate
                         every { templateService.buildMessage(rawTemplate) } returns template
-                        every { chatRepository.findByJiraId(destinationLogin) } returns Chat(
+                        every { chatService.findByJiraId(destinationLogin) } returns Chat(
                             Arb.int().next(),
                             destinationLogin,
                             telegramId,
@@ -209,7 +208,7 @@ class EventServiceSpec : BehaviorSpec() {
                             parametersBuilderService.buildTemplateParameters(it)
                             destinationDetectorService.findDestinations(it)
                             telegramClient.sendMarkdownMessage(telegramId, template.message)
-                            chatRepository.findByJiraId(destinationLogin)
+                            chatService.findByJiraId(destinationLogin)
                             templateResolverService.resolve(it, parameters)
                             templateService.buildMessage(rawTemplate)
                         }

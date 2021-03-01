@@ -2,8 +2,8 @@ package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
 import com.github.mikesafonov.jira.telegram.dao.Chat
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.UsersListTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -18,13 +18,13 @@ import io.mockk.*
  * @author Mike Safonov
  */
 class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
-    val chatRepository = mockk<ChatRepository>()
+    val chatService = mockk<ChatService>()
     val botProperties = mockk<BotProperties>()
     val telegramClient = mockk<TelegramClient>()
 
     Given("'/users_list' telegram command handler") {
 
-        val handler = UsersListTelegramCommandHandler(botProperties, chatRepository, telegramClient)
+        val handler = UsersListTelegramCommandHandler(botProperties, chatService, telegramClient)
         When("incoming message contain wrong command and user not admin") {
             every { botProperties.adminId } returns null
             val command: TelegramCommand = mockk {
@@ -127,7 +127,7 @@ class UsersListTelegramCommandHandlerSpec : BehaviorSpec({
                 ),
                 Chat(Arb.int().next(), Arb.string().next(), Arb.long().next(), State.INIT)
             )
-            every { chatRepository.findAll() } returns allChats
+            every { chatService.getAll() } returns allChats
             val command: TelegramCommand = mockk {
                 every { chatId } returns id
             }

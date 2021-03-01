@@ -1,8 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import mu.KotlinLogging
@@ -17,7 +17,7 @@ private val logger = KotlinLogging.logger {}
 @Service
 class RemoveUserTelegramCommandHandler(
     botProperties: BotProperties,
-    private val chatRepository: ChatRepository,
+    private val chatService: ChatService,
     telegramClient: TelegramClient
 ) : AdminCommandTelegramCommandHandler(botProperties, telegramClient) {
 
@@ -36,7 +36,7 @@ class RemoveUserTelegramCommandHandler(
         } else {
             try {
                 val jiraLogin = commandArgs[1]
-                chatRepository.deleteByJiraId(jiraLogin)
+                chatService.deleteByJiraId(jiraLogin)
                 telegramClient.sendTextMessage(id, "User $jiraLogin was removed successfully")
             } catch (e: Exception) {
                 logger.error(e.message, e)

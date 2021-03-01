@@ -4,6 +4,7 @@ import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * @author Mike Safonov
@@ -26,6 +27,23 @@ class ChatService(private val chatRepository: ChatRepository) {
 
     fun getAllLogins() : List<String> {
         return chatRepository.findAll().map { it.jiraId }
+    }
+
+    fun findByJiraId(jiraId: String): Chat? {
+        return chatRepository.findByJiraId(jiraId)
+    }
+
+    fun findByTelegramId(telegramId: Long): Chat? {
+        return chatRepository.findByTelegramId(telegramId)
+    }
+
+    @Transactional
+    fun deleteByJiraId(jiraId: String) {
+        chatRepository.deleteByJiraId(jiraId)
+    }
+
+    fun save(chat: Chat): Chat {
+        return chatRepository.save(chat)
     }
 
     /**

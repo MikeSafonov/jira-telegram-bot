@@ -1,8 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
 import org.springframework.stereotype.Service
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class UsersListTelegramCommandHandler(
     botProperties: BotProperties,
-    private val chatRepository: ChatRepository,
+    private val chatService: ChatService,
     telegramClient: TelegramClient
 ) :
     AdminCommandTelegramCommandHandler(botProperties, telegramClient) {
@@ -24,7 +24,7 @@ class UsersListTelegramCommandHandler(
 
     override fun handle(command: TelegramCommand): State {
         val messageBuilder = StringBuilder("Jira users: \n")
-        chatRepository.findAll().forEach {
+        chatService.getAll().forEach {
             messageBuilder.append("- ${it.jiraId}\n")
         }
 

@@ -1,8 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.telegram
 
 import com.github.mikesafonov.jira.telegram.config.BotProperties
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.RemoveUserTelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -16,12 +16,12 @@ import io.mockk.*
  * @author Mike Safonov
  */
 class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
-    val chatRepository = mockk<ChatRepository>()
+    val chatService = mockk<ChatService>()
     val botProperties = mockk<BotProperties>()
     val telegramClient = mockk<TelegramClient>()
 
     Given("'/remove_user' telegram command handler") {
-        val handler = RemoveUserTelegramCommandHandler(botProperties, chatRepository, telegramClient)
+        val handler = RemoveUserTelegramCommandHandler(botProperties, chatService, telegramClient)
         When("incoming message contain wrong command and user not admin") {
             every { botProperties.adminId } returns null
             val command: TelegramCommand = mockk {
@@ -145,7 +145,7 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
                     every { state } returns State.INIT
                 }
             }
-            every { chatRepository.deleteByJiraId(jiraLogin) } throws RuntimeException("")
+            every { chatService.deleteByJiraId(jiraLogin) } throws RuntimeException("")
             every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about unexpected exception") {
                 handler.handle(command) shouldBe State.INIT
@@ -169,13 +169,13 @@ class RemoveUserTelegramCommandHandlerSpec : BehaviorSpec({
                     every { state } returns State.INIT
                 }
             }
-            every { chatRepository.deleteByJiraId(jiraLogin) } returns Unit
+            every { chatService.deleteByJiraId(jiraLogin) } returns Unit
             every { telegramClient.sendTextMessage(any(), any()) } just Runs
             Then("returns message with text about new chat") {
                 handler.handle(command) shouldBe State.INIT
 
                 verify {
-                    chatRepository.deleteByJiraId(jiraLogin)
+                    chatService.deleteByJiraId(jiraLogin)
                     telegramClient.sendTextMessage(
                         messageChatId,
                         "User $jiraLogin was removed successfully"

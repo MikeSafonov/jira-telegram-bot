@@ -1,6 +1,5 @@
 package com.github.mikesafonov.jira.telegram.service
 
-import com.github.mikesafonov.jira.telegram.dao.ChatRepository
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.service.destination.EventDestinationService
 import com.github.mikesafonov.jira.telegram.service.parameters.ParametersBuilderService
@@ -24,7 +23,7 @@ class EventService(
     private val destinationDetectorService: EventDestinationService,
     private val parametersBuilderService: ParametersBuilderService,
     private val telegramClient: TelegramClient,
-    private val chatRepository: ChatRepository
+    private val chatService: ChatService
 ) {
 
     /**
@@ -69,7 +68,7 @@ class EventService(
     private fun sendMessagesToTelegram(destinationLogins: Set<String>, template: CompiledTemplate) {
         destinationLogins.forEach {
             val login = it
-            chatRepository.findByJiraId(it)?.let {
+            chatService.findByJiraId(it)?.let {
                 try {
                     telegramClient.sendMarkdownMessage(it.telegramId, template.message)
                 } catch (e: Exception) {

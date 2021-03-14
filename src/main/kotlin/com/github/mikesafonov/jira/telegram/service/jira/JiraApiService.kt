@@ -29,4 +29,16 @@ class JiraApiService(private val jiraRestClientFactory: JiraRestClientFactory) {
         jiraRestClient.close()
         return issues
     }
+
+    /**
+     * Call to jira rest API and return issue with given [issueKey].
+     * @param telegramId telegram user id
+     * @param issueKey jira issue key
+     */
+    fun getDescription(telegramId: Long, issueKey: String): Issue? {
+        return jiraRestClientFactory.createRestClient(telegramId)
+            .issueClient
+            .getIssue(issueKey)
+            .claim()
+    }
 }

@@ -123,6 +123,13 @@ data class Issue(
             return !fields.attachment.isEmpty()
         }
 
+    /**
+     * name of project
+     */
+    val projectName: String
+        get() {
+            return fields.project?.name ?: ""
+        }
 }
 
 /**

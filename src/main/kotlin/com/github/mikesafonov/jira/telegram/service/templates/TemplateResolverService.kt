@@ -17,4 +17,10 @@ class TemplateResolverService(private val templateRepository: TemplateRepository
         }
         return null
     }
+
+    fun resolve(parameters: Map<String, Any>): RawTemplate? {
+        return templateRepository.findByKey("issue")?.let {
+            RawTemplate("issue", it.template, parameters)
+        }
+    }
 }

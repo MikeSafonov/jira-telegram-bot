@@ -151,7 +151,7 @@ data class Event(
      */
     val projectName: String
         get() {
-            return issue?.fields?.project?.name ?: ""
+            return issue?.projectName ?: ""
         }
 
     /**

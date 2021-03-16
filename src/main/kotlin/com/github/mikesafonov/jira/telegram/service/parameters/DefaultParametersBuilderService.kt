@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.parameters
 
 import com.github.mikesafonov.jira.telegram.dto.Event
+import com.github.mikesafonov.jira.telegram.dto.Issue
 import com.github.mikesafonov.jira.telegram.service.jira.JiraIssueBrowseLinkService
 
 /**
@@ -18,8 +19,16 @@ class DefaultParametersBuilderService(private val jiraIssueBrowseLinkService: Ji
         return mapOf("event" to event, "issueLink" to buildIssueLink(event))
     }
 
+    override fun buildTemplateParameters(issue: Issue): Map<String, Any> {
+        return mapOf("issue" to issue, "issueLink" to buildIssueLink(issue))
+    }
+
     private fun buildIssueLink(event: Event): String {
         return jiraIssueBrowseLinkService.createBrowseLink(event.issue?.key, event.issue?.self)
+    }
+
+    private fun buildIssueLink(issue: Issue): String {
+        return jiraIssueBrowseLinkService.createBrowseLink(issue.key, issue.self)
     }
 
 }

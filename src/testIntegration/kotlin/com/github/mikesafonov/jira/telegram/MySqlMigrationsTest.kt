@@ -36,8 +36,8 @@ class MySqlMigrationsTest {
     class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
             TestPropertyValues.of("spring.flyway.locations=classpath:db/migration/mysql",
-                "spring.datasource.driver-class-name=com.mysql.jdbc.Driver",
-                "spring.datasource.url=" + MySqlMigrationsTest.container.jdbcUrl,
+                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
+                "spring.datasource.url=jdbc:tc:mysql:5.7.22:///test",
                 "spring.datasource.username=" + MySqlMigrationsTest.container.username,
                 "spring.datasource.password=" + MySqlMigrationsTest.container.password
             )

@@ -119,7 +119,7 @@ dependencies {
     implementation("com.atlassian.jira:jira-rest-java-client-core:5.1.6")
     implementation("io.atlassian.fugue:fugue:4.7.2")
     implementation("com.google.oauth-client:google-oauth-client:1.30.4")
-    implementation("com.google.http-client:google-http-client-jackson2:1.33.0")
+    implementation("com.google.http-client:google-http-client-jackson2:1.40.0")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -133,8 +133,8 @@ dependencies {
     "testIntegrationImplementation"("com.h2database:h2:1.4.199")
     "testIntegrationImplementation"("org.postgresql:postgresql")
     "testIntegrationImplementation"("mysql:mysql-connector-java:5.1.49")
-    "testIntegrationImplementation"("org.testcontainers:postgresql:1.15.0")
-    "testIntegrationImplementation"("org.testcontainers:mysql:1.15.0")
+    "testIntegrationImplementation"("org.testcontainers:postgresql:1.16.0")
+    "testIntegrationImplementation"("org.testcontainers:mysql:1.16.0")
 }
 
 jacoco {

@@ -21,7 +21,7 @@ class AddUserTelegramCommandHandler(
     botProperties: BotProperties,
     telegramClient: TelegramClient
 ) :
-    AdminCommandTelegramCommandHandler(botProperties, telegramClient) {
+    AdminCommandTelegramCommandHandler(botProperties, telegramClient), ArgParser {
 
     private val commandPrefix = "/add_user"
 
@@ -52,14 +52,5 @@ class AddUserTelegramCommandHandler(
         }
 
         return State.INIT
-    }
-
-    /**
-     * Method collects command arguments from full command text [message]
-     * @param message text command
-     * @return list of command arguments
-     */
-    private fun getCommandArgs(message: String): List<String> {
-        return message.split(" ")
     }
 }

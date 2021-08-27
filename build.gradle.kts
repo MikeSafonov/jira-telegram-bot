@@ -134,7 +134,7 @@ dependencies {
     "testIntegrationImplementation"("org.postgresql:postgresql")
     "testIntegrationImplementation"("mysql:mysql-connector-java:5.1.49")
     "testIntegrationImplementation"("org.testcontainers:postgresql:1.15.0")
-    "testIntegrationImplementation"("org.testcontainers:mysql:1.15.0")
+    "testIntegrationImplementation"("org.testcontainers:mysql:1.16.0")
 }
 
 jacoco {

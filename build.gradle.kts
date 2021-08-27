@@ -190,7 +190,7 @@ sonarqube {
         property("sonar.projectKey", "MikeSafonov_jira-telegram-bot")
         property("sonar.projectVersion", "1.6.0")
         property("sonar.sources", "src/main")
-        property("sonar.tests", "src/main")
+        property("sonar.tests", "src/test")
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
         property("sonar.coverage.exclusions", "**/com/github/mikesafonov/jira/telegram/config/*, **/com/github/mikesafonov/jira/telegram/dao/*, **/main/resources/db/**")
         property("sonar.exclusions", "**/main/resources/db/**")

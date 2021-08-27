@@ -23,6 +23,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version "1.4.20"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.4.20"
     id("org.springframework.boot") version "2.2.1.RELEASE"
+    id("org.sonarqube") version "3.2.0"
     `build-scan` version "2.2"
 }
 
@@ -178,4 +179,22 @@ configure<PitestPluginExtension> {
     enableDefaultIncrementalAnalysis = true
     setHistoryInputLocation(".pitest/pitHistory.txt")
     setHistoryOutputLocation(".pitest/pitHistory.txt")
+}
+
+sonarqube {
+    properties {
+        property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.projectName", "jira-telegram-bot")
+        property("sonar.projectKey", "MikeSafonov_jira-telegram-bot")
+        property("sonar.projectVersion", "1.6.0")
+        property("sonar.sources", "src/main")
+        property("sonar.tests", "src/main")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.coverage.exclusions", "**/com/github/mikesafonov/jira/telegram/config/*, **/com/github/mikesafonov/jira/telegram/dao/*, **/main/resources/db/**")
+        property("sonar.exclusions", "**/main/resources/db/**")
+        property("sonar.links.homepage", "https://github.com/MikeSafonov/jira-telegram-bot")
+        property("sonar.links.ci", "https://github.com/MikeSafonov/jira-telegram-bot/actions")
+        property("sonar.links.scm", "https://github.com/MikeSafonov/jira-telegram-bot")
+        property("sonar.links.issue", "https://github.com/MikeSafonov/jira-telegram-bot/issues")
+    }
 }

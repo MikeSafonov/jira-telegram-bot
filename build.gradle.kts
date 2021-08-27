@@ -184,6 +184,8 @@ configure<PitestPluginExtension> {
 sonarqube {
     properties {
         property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.organization", "mikesafonov-github")
         property("sonar.projectName", "jira-telegram-bot")
         property("sonar.projectKey", "MikeSafonov_jira-telegram-bot")
         property("sonar.projectVersion", "1.6.0")

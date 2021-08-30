@@ -4,7 +4,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.PropertySource
-import org.telegram.telegrambots.ApiContextInitializer
 
 /**
  * @author Mike Safonov
@@ -15,6 +14,5 @@ import org.telegram.telegrambots.ApiContextInitializer
 class Application
 
     fun main(args:Array<String>) {
-        ApiContextInitializer.init()
         runApplication<Application>(*args)
     }

@@ -4,10 +4,10 @@ import com.github.mikesafonov.jira.telegram.dao.TemplateParseMode
 
 /**
  * Compiled and processed template. Contains ready to send telegram message [message] in
- * markdown style if flag [markdown] is *true*
+ * [parseMode] style
  * @author Mike Safonov
  */
-data class CompiledTemplate(val message: String, val markdown: Boolean)
+data class CompiledTemplate(val message: String, val parseMode: TemplateParseMode)
 
 data class RawTemplate(val templateKey: String, val template: String, val parameters: MutableMap<String, Any>,
                        val parseMode: TemplateParseMode)

@@ -156,7 +156,7 @@ class EventServiceSpec : BehaviorSpec() {
                                 Arb.enum<TemplateParseMode>().next())
                         val template = CompiledTemplate(
                             Arb.string().next(),
-                            true
+                            Arb.enum<TemplateParseMode>().next()
                         )
                         every { destinationDetectorService.findDestinations(it) } returns setOf(destinationLogin)
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
@@ -189,7 +189,7 @@ class EventServiceSpec : BehaviorSpec() {
                         val rawTemplate =
                             RawTemplate(Arb.string().next(), Arb.string().next(), mutableMapOf(),
                                 Arb.enum<TemplateParseMode>().next())
-                        val template = CompiledTemplate(Arb.string().next(), true)
+                        val template = CompiledTemplate(Arb.string().next(), Arb.enum<TemplateParseMode>().next())
                         every { destinationDetectorService.findDestinations(it) } returns setOf(destinationLogin)
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
                         every { templateResolverService.resolve(it, parameters) } returns rawTemplate

@@ -40,6 +40,6 @@ class FreemarkerTemplateService : TemplateService {
         val parameters = rawTemplate.parameters
         parameters["mode"] = rawTemplate.parseMode
         template.process(parameters, sw)
-        return CompiledTemplate(sw.toString(), true)
+        return CompiledTemplate(sw.toString(), rawTemplate.parseMode)
     }
 }

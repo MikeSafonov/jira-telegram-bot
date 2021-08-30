@@ -24,7 +24,7 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             Then("return compiled template") {
 
                 val buildMessage = freemarkerTemplateService.buildMessage(rawTemplate)
-                buildMessage.markdown shouldBe true
+                buildMessage.parseMode shouldBe rawTemplate.parseMode
                 buildMessage.message shouldBe "*Hello:*world"
             }
         }
@@ -50,7 +50,7 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             )
             Then("return compiled template") {
                 val buildMessage = freemarkerTemplateService.buildMessage(rawTemplate)
-                buildMessage.markdown shouldBe true
+                buildMessage.parseMode shouldBe rawTemplate.parseMode
                 buildMessage.message shouldBe "*Hello:*2000 02 03"
             }
         }

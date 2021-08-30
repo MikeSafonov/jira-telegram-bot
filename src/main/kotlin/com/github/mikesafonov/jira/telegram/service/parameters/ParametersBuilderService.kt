@@ -9,5 +9,5 @@ import com.github.mikesafonov.jira.telegram.dto.Event
 
 interface ParametersBuilderService {
 
-    fun buildTemplateParameters(event: Event): Map<String, Any>
+    fun buildTemplateParameters(event: Event): MutableMap<String, Any>
 }

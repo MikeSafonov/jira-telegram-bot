@@ -125,7 +125,7 @@ class EventServiceSpec : BehaviorSpec() {
             When("No template for incoming issue event ") {
                 Then("Ignore event") {
                     randomIssueEvents().forEach {
-                        val parameters = mapOf("event" to it)
+                        val parameters = mutableMapOf<String, Any>("event" to it)
                         every { destinationDetectorService.findDestinations(it) } returns setOf(Arb.string().next())
                         every { templateResolverService.resolve(it, parameters) } returns null
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters
@@ -150,7 +150,7 @@ class EventServiceSpec : BehaviorSpec() {
                 Then("Ignore event") {
                     randomIssueEvents().forEach {
                         val destinationLogin = Arb.string().next()
-                        val parameters = mapOf("event" to it)
+                        val parameters = mutableMapOf<String, Any>("event" to it)
                         val rawTemplate =
                             RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap(),
                                 Arb.enum<TemplateParseMode>().next())
@@ -185,7 +185,7 @@ class EventServiceSpec : BehaviorSpec() {
                     randomIssueEvents().forEach {
                         val destinationLogin = Arb.string().next()
                         val telegramId = Arb.long().next()
-                        val parameters = mapOf("event" to it)
+                        val parameters = mutableMapOf<String, Any>("event" to it)
                         val rawTemplate =
                             RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap(),
                                 Arb.enum<TemplateParseMode>().next())

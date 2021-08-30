@@ -14,8 +14,8 @@ class DefaultParametersBuilderService(private val jiraIssueBrowseLinkService: Ji
      * Create map from [event] and concatenated issue browse link
      * @see buildIssueLink
      */
-    override fun buildTemplateParameters(event: Event): Map<String, Any> {
-        return mapOf("event" to event, "issueLink" to buildIssueLink(event))
+    override fun buildTemplateParameters(event: Event): MutableMap<String, Any> {
+        return mutableMapOf("event" to event, "issueLink" to buildIssueLink(event))
     }
 
     private fun buildIssueLink(event: Event): String {

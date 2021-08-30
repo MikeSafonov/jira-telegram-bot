@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.github.mikesafonov.jira.telegram.config.JiraLocalDateTimeDeserializer
+import com.github.mikesafonov.jira.telegram.dao.TemplateParseMode
+import com.github.mikesafonov.jira.telegram.service.DiffService
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -19,11 +21,13 @@ enum class WebHookEvent {
      */
     @JsonProperty("comment_created")
     COMMENT_CREATED,
+
     /**
      * fired if comment updated
      */
     @JsonProperty("comment_updated")
     COMMENT_UPDATED,
+
     /**
      * fired if comment deleted
      */
@@ -35,11 +39,13 @@ enum class WebHookEvent {
      */
     @JsonProperty("jira:issue_updated")
     JIRA_ISSUE_UPDATED,
+
     /**
      * fired if issue created
      */
     @JsonProperty("jira:issue_created")
     JIRA_ISSUE_CREATED,
+
     /**
      * fired if issue deleted
      */
@@ -72,26 +78,31 @@ enum class IssueEventTypeName {
      */
     @JsonProperty("issue_commented")
     ISSUE_COMMENTED,
+
     /**
      * fired if issue created
      */
     @JsonProperty("issue_created")
     ISSUE_CREATED,
+
     /**
      * fired if issue moved through workflow
      */
     @JsonProperty("issue_generic")
     ISSUE_GENERIC,
+
     /**
      * fired if issue fields updated
      */
     @JsonProperty("issue_updated")
     ISSUE_UPDATED,
+
     /**
      * fired if issue comment edited
      */
     @JsonProperty("issue_comment_edited")
     ISSUE_COMMENT_EDITED,
+
     /**
      * fired if issue comment deleted
      */
@@ -250,6 +261,21 @@ data class ChangelogItem(
         get() {
             return "assignee" == this.field
         }
+
+    /**
+     * is [field] equals to "description"
+     */
+    val descriptionChanged: Boolean
+        get() {
+            return "description" == this.field
+        }
+
+    /**
+     * value as string diff
+     */
+    fun diff(parseMode: TemplateParseMode): String {
+        return DiffService.process(fromString!!, newString!!, parseMode)
+    }
 }
 
 

@@ -61,18 +61,19 @@ class EventService(
 
     /**
      * Send telegram message to jira logins from [destinationLogins]. If no chat id for this
-     * login no message will be sended
+     * login no message will be sent
      * @param destinationLogins list of jira users login
-     * @param template message markdown text
+     * @param template message
      */
     private fun sendMessagesToTelegram(destinationLogins: Set<String>, template: CompiledTemplate) {
-        destinationLogins.forEach {
-            val login = it
-            chatService.findByJiraId(it)?.let {
+        val message = template.message
+
+        destinationLogins.forEach { login ->
+            chatService.findByJiraId(login)?.let {
                 try {
-                    telegramClient.sendMarkdownMessage(it.telegramId, template.message)
+                    telegramClient.sendMessage(it.telegramId, message, template.parseMode)
                 } catch (e: Exception) {
-                    logger.error("Exception: ${e.message} when sending message to user $login with message: ${template.message}", e)
+                    logger.error("Exception: ${e.message} when sending message to user $login with message: $message", e)
                 }
             }
         }

@@ -122,6 +122,8 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client:1.30.4")
     implementation("com.google.http-client:google-http-client-jackson2:1.33.0")
 
+    implementation("io.github.java-diff-utils:java-diff-utils:4.9")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("io.kotest:kotest-property-jvm:4.3.1")

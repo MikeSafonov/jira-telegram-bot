@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 @Service
 class TemplateResolverService(private val templateRepository: TemplateRepository) {
 
-    fun resolve(event: Event, parameters: Map<String, Any>): RawTemplate? {
+    fun resolve(event: Event, parameters: MutableMap<String, Any>): RawTemplate? {
         val issueEventTypeName = event.issueEventTypeName
         if (issueEventTypeName != null) {
             val templateKey = issueEventTypeName.name.toLowerCase()

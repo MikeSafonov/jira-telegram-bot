@@ -32,12 +32,14 @@ class FreemarkerTemplateService : TemplateService {
     /**
      * Builds telegram message for raw freemarker template [rawTemplate]
      * @param rawTemplate raw freemarker template
-     * @return builded *markdown* message
+     * @return built *markdown* message
      */
     override fun buildMessage(rawTemplate: RawTemplate): CompiledTemplate {
         val template = Template(rawTemplate.templateKey, StringReader(rawTemplate.template), cfg)
         val sw = StringWriter()
-        template.process(rawTemplate.parameters, sw)
+        val parameters = rawTemplate.parameters
+        parameters["mode"] = rawTemplate.parseMode
+        template.process(parameters, sw)
         return CompiledTemplate(sw.toString(), true)
     }
 }

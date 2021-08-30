@@ -9,5 +9,5 @@ import com.github.mikesafonov.jira.telegram.dao.TemplateParseMode
  */
 data class CompiledTemplate(val message: String, val markdown: Boolean)
 
-data class RawTemplate(val templateKey: String, val template: String, val parameters: Map<String, Any>,
+data class RawTemplate(val templateKey: String, val template: String, val parameters: MutableMap<String, Any>,
                        val parseMode: TemplateParseMode)

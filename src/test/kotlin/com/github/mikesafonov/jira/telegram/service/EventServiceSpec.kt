@@ -152,7 +152,7 @@ class EventServiceSpec : BehaviorSpec() {
                         val destinationLogin = Arb.string().next()
                         val parameters = mutableMapOf<String, Any>("event" to it)
                         val rawTemplate =
-                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap(),
+                            RawTemplate(Arb.string().next(), Arb.string().next(), mutableMapOf(),
                                 Arb.enum<TemplateParseMode>().next())
                         val template = CompiledTemplate(
                             Arb.string().next(),
@@ -187,7 +187,7 @@ class EventServiceSpec : BehaviorSpec() {
                         val telegramId = Arb.long().next()
                         val parameters = mutableMapOf<String, Any>("event" to it)
                         val rawTemplate =
-                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap(),
+                            RawTemplate(Arb.string().next(), Arb.string().next(), mutableMapOf(),
                                 Arb.enum<TemplateParseMode>().next())
                         val template = CompiledTemplate(Arb.string().next(), true)
                         every { destinationDetectorService.findDestinations(it) } returns setOf(destinationLogin)

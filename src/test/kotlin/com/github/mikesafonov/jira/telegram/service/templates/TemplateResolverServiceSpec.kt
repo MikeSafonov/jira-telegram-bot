@@ -21,7 +21,7 @@ class TemplateResolverServiceSpec : BehaviorSpec({
                 every { issueEventTypeName } returns null
             }
             Then("return null raw template") {
-                templateResolverService.resolve(event, emptyMap()) shouldBe null
+                templateResolverService.resolve(event, mutableMapOf()) shouldBe null
             }
         }
 
@@ -31,7 +31,7 @@ class TemplateResolverServiceSpec : BehaviorSpec({
             }
             every { templateRepository.findByKey(IssueEventTypeName.ISSUE_ASSIGNED.toString().toLowerCase()) } returns null
             Then("return null raw template") {
-                templateResolverService.resolve(event, emptyMap()) shouldBe null
+                templateResolverService.resolve(event, mutableMapOf()) shouldBe null
             }
         }
 
@@ -46,7 +46,7 @@ class TemplateResolverServiceSpec : BehaviorSpec({
             }
             val emptyParameters: Map<String, Any> = emptyMap()
             Then("return expected raw template") {
-                val rawTemplate = templateResolverService.resolve(event, emptyMap())!!
+                val rawTemplate = templateResolverService.resolve(event, mutableMapOf())!!
                 rawTemplate.template shouldBe tmpl
                 rawTemplate.templateKey shouldBe IssueEventTypeName.ISSUE_ASSIGNED.toString().toLowerCase()
                 rawTemplate.parameters shouldBe emptyParameters

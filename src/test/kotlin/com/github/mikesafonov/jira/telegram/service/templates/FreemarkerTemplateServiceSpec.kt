@@ -18,7 +18,7 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             val rawTemplate = RawTemplate(
                 "my key",
                 "*Hello:*\${name}",
-                mapOf("name" to "world"),
+                mutableMapOf("name" to "world"),
                 Arb.enum<TemplateParseMode>().next()
             )
             Then("return compiled template") {
@@ -33,7 +33,7 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             val rawTemplate = RawTemplate(
                 "my key",
                 "*Hello:*\${name2}",
-                mapOf("name" to "world"),
+                mutableMapOf("name" to "world"),
                 Arb.enum<TemplateParseMode>().next()
             )
             Then("throw exception") {
@@ -45,7 +45,7 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             val rawTemplate = RawTemplate(
                 "my key",
                 "*Hello:*\${date.format('yyyy MM dd')}",
-                mapOf("date" to LocalDate.of(2000, 2, 3)),
+                mutableMapOf("date" to LocalDate.of(2000, 2, 3)),
                 Arb.enum<TemplateParseMode>().next()
             )
             Then("return compiled template") {

@@ -44,7 +44,8 @@ class EventDestinationService(
             }
             IssueEventTypeName.ISSUE_CREATED, IssueEventTypeName.ISSUE_GENERIC,
             IssueEventTypeName.ISSUE_UPDATED, IssueEventTypeName.ISSUE_COMMENT_EDITED,
-            IssueEventTypeName.ISSUE_COMMENT_DELETED, IssueEventTypeName.ISSUE_ASSIGNED -> {
+            IssueEventTypeName.ISSUE_COMMENT_DELETED, IssueEventTypeName.ISSUE_ASSIGNED,
+            IssueEventTypeName.ISSUE_REOPENED -> {
                 event.user?.name!!
             }
         }

@@ -99,7 +99,10 @@ enum class IssueEventTypeName {
     ISSUE_COMMENT_DELETED,
 
     @JsonProperty("issue_assigned")
-    ISSUE_ASSIGNED
+    ISSUE_ASSIGNED,
+
+    @JsonProperty("issue_reopened")
+    ISSUE_REOPENED
 }
 
 /**

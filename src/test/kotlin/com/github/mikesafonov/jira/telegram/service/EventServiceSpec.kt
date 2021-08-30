@@ -2,6 +2,7 @@ package com.github.mikesafonov.jira.telegram.service
 
 import com.github.mikesafonov.jira.telegram.dao.Chat
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.dao.TemplateParseMode
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.WebHookEvent
 import com.github.mikesafonov.jira.telegram.generators.EventGen
@@ -15,10 +16,7 @@ import com.github.mikesafonov.jira.telegram.service.templates.TemplateService
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.long
-import io.kotest.property.arbitrary.next
-import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.*
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
@@ -154,7 +152,8 @@ class EventServiceSpec : BehaviorSpec() {
                         val destinationLogin = Arb.string().next()
                         val parameters = mapOf("event" to it)
                         val rawTemplate =
-                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap())
+                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap(),
+                                Arb.enum<TemplateParseMode>().next())
                         val template = CompiledTemplate(
                             Arb.string().next(),
                             true
@@ -188,7 +187,8 @@ class EventServiceSpec : BehaviorSpec() {
                         val telegramId = Arb.long().next()
                         val parameters = mapOf("event" to it)
                         val rawTemplate =
-                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap())
+                            RawTemplate(Arb.string().next(), Arb.string().next(), emptyMap(),
+                                Arb.enum<TemplateParseMode>().next())
                         val template = CompiledTemplate(Arb.string().next(), true)
                         every { destinationDetectorService.findDestinations(it) } returns setOf(destinationLogin)
                         every { parametersBuilderService.buildTemplateParameters(it) } returns parameters

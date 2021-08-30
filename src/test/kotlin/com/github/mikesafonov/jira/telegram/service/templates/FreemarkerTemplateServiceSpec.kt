@@ -1,10 +1,14 @@
 package com.github.mikesafonov.jira.telegram.service.templates
 
+import com.github.mikesafonov.jira.telegram.dao.TemplateParseMode
 import com.github.mikesafonov.jira.telegram.service.templates.freemarker.FreemarkerTemplateService
 import freemarker.core.InvalidReferenceException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.next
 import java.time.LocalDate
 
 class FreemarkerTemplateServiceSpec : BehaviorSpec({
@@ -14,7 +18,8 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             val rawTemplate = RawTemplate(
                 "my key",
                 "*Hello:*\${name}",
-                mapOf("name" to "world")
+                mapOf("name" to "world"),
+                Arb.enum<TemplateParseMode>().next()
             )
             Then("return compiled template") {
 
@@ -28,7 +33,8 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             val rawTemplate = RawTemplate(
                 "my key",
                 "*Hello:*\${name2}",
-                mapOf("name" to "world")
+                mapOf("name" to "world"),
+                Arb.enum<TemplateParseMode>().next()
             )
             Then("throw exception") {
                 shouldThrow<InvalidReferenceException> { freemarkerTemplateService.buildMessage(rawTemplate) }
@@ -39,7 +45,8 @@ class FreemarkerTemplateServiceSpec : BehaviorSpec({
             val rawTemplate = RawTemplate(
                 "my key",
                 "*Hello:*\${date.format('yyyy MM dd')}",
-                mapOf("date" to LocalDate.of(2000, 2, 3))
+                mapOf("date" to LocalDate.of(2000, 2, 3)),
+                Arb.enum<TemplateParseMode>().next()
             )
             Then("return compiled template") {
                 val buildMessage = freemarkerTemplateService.buildMessage(rawTemplate)

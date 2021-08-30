@@ -46,8 +46,18 @@ data class Template(
     val key: String,
 
     @Column(name = "template", nullable = false)
-    val template: String
+    val template: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "parse_mode", nullable = false)
+    val parseMode: TemplateParseMode
 )
+
+enum class TemplateParseMode {
+    MARKDOWN,
+    MARKDOWN_V2,
+    HTML
+}
 
 @Entity
 @Table(name = "authorizations")

@@ -12,7 +12,7 @@ class TemplateResolverService(private val templateRepository: TemplateRepository
         if (issueEventTypeName != null) {
             val templateKey = issueEventTypeName.name.toLowerCase()
             return templateRepository.findByKey(templateKey)?.let {
-                RawTemplate(templateKey, it.template, parameters)
+                RawTemplate(templateKey, it.template, parameters, it.parseMode)
             }
         }
         return null

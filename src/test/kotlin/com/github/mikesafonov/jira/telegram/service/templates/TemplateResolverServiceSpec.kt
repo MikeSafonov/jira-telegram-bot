@@ -1,10 +1,14 @@
 package com.github.mikesafonov.jira.telegram.service.templates
 
+import com.github.mikesafonov.jira.telegram.dao.TemplateParseMode
 import com.github.mikesafonov.jira.telegram.dao.TemplateRepository
 import com.github.mikesafonov.jira.telegram.dto.Event
 import com.github.mikesafonov.jira.telegram.dto.IssueEventTypeName
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.next
 import io.mockk.every
 import io.mockk.mockk
 
@@ -38,6 +42,7 @@ class TemplateResolverServiceSpec : BehaviorSpec({
             val tmpl = "Some template"
             every { templateRepository.findByKey(IssueEventTypeName.ISSUE_ASSIGNED.toString().toLowerCase()) } returns mockk {
                 every { template } returns tmpl
+                every { parseMode } returns Arb.enum<TemplateParseMode>().next()
             }
             val emptyParameters: Map<String, Any> = emptyMap()
             Then("return expected raw template") {

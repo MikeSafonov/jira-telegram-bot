@@ -32,7 +32,7 @@ apply(plugin = "info.solidsoft.pitest")
 
 
 group = "com.github.mikesafonov"
-version = "1.6.0"
+version = "1.7.0"
 
 repositories {
     mavenCentral()
@@ -188,7 +188,7 @@ sonarqube {
         property("sonar.organization", "mikesafonov-github")
         property("sonar.projectName", "jira-telegram-bot")
         property("sonar.projectKey", "MikeSafonov_jira-telegram-bot")
-        property("sonar.projectVersion", "1.6.0")
+        property("sonar.projectVersion", "1.7.0")
         property("sonar.sources", "src/main")
         property("sonar.tests", "src/test")
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")

@@ -101,7 +101,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.telegram:telegrambots-spring-boot-starter:4.3.1")
+    implementation("org.telegram:telegrambots-spring-boot-starter:5.3.0")
 
     implementation("org.freemarker:freemarker:2.3.30")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")
@@ -124,7 +124,7 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation("io.kotest:kotest-property-jvm:4.3.1")
+    testImplementation("io.kotest:kotest-property-jvm:5.0.2")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
     testImplementation("io.mockk:mockk:1.10.5")
     testImplementation("org.junit.jupiter:junit-jupiter-api")

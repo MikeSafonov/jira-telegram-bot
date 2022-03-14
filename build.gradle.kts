@@ -125,7 +125,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("io.kotest:kotest-property-jvm:4.3.1")
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.1")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.2.1")
     testImplementation("io.mockk:mockk:1.10.5")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 

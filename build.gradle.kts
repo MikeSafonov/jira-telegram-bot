@@ -22,7 +22,7 @@ plugins {
     jacoco
     id("org.jetbrains.kotlin.plugin.spring") version "1.4.20"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.4.20"
-    id("org.springframework.boot") version "2.2.1.RELEASE"
+    id("org.springframework.boot") version "2.7.3"
     id("org.sonarqube") version "3.2.0"
     `build-scan` version "2.2"
 }

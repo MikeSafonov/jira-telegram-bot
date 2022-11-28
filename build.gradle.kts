@@ -10,7 +10,7 @@ buildscript {
     }
     configurations.maybeCreate("pitest")
     dependencies {
-        classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.0")
+        classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11")
         "pitest"("io.kotest:kotest-plugins-pitest:4.3.1")
     }
 }

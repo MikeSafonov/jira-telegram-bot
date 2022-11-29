@@ -17,7 +17,7 @@ buildscript {
 
 
 plugins {
-    kotlin("jvm") version "1.4.20"
+    kotlin("jvm") version "1.7.22"
     idea
     jacoco
     id("org.jetbrains.kotlin.plugin.spring") version "1.4.20"

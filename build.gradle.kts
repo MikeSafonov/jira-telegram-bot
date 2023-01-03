@@ -101,7 +101,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.telegram:telegrambots-spring-boot-starter:5.3.0")
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.4.0")
 
     implementation("org.freemarker:freemarker:2.3.30")
     implementation("no.api.freemarker:freemarker-java8:1.3.0")

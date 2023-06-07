@@ -18,8 +18,12 @@ class ChatService(private val chatRepository: ChatRepository, private val chatTa
         val validatedJiraLogin = validateJiraLogin(jiraLogin)
         val validatedTelegramId = validateTelegramId(telegramId)
 
-        val chat = Chat(null, validatedJiraLogin, validatedTelegramId, State.INIT)
-        chatRepository.save(chat)
+        addChatInState(validatedTelegramId, validatedJiraLogin, State.INIT)
+    }
+
+    fun addChatInState(telegramId: Long, jiraId: String?, state: State) {
+        val chat = Chat(null, jiraId, telegramId, state)
+        save(chat)
     }
 
     fun getAll() : List<Chat> {
@@ -27,7 +31,7 @@ class ChatService(private val chatRepository: ChatRepository, private val chatTa
     }
 
     fun getAllLogins() : List<String> {
-        return chatRepository.findAll().map { it.jiraId }
+        return chatRepository.findAll().map { it.jiraId }.filterNotNull()
     }
 
     fun findByJiraId(jiraId: String): Chat? {
@@ -44,6 +48,13 @@ class ChatService(private val chatRepository: ChatRepository, private val chatTa
         chat?.let {
             chatTagRepository.deleteByIdChat(it.id!!)
             chatRepository.deleteById(it.id)
+        }
+    }
+
+    fun updateJiraId(telegramId: Long, jiraId: String) {
+        findByTelegramId(telegramId)?.let {
+            it.jiraId = jiraId
+            save(it)
         }
     }
 

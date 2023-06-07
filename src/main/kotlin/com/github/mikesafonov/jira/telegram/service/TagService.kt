@@ -18,6 +18,6 @@ class TagService(private val repository: TagRepository) {
     @Transactional
     fun getJiraLoginsByTagKey(key: String): List<String> {
         val tag = getTagByKey(key) ?: return emptyList()
-        return tag.chats.map { it.jiraId }
+        return tag.chats.mapNotNull { it.jiraId }
     }
 }

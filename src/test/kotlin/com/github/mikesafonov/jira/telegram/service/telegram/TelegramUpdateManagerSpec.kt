@@ -6,10 +6,7 @@ import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import com.github.mikesafonov.jira.telegram.service.ChatService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.TelegramCommandHandler
 import io.kotest.core.spec.style.BehaviorSpec
-import io.mockk.Called
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.telegram.telegrambots.meta.api.objects.Update
 
 /**
@@ -57,7 +54,7 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
             }
         }
 
-        When("handler exist and chat is null and no need to change chat state") {
+        When("handler exist and chat is null") {
             val telegramChatId = 1L
             val update: Update = mockk {
                 every { hasMessage() } returns true
@@ -75,6 +72,7 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
             }
 
             every { holder.findHandler(ofType(TelegramCommand::class)) } returns commandHandler
+            every { chatService.addChatInState(any(), any(), any()) } just Runs
 
             Then("return command response and not change chat state") {
 
@@ -82,7 +80,7 @@ class TelegramUpdateManagerSpec : BehaviorSpec({
 
 
                 verify {
-                    chatService.save(ofType(Chat::class)) wasNot Called
+                    chatService.addChatInState(telegramChatId, null, State.INIT)
                 }
 
             }

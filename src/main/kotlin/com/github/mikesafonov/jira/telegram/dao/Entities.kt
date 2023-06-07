@@ -13,8 +13,8 @@ data class Chat(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
 
-    @Column(name = "jira_id", nullable = false)
-    val jiraId: String,
+    @Column(name = "jira_id")
+    var jiraId: String?,
 
     @Column(name = "telegram_id", nullable = false)
     val telegramId: Long,

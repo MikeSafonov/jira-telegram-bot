@@ -2,6 +2,8 @@ package com.github.mikesafonov.jira.telegram.service.telegram.handlers
 
 import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
+import com.github.mikesafonov.jira.telegram.service.jira.JiraApiService
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramClient
 import com.github.mikesafonov.jira.telegram.service.telegram.TelegramCommand
@@ -18,6 +20,8 @@ private val logger = KotlinLogging.logger {}
 @ConditionalOnJiraOAuth
 class JiraAuthApproveTelegramCommandHandler(
     private val jiraAuthService: JiraAuthService,
+    private val jiraApiService: JiraApiService,
+    private val chatService: ChatService,
     telegramClient: TelegramClient
 ) : BaseCommandHandler(telegramClient) {
 
@@ -33,7 +37,13 @@ class JiraAuthApproveTelegramCommandHandler(
         } else {
             try {
                 jiraAuthService.createAccessToken(id, command.text!!)
-                replaceUserMessage(id, messageId, "Authorization success!")
+                val username = jiraApiService.getMySelf(id)?.name
+                if (username == null) {
+                    replaceUserMessage(id, messageId, "Can't get username from jira!")
+                } else {
+                    chatService.updateJiraId(id, username)
+                    replaceUserMessage(id, messageId, "Authorization success!")
+                }
             } catch (e: HttpResponseException) {
                 logger.error(e.message, e)
                 val message = "${e.statusCode} ${e.content}"

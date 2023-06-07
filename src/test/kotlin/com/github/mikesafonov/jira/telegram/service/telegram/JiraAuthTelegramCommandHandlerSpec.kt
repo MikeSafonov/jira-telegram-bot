@@ -18,64 +18,39 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
     val jiraAuthService = mockk<JiraAuthService>()
     val telegramClient = mockk<TelegramClient>()
 
-    Given("jira '/auth' command handler") {
+    Given("jira auth command handler") {
         val handler = JiraAuthTelegramCommandHandler(jiraAuthService, telegramClient)
 
-        When("incoming message contain wrong command") {
-
+        When("incoming command from anonymous chat") {
             val command: TelegramCommand = mockk {
-                every { text } returns Arb.string().next()
-                every { hasText } returns true
                 every { chat } returns mockk {
                     every { state } returns State.INIT
                 }
-                every { isInState(State.INIT) } returns true
-                every { isMatchText(any()) } returns false
-            }
-            Then("isHandle returns false") {
-                handler.isHandle(command) shouldBe false
-            }
-        }
-
-        When("incoming message contain right command and wrong state") {
-            val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
-                every { hasText } returns true
-                every { chat } returns mockk {
-                    every { state } returns State.WAIT_APPROVE
-                }
-                every { isInState(State.INIT) } returns false
-                every { isMatchText("/auth") } returns true
-            }
-            Then("isHandle returns false") {
-                handler.isHandle(command) shouldBe false
-            }
-        }
-
-        When("incoming message contain right command") {
-            val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
-                every { hasText } returns true
-                every { chat } returns mockk {
-                    every { state } returns State.INIT
-                }
-                every { isInState(State.INIT) } returns true
-                every { isMatchText("/auth") } returns true
+                every { isAnonymous() } returns true
             }
             Then("isHandle returns true") {
                 handler.isHandle(command) shouldBe true
             }
         }
 
+        When("incoming command from not anonymous chat") {
+
+            val command: TelegramCommand = mockk {
+                every { isAnonymous() } returns false
+            }
+            Then("isHandle returns true") {
+                handler.isHandle(command) shouldBe false
+            }
+        }
+
         When("unable to crate temporary token") {
             val telegramChatId = 1L
             val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
-                every { chatId } returns telegramChatId
-                every { hasText } returns true
                 every { chat } returns mockk {
+                    every { chatId } returns telegramChatId
                     every { state } returns State.INIT
                 }
+                every { isAnonymous() } returns true
             }
 
             every { jiraAuthService.createTemporaryToken(telegramChatId) } throws RuntimeException()
@@ -96,12 +71,11 @@ class JiraAuthTelegramCommandHandlerSpec : BehaviorSpec({
         When("successful crate temporary token") {
             val telegramChatId = 1L
             val command: TelegramCommand = mockk {
-                every { text } returns "/auth"
-                every { chatId } returns telegramChatId
-                every { hasText } returns true
                 every { chat } returns mockk {
+                    every { chatId } returns telegramChatId
                     every { state } returns State.INIT
                 }
+                every { isAnonymous() } returns true
             }
 
             val tempToken = JiraTempTokenAndAuthorizeUrl(

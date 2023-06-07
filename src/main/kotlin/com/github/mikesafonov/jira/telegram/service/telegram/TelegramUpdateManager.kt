@@ -5,6 +5,7 @@ import com.github.mikesafonov.jira.telegram.service.AuthorizationService
 import com.github.mikesafonov.jira.telegram.service.ChatService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 
@@ -22,6 +23,7 @@ class TelegramUpdateManager(
     /**
      * process [update]
      */
+    @Transactional
     fun onUpdate(update: Update) {
         if (update.hasMessage() && update.message.hasText()) {
             val telegramCommand = toCommand(update.message)
@@ -45,7 +47,9 @@ class TelegramUpdateManager(
         command: TelegramCommand,
         nextState: State
     ) {
-        if (command.chat != null && command.chat.state != nextState) {
+        if (command.chat == null) {
+            chatService.addChatInState(command.chatId, null, nextState)
+        } else if (command.chat.state != nextState) {
             command.chat.state = nextState
             chatService.save(command.chat)
         }

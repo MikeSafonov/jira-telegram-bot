@@ -1,6 +1,8 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.atlassian.jira.rest.client.api.domain.Issue
+import com.atlassian.jira.rest.client.api.domain.User
+import com.atlassian.jira.rest.client.internal.async.AsynchronousHttpClientFactory
 import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import org.springframework.stereotype.Service
 
@@ -39,6 +41,12 @@ class JiraApiService(private val jiraRestClientFactory: JiraRestClientFactory) {
         return jiraRestClientFactory.createRestClient(telegramId)
             .issueClient
             .getIssue(issueKey)
+            .claim()
+    }
+
+    fun getMySelf(telegramId: Long): User? {
+        return jiraRestClientFactory.createMySelfRestClient(telegramId)
+            .getMySelf()
             .claim()
     }
 }

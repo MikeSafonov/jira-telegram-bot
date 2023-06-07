@@ -20,7 +20,7 @@ class JiraAuthTelegramCommandHandler(
     telegramClient: TelegramClient
 ) : BaseCommandHandler(telegramClient) {
     override fun isHandle(command: TelegramCommand): Boolean {
-        return command.isInState(State.INIT) && command.isMatchText("/auth")
+        return command.isAnonymous()
     }
 
     override fun handle(command: TelegramCommand): State {

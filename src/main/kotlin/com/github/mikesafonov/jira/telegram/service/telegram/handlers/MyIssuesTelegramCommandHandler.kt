@@ -24,7 +24,7 @@ class MyIssuesTelegramCommandHandler(
     override fun handle(command: TelegramCommand): State {
         val jiraId = command.chat!!.jiraId
         val telegramId = command.chat.telegramId
-        if(command.authorization == null){
+        if(command.authorization == null || jiraId == null){
             telegramClient.sendTextMessage(telegramId, "You must be logged in to use this command. Use the /auth to log in to JIRA")
         } else {
             val myIssues = jiraApiService.getMyIssues(telegramId, jiraId)

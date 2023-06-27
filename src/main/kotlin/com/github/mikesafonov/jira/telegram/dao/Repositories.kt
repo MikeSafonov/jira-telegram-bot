@@ -34,3 +34,7 @@ interface ChatTagRepository : JpaRepository<ChatTag, ChatTagId> {
     @Query("delete from ChatTag ct where ct.id.idChat = ?1")
     fun deleteByIdChat( chatId: Int)
 }
+
+interface FilterSubscriptionRepository : JpaRepository<FilterSubscription, FilterSubscriptionId> {
+
+}

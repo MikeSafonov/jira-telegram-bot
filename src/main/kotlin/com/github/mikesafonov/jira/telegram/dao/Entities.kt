@@ -95,3 +95,19 @@ data class ChatTagId (
     @Column(name = "id_chat")
     val idChat: Int?
 ) : Serializable
+
+@Entity
+@Table(name = "filters_subscriptions")
+data class FilterSubscription(
+    @EmbeddedId
+    val id: FilterSubscriptionId
+)
+
+@Embeddable
+data class FilterSubscriptionId (
+    @Column(name = "id_filter")
+    val idFilter: Long,
+    @ManyToOne
+    @JoinColumn(name = "id_chat")
+    val chat: Chat
+) : Serializable

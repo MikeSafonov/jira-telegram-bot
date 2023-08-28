@@ -13,8 +13,8 @@ data class Chat(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
 
-    @Column(name = "jira_id", nullable = false)
-    val jiraId: String,
+    @Column(name = "jira_id")
+    var jiraId: String?,
 
     @Column(name = "telegram_id", nullable = false)
     val telegramId: Long,
@@ -94,4 +94,20 @@ data class ChatTagId (
     val idTag: Long?,
     @Column(name = "id_chat")
     val idChat: Int?
+) : Serializable
+
+@Entity
+@Table(name = "filters_subscriptions")
+data class FilterSubscription(
+    @EmbeddedId
+    val id: FilterSubscriptionId
+)
+
+@Embeddable
+data class FilterSubscriptionId (
+    @Column(name = "id_filter")
+    val idFilter: Long,
+    @ManyToOne
+    @JoinColumn(name = "id_chat")
+    val chat: Chat
 ) : Serializable

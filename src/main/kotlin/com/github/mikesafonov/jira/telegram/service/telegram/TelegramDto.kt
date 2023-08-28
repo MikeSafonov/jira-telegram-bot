@@ -46,6 +46,6 @@ data class TelegramCommand(
     }
 
     fun isAnonymous() : Boolean{
-        return chat == null
+        return chat?.jiraId == null && chat?.state != State.WAIT_APPROVE
     }
 }

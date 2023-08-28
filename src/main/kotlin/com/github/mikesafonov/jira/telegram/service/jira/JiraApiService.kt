@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.atlassian.jira.rest.client.api.domain.Issue
+import com.atlassian.jira.rest.client.api.domain.User
 import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
 import org.springframework.stereotype.Service
 
@@ -18,16 +19,15 @@ class JiraApiService(private val jiraRestClientFactory: JiraRestClientFactory) {
      * @param jiraId jira id (login)
      */
     fun getMyIssues(telegramId: Long, jiraId: String): Iterable<Issue> {
-        val jiraRestClient = jiraRestClientFactory.createRestClient(telegramId)
-        val jql = JQLBuilder.builder()
-            .unresolved()
-            .assignedTo(jiraId)
-            .orderByDateCreate()
-            .build()
+        jiraRestClientFactory.createRestClient(telegramId).use {
+            val jql = JQLBuilder.builder()
+                .unresolved()
+                .assignedTo(jiraId)
+                .orderByDateCreate()
+                .build()
 
-        val issues = jiraRestClient.searchClient.searchJql(jql).claim().issues
-        jiraRestClient.close()
-        return issues
+            return it.searchClient.searchJql(jql).claim().issues
+        }
     }
 
     /**
@@ -36,9 +36,28 @@ class JiraApiService(private val jiraRestClientFactory: JiraRestClientFactory) {
      * @param issueKey jira issue key
      */
     fun getDescription(telegramId: Long, issueKey: String): Issue? {
-        return jiraRestClientFactory.createRestClient(telegramId)
-            .issueClient
-            .getIssue(issueKey)
-            .claim()
+        jiraRestClientFactory.createRestClient(telegramId).use {
+            return it.issueClient
+                .getIssue(issueKey)
+                .claim()
+        }
+    }
+
+    fun getMySelf(telegramId: Long): User? {
+        jiraRestClientFactory.createMySelfRestClient(telegramId).use {
+            return it.getMySelf()
+                .claim()
+        }
+    }
+
+    fun getIssueByFilter(telegramId: Long, filterId: Long): List<Issue> {
+        jiraRestClientFactory.createRestClient(telegramId).use { restClient ->
+            return restClient
+                .searchClient
+                .getFilter(filterId)
+                .claim()
+                ?.let { filter -> return restClient.searchClient.searchJql(filter.jql).claim().issues.toList() }
+                ?: emptyList()
+        }
     }
 }

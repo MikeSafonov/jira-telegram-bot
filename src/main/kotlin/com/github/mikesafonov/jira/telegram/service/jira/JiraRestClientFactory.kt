@@ -1,6 +1,7 @@
 package com.github.mikesafonov.jira.telegram.service.jira
 
 import com.atlassian.jira.rest.client.api.JiraRestClient
+import com.atlassian.jira.rest.client.internal.async.AsynchronousHttpClientFactory
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory
 import com.github.mikesafonov.jira.telegram.config.JiraOAuthProperties
 import com.github.mikesafonov.jira.telegram.config.conditional.ConditionalOnJiraOAuth
@@ -25,5 +26,13 @@ class JiraRestClientFactory(
             URI(jiraProperties.baseUrl),
             JiraOAuthAuthenticationHandler(oAuthParameters)
         )
+    }
+
+    fun createMySelfRestClient(telegramId: Long): MySelfRestClient {
+        val oAuthParameters = authService.getOAuthParameters(telegramId)
+        val serverUri = URI(jiraProperties.baseUrl)
+        val httpClient = AsynchronousHttpClientFactory().createClient(serverUri,
+            JiraOAuthAuthenticationHandler(oAuthParameters))
+        return MySelfRestClient(httpClient, serverUri)
     }
 }

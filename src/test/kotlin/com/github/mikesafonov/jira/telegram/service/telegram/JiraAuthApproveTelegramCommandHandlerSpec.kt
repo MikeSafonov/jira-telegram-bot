@@ -1,6 +1,9 @@
 package com.github.mikesafonov.jira.telegram.service.telegram
 
+import com.atlassian.jira.rest.client.api.domain.User
 import com.github.mikesafonov.jira.telegram.dao.State
+import com.github.mikesafonov.jira.telegram.service.ChatService
+import com.github.mikesafonov.jira.telegram.service.jira.JiraApiService
 import com.github.mikesafonov.jira.telegram.service.jira.JiraAuthService
 import com.github.mikesafonov.jira.telegram.service.telegram.handlers.JiraAuthApproveTelegramCommandHandler
 import com.google.api.client.http.HttpHeaders
@@ -14,10 +17,12 @@ import io.mockk.*
  */
 class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
     val jiraAuthService = mockk<JiraAuthService>()
+    val jiraApiService = mockk<JiraApiService>()
+    val chatService = mockk<ChatService>()
     val telegramClient = mockk<TelegramClient>()
 
     Given("jira auth approve command handler") {
-        val handler = JiraAuthApproveTelegramCommandHandler(jiraAuthService, telegramClient)
+        val handler = JiraAuthApproveTelegramCommandHandler(jiraAuthService, jiraApiService, chatService, telegramClient)
 
         When("incoming message contain wrong state") {
             val command: TelegramCommand = mockk {
@@ -147,6 +152,10 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             val telegramChatId = 1L
             val messageIdValue = 1
             val code = "code"
+            val jiraLogin = "jiraLogin"
+            val user: User = mockk {
+                every { name } returns jiraLogin
+            }
             val command: TelegramCommand = mockk {
                 every { text } returns code
                 every { chatId } returns telegramChatId
@@ -162,6 +171,9 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
             every { jiraAuthService.createAccessToken(telegramChatId, code) } returns Unit
             every { telegramClient.sendDeleteMessage(any(), any()) } just Runs
             every { telegramClient.sendTextMessage(any(), any()) } just Runs
+            every { jiraApiService.getMySelf(telegramChatId) } returns user
+            every { chatService.updateJiraId(any(), any()) } just Runs
+
             Then("return authorization success") {
                 handler.handle(command) shouldBe State.INIT
 
@@ -171,6 +183,7 @@ class JiraAuthApproveTelegramCommandHandlerSpec : BehaviorSpec({
                         telegramChatId,
                         "Authorization success!"
                     )
+                    chatService.updateJiraId(telegramChatId, jiraLogin)
                 }
             }
         }

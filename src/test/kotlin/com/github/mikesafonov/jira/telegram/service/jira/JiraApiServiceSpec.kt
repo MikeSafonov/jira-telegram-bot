@@ -29,7 +29,7 @@ class JiraApiServiceSpec : BehaviorSpec({
                 }
                 val jiraApiService = JiraApiService(jiraRestClientFactory)
 
-                jiraApiService.getMyIssues(chat.telegramId, chat.jiraId) shouldBe expectedIssue
+                jiraApiService.getMyIssues(chat.telegramId, chat.jiraId!!) shouldBe expectedIssue
 
                 verify {
                     restClient.close()

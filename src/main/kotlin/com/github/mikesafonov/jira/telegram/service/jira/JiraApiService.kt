@@ -51,12 +51,13 @@ class JiraApiService(private val jiraRestClientFactory: JiraRestClientFactory) {
     }
 
     fun getIssueByFilter(telegramId: Long, filterId: Long): List<Issue> {
-        val client = jiraRestClientFactory.createRestClient(telegramId);
-        return client
-            .searchClient
-            .getFilter(filterId)
-            .claim()
-            ?.let { return client.searchClient.searchJql(it.jql).claim().issues.toList() }
-            ?: emptyList()
+        jiraRestClientFactory.createRestClient(telegramId).use { restClient ->
+            return restClient
+                .searchClient
+                .getFilter(filterId)
+                .claim()
+                ?.let { filter -> return restClient.searchClient.searchJql(filter.jql).claim().issues.toList() }
+                ?: emptyList()
+        }
     }
 }
